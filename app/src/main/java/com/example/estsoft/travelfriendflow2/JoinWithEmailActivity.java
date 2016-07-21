@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class JoinWithEmailActivity extends AppCompatActivity {
-
+    /*TESTESTEST*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
