@@ -48,6 +48,9 @@ public class MapActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
 
+                int a = 0;
+                int b = 0;
+
                 // 화면 크기 받아오기
                 DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
                 int width = dm.widthPixels;
