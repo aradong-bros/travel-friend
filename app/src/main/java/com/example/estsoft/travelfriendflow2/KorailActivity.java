@@ -12,11 +12,9 @@ public class KorailActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_korail);
 
-        String activityName = getClass().getSimpleName();
-        TextView tv = new TextView(this);
-        tv.setText(activityName+ "화면");
-        setContentView(tv);
+
     }
 
 }

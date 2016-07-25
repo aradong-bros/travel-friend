@@ -49,10 +49,14 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
+                DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+                int w = dm.widthPixels;
+                int h = dm.heightPixels;
+
                 //좌표 구하기
-                int h = view.getHeight();
-                int w = view.getWidth();
-                Log.i("LOG", "w "+w+" h "+h);
+//                int h = view.getHeight();
+//                int w = view.getWidth();
+//                Log.i("LOG", "w "+w+" h "+h);
                 float x = motionEvent.getX();
                 float y = motionEvent.getY();
                 Log.i("LOG", "x "+x+" y "+y);
@@ -71,7 +75,7 @@ public class MapActivity extends AppCompatActivity {
                 if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
 
                     //서울
-                    if(motionEvent.getX() >= 144*ratioX && motionEvent.getX()*ratioX <= 183 && motionEvent.getY()*ratioY >= 149 && motionEvent.getY()*ratioY <=203){
+                    if(motionEvent.getX() >= 144*ratioX && motionEvent.getX() <= 183*ratioX && motionEvent.getY() >= 149*ratioY && motionEvent.getY() <=203*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Seoul = new City("서울");
@@ -99,7 +103,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //가평
-                    if(motionEvent.getX() >= 183*ratioX && motionEvent.getX()*ratioX <= 218 && motionEvent.getY()*ratioY >= 109 && motionEvent.getY()*ratioY <=186){
+                    if(motionEvent.getX() >= 183*ratioX && motionEvent.getX()<= 218*ratioX  && motionEvent.getY() >= 109*ratioY && motionEvent.getY() <=186*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Gapyeong = new City("가평");
@@ -127,7 +131,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //강릉
-                    if(motionEvent.getX() >= 284*ratioX && motionEvent.getX()*ratioX <= 339 && motionEvent.getY()*ratioY >= 92 && motionEvent.getY()*ratioY <=166){
+                    if(motionEvent.getX() >= 284*ratioX && motionEvent.getX()<= 339*ratioX  && motionEvent.getY() >= 92*ratioY && motionEvent.getY() <=166*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Gangreung = new City("강릉");
@@ -155,7 +159,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //안동
-                    if(motionEvent.getX() >= 294*ratioX && motionEvent.getX()*ratioX <= 351 && motionEvent.getY()*ratioY >= 288 && motionEvent.getY()*ratioY <=367){
+                    if(motionEvent.getX() >= 294*ratioX && motionEvent.getX()<= 351*ratioX  && motionEvent.getY()>= 288*ratioY  && motionEvent.getY() <=367*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Andong = new City("안동");
@@ -183,7 +187,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //전주
-                    if(motionEvent.getX() >= 151*ratioX && motionEvent.getX()*ratioX <= 186 && motionEvent.getY()*ratioY >= 425 && motionEvent.getY()*ratioY <=469){
+                    if(motionEvent.getX() >= 151*ratioX && motionEvent.getX() <= 186*ratioX && motionEvent.getY()>= 425*ratioY  && motionEvent.getY() <=469*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Jeonju = new City("전주");
@@ -211,7 +215,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //경주
-                    if(motionEvent.getX() >= 337*ratioX && motionEvent.getX()*ratioX <= 393 && motionEvent.getY()*ratioY >= 413 && motionEvent.getY()*ratioY <=479){
+                    if(motionEvent.getX() >= 337*ratioX && motionEvent.getX() <= 393*ratioX && motionEvent.getY() >= 413*ratioY && motionEvent.getY() <=479*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Gyeongju = new City("경주");
@@ -239,7 +243,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //부산
-                    if(motionEvent.getX() >= 314*ratioX && motionEvent.getX()*ratioX <= 377 && motionEvent.getY()*ratioY >= 500 && motionEvent.getY()*ratioY <=562){
+                    if(motionEvent.getX() >= 314*ratioX && motionEvent.getX() <= 377*ratioX && motionEvent.getY()>= 500*ratioY  && motionEvent.getY() <=562*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Busan = new City("부산");
@@ -267,7 +271,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //하동
-                    if(motionEvent.getX() >= 223*ratioX && motionEvent.getX()*ratioX <= 268 && motionEvent.getY()*ratioY >= 512 && motionEvent.getY()*ratioY <=619){
+                    if(motionEvent.getX() >= 223*ratioX && motionEvent.getX()<= 268*ratioX  && motionEvent.getY()>= 512*ratioY && motionEvent.getY() <=619*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Hadong = new City("하동");
@@ -295,7 +299,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //통영
-                    if(motionEvent.getX() >= 282*ratioX && motionEvent.getX()*ratioX <= 307 && motionEvent.getY()*ratioY >= 593 && motionEvent.getY()*ratioY <=628){
+                    if(motionEvent.getX() >= 282*ratioX && motionEvent.getX() <= 307*ratioX && motionEvent.getY() >= 593*ratioY && motionEvent.getY() <=628*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Tongyeong = new City("통영");
@@ -323,7 +327,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //순천
-                    if(motionEvent.getX() >= 175*ratioX && motionEvent.getX()*ratioX <= 211 && motionEvent.getY()*ratioY >= 586 && motionEvent.getY()*ratioY <=639){
+                    if(motionEvent.getX() >= 175*ratioX && motionEvent.getX()<= 211*ratioX  && motionEvent.getY()>= 586*ratioY  && motionEvent.getY() <=639*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Sooncheon = new City("순천");
@@ -351,7 +355,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //여수
-                    if(motionEvent.getX() >= 204*ratioX && motionEvent.getX()*ratioX <= 236 && motionEvent.getY()*ratioY >= 636 && motionEvent.getY()*ratioY <=669){
+                    if(motionEvent.getX() >= 204*ratioX && motionEvent.getX() <= 236*ratioX && motionEvent.getY() >= 636*ratioY && motionEvent.getY() <=669*ratioY){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Yeosoo = new City("여수");
@@ -379,7 +383,7 @@ public class MapActivity extends AppCompatActivity {
                     }
 
                     //보성
-                    if(motionEvent.getX() >= 144*ratioX && motionEvent.getX()*ratioX <= 189 && motionEvent.getY()*ratioY >= 640 && motionEvent.getY()*ratioY <=677){
+                    if(motionEvent.getX() >= 144*ratioX && motionEvent.getX()<= 189*ratioX  && motionEvent.getY() >= 640*ratioY && motionEvent.getY()<=677*ratioY ){
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
                         City Boseong = new City("보성");

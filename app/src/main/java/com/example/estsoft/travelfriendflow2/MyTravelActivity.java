@@ -33,7 +33,7 @@ public class MyTravelActivity extends TabActivity {
         setContentView(R.layout.activity_mytravel);
 
         ImageView imageView = (ImageView)findViewById(R.id.profile);
-        Picasso.with(getApplicationContext()).load("https://scontent.xx.fbcdn.net/v/t1.0-1/p160x160/13256226_995591200566299_3486062778365119937_n.jpg?oh=f7c9bcdb95f75616a7c113659995f9c3&oe=5836967E").transform(new CircleTransform()).into(imageView);
+        Picasso.with(getApplicationContext()).load("https://scontent.xx.fbcdn.net/v/t1.0-9/12011354_171091463233969_4930354003965117617_n.jpg?oh=f14da56919c0cb11290d1427135cc785&oe=58293D19").transform(new CircleTransform()).into(imageView);
 
         //프레그먼트 탭
         TabHost mTab = getTabHost();

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinnerArray1">
+        <item>경기권</item>
+        <item>경남</item>
+    </string-array>
+    <string-array name="spinnerArray2">
+        <item>자세하다</item>
+        <item>자세해</item>
+    </string-array>
+</resources>
