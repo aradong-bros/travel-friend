@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,22 +26,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
+
 import java.util.ArrayList;
 
 public class MapActivity extends AppCompatActivity {
-
-
     ArrayList<City> city = new ArrayList<City>();
     static int count = 0;
+    private boolean chk = false;    // BottomSheetBehavior에서 사용
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
-
-
-
 
         ImageView map = (ImageView)findViewById(R.id.map);
         Log.i("Log", "count : " + count);
@@ -49,20 +47,19 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
-                int w = dm.widthPixels;
-                int h = dm.heightPixels;
 
-                //좌표 구하기
-//                int h = view.getHeight();
-//                int w = view.getWidth();
-//                Log.i("LOG", "w "+w+" h "+h);
+                // 화면 크기 받아오기
+                DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+                int width = dm.widthPixels;
+                int height = dm.heightPixels;
+                Log.i("LOG-----", "width " + width + " height " + height);
+
                 float x = motionEvent.getX();
                 float y = motionEvent.getY();
                 Log.i("LOG", "x "+x+" y "+y);
 
-                float ratioX = w/480;
-                float ratioY = h/825;
+                float ratioX = width/480;
+                float ratioY = height/825;
 
 
                 /*************************************************************
@@ -188,8 +185,10 @@ public class MapActivity extends AppCompatActivity {
 
                     //전주
                     if(motionEvent.getX() >= 151*ratioX && motionEvent.getX() <= 186*ratioX && motionEvent.getY()>= 425*ratioY  && motionEvent.getY() <=469*ratioY){
+
                         MyAdapterCity adapter = new MyAdapterCity(getApplicationContext(),R.layout.row,city);
                         ListView lv = (ListView)findViewById(R.id.citylist);
+
                         City Jeonju = new City("전주");
                         boolean isExist = false;
 
@@ -201,11 +200,13 @@ public class MapActivity extends AppCompatActivity {
 
                         if(isExist == false){
                             city.add(Jeonju);
+                            chk = true;
                             adapter.notifyDataSetChanged();
                         }else{
                             for(int i = 0;i<city.size();i++){
                                 if(city.get(i).getTitle().equals(Jeonju.getTitle())) {
                                     city.remove(i);
+                                    chk = false;
                                     break;
                                 }
                             }
@@ -417,6 +418,40 @@ public class MapActivity extends AppCompatActivity {
 
         });
 
+        // The View with the BottomSheetBehavior
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) { // React to state change
+                Log.e("onStateChanged",newState+"");
+
+                // open - 3, close - 4
+                if(newState == 3){
+                    Log.e("onStateChanged","open");
+                    if(chk){
+                        final TextView title = (TextView)bottomSheet.findViewById(R.id.lookAroundTextBox);
+                        title.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Log.e("texttext",title.getText().toString());
+                                Intent intent = new Intent(getApplicationContext(), MapViewActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                }else if(newState == 4){
+                    Log.e("onStateChanged","close");
+
+                }
+
+            }
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) { // React to dragging events
+
+                // Log.e("onSlide",slideOffset+"");
+            }
+        });
 
     }
 }
