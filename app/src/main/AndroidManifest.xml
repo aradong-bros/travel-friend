@@ -3,6 +3,8 @@
     package="com.example.estsoft.travelfriendflow2">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -23,12 +25,11 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="여친"
             android:icon="@drawable/logo"
-            android:windowSoftInputMode="adjustPan"
+            android:label="여친"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:uiOptions="splitActionBarWhenNarrow">
-        </activity>
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustPan"></activity>
 
         <activity
             android:name=".FirstStartActivity"
@@ -49,14 +50,19 @@
         <activity android:name=".KorailActivity" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".MyTravelActivity" />
-        <activity android:name=".SettingActivity"
+        <activity
+            android:name=".SettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".AttractionActivity" />
-        <activity android:name=".NewTravelSettingActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".MapActivity"  android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".NewTravelSettingActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".MapActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".MyTravelListActivity" />
         <activity android:name=".BookmarkListActivity" />
-
+        <activity android:name=".ChatMainActivity"></activity>
     </application>
 
 </manifest>
