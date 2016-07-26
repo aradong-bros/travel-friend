@@ -2,6 +2,7 @@ package com.example.estsoft.travelfriendflow2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,26 +31,26 @@ import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
 
 import java.util.ArrayList;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 public class MapActivity extends AppCompatActivity {
     ArrayList<City> city = new ArrayList<City>();
-    static int count = 0;
     private boolean chk = false;    // BottomSheetBehavior에서 사용
+
+    ImageView map;
+    PhotoViewAttacher attacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        ImageView map = (ImageView)findViewById(R.id.map);
-        Log.i("Log", "count : " + count);
+        map = (ImageView)findViewById(R.id.map);
+        attacher = new PhotoViewAttacher(map);
 
         map.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-
-
-                int a = 0;
-                int b = 0;
 
                 // 화면 크기 받아오기
                 DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
@@ -457,6 +458,10 @@ public class MapActivity extends AppCompatActivity {
         });
 
     }
+
+//    attacher.update();
+
+
 }
 
 class MyAdapterCity extends BaseAdapter {
