@@ -63,12 +63,9 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".MyTravelListActivity" />
         <activity android:name=".BookmarkListActivity" />
-<<<<<<< HEAD
         <activity android:name=".ChatMainActivity"></activity>
-=======
         <activity android:name=".map.MapViewActivity"></activity>
 
->>>>>>> de18cb54f897a0c3ae9b303769ba8a9c361b4ded
     </application>
 
 </manifest>
