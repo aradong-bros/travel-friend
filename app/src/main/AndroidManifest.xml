@@ -58,13 +58,14 @@
         <activity
             android:name=".mytravel.NewTravelSettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".mytravel.MapActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <!--<activity-->
+            <!--android:name=".mytravel.MapActivity"-->
+            <!--android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
         <activity android:name=".mytravel.MyTravelListActivity" />
         <activity android:name=".mytravel.BookmarkListActivity" />
         <activity android:name=".chat.ChatMainActivity"></activity>
         <activity android:name=".map.MapViewActivity"></activity>
+        <activity android:name=".mytravel.SelectCityActivity"></activity>
 
 
     </application>

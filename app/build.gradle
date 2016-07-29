@@ -27,7 +27,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile project(':picasso-2.5.2')
-    //compile files('libs/libDaumMapAndroid.jar')
+//    compile files('libs/libDaumMapAndroid.jar')
     compile 'com.github.chrisbanes:PhotoView:1.2.6'
     compile 'me.relex:circleindicator:1.2.1@aar'
 

@@ -49,7 +49,7 @@ public class NewTravelSettingActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),MapActivity.class);
+                Intent intent = new Intent(getApplicationContext(),SelectCityActivity.class);
                 intent.putExtra("sdate",sdate.getText().toString());
                 intent.putExtra("stime",stime.getText().toString());
                 intent.putExtra("edate",edate.getText().toString());
