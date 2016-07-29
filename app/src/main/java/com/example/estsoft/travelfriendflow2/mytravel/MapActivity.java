@@ -422,11 +422,11 @@ public class MapActivity extends AppCompatActivity {
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) { // React to state change
-                Log.e("onStateChanged",newState+"");
+//                Log.e("onStateChanged",newState+"");
 
                 // open - 3, close - 4
                 if(newState == 3){
-                    Log.e("onStateChanged","open");
+//                    Log.e("onStateChanged","open");
                     if(chk){
                         final TextView title = (TextView)bottomSheet.findViewById(R.id.lookAroundTextBox);
                         title.setOnClickListener(new View.OnClickListener() {
@@ -439,8 +439,7 @@ public class MapActivity extends AppCompatActivity {
                         });
                     }
                 }else if(newState == 4){
-                    Log.e("onStateChanged","close");
-
+//                    Log.e("onStateChanged","close");
                 }
 
             }

@@ -3,9 +3,11 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +17,12 @@ import android.widget.TimePicker;
 
 import com.example.estsoft.travelfriendflow2.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class NewTravelSettingActivity extends AppCompatActivity {
+    private SharedPreferences sharedPreferences;
 
     private final Handler handler = new Handler();
     private DatePicker datePicker;
@@ -24,7 +31,7 @@ public class NewTravelSettingActivity extends AppCompatActivity {
     private TextView edate;
     private TextView etime;
     private TextView title;
-    private Button button;
+    private Button btnConfirm;      // 확인 버튼
 
     int mYear;
     int mMonth;
@@ -37,16 +44,17 @@ public class NewTravelSettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newtravelsetting);
 
-        button = (Button)findViewById(R.id.button);
+        sharedPreferences = getSharedPreferences("MyBookMarkList", 0);      // 사용자가 입력한 여행정보 데이터
+
+        btnConfirm = (Button)findViewById(R.id.btn_confirm);
         sdate = (TextView)findViewById(R.id.selected_sdate_textview);
         stime = (TextView)findViewById(R.id.selected_stime_textview);
         edate = (TextView)findViewById(R.id.selected_edate_textview);
         etime = (TextView)findViewById(R.id.selected_etime_textview);
-        title = (TextView)findViewById(R.id.textView17);
+        title = (TextView)findViewById(R.id.edt_title);
 
 
-
-        button.setOnClickListener(new View.OnClickListener() {
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),MapActivity.class);
@@ -56,6 +64,14 @@ public class NewTravelSettingActivity extends AppCompatActivity {
                 intent.putExtra("etime",etime.getText().toString());
                 intent.putExtra("title",title.getText().toString());
                 startActivity(intent);
+
+                // ----
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("title",title.getText().toString());
+                editor.putString("creationDate",getDateString());
+                editor.putString("sdate",sdate.getText().toString());
+                editor.putString("edate",edate.getText().toString());
+                editor.commit(); //편집을 저장
             }
         });
     }
@@ -118,4 +134,12 @@ public class NewTravelSettingActivity extends AppCompatActivity {
             etime.setText(hourOfDay + ":" + minute);
         }
     };
+
+    public String getDateString()
+    {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.KOREA);
+        String str_date = df.format(new Date());
+
+        return str_date;
+    }
 }

@@ -48,7 +48,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText8"
+        android:id="@+id/edt_title"
         android:layout_marginTop="5dp"
         android:background="@drawable/rounded_edittext"/>
     ​
@@ -166,7 +166,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="확인"
-        android:id="@+id/button"
+        android:id="@+id/btn_confirm"
         android:layout_marginTop="30dp"
         android:layout_gravity="center" />
     ​
