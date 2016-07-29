@@ -1,4 +1,4 @@
-package com.example.estsoft.travelfriendflow2;
+package com.example.estsoft.travelfriendflow2.basic;
 
 import android.app.ActionBar;
 import android.content.DialogInterface;
@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.estsoft.travelfriendflow2.CircleTransform;
+import com.example.estsoft.travelfriendflow2.R;
 import com.squareup.picasso.Picasso;
 
 public class SettingActivity extends AppCompatActivity {

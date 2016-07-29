@@ -1,10 +1,11 @@
-package com.example.estsoft.travelfriendflow2;
+package com.example.estsoft.travelfriendflow2.basic;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+
+import com.example.estsoft.travelfriendflow2.R;
 
 public class SplashActivity extends AppCompatActivity {
     private static final int MILLISECONDS_DELAYED_FINISH = 2000;

@@ -14,7 +14,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:background="#FFF"
-    tools:context="com.example.estsoft.travelfriendflow2.MainActivity">
+    tools:context=".basic.MainActivity">
 
     <ImageView
         android:layout_width="wrap_content"

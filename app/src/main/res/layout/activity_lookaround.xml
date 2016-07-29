@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
 
     android:orientation="vertical"
-    tools:context="com.example.estsoft.travelfriendflow2.MainActivity">
+    tools:context="com.example.estsoft.travelfriendflow2.basic.MainActivity">
 
 
     <EditText

@@ -1,24 +1,15 @@
-package com.example.estsoft.travelfriendflow2;
+package com.example.estsoft.travelfriendflow2.mytravel;
 
-import android.app.Activity;
 import android.app.TabActivity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
-import android.widget.TextView;
 
+import com.example.estsoft.travelfriendflow2.CircleTransform;
+import com.example.estsoft.travelfriendflow2.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -61,25 +52,4 @@ public class MyTravelActivity extends TabActivity {
 
     }
 
-
-    //다이얼로그
-
-//    public void dialogTravelSetting(View view) {
-//        LayoutInflater inflater = getLayoutInflater();
-//        final View customView = inflater.inflate(R.layout.dialog_travelsetting, null);
-//
-//        new android.app.AlertDialog.Builder(this).
-//                setTitle("여행 기본 설정").
-//                setView(customView).
-//                setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-////                        TextView tv = (TextView) customView.findViewById(R.id.password);
-////                        String password = tv.getText().toString();
-////                        Log.d("-------->", password);
-//                    }
-//                }).
-//                show();
-//    }
 }
-

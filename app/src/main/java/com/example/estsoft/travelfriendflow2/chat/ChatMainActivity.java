@@ -1,4 +1,4 @@
-package com.example.estsoft.travelfriendflow2;
+package com.example.estsoft.travelfriendflow2.chat;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,6 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.chat.ChatData;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;

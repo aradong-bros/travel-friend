@@ -1,4 +1,4 @@
-package com.example.estsoft.travelfriendflow2;
+package com.example.estsoft.travelfriendflow2.chat;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.estsoft.travelfriendflow2.R;
 
 public class ChatActivity extends Activity {
 

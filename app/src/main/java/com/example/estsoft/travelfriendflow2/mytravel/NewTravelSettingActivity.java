@@ -1,4 +1,4 @@
-package com.example.estsoft.travelfriendflow2;
+package com.example.estsoft.travelfriendflow2.mytravel;
 
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.example.estsoft.travelfriendflow2.R;
 
 public class NewTravelSettingActivity extends AppCompatActivity {
 

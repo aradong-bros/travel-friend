@@ -1,9 +1,11 @@
-package com.example.estsoft.travelfriendflow2;
+package com.example.estsoft.travelfriendflow2.mytravel;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
-import android.widget.TextView;
+
+import com.example.estsoft.travelfriendflow2.R;
+
 
 import java.util.ArrayList;
 
@@ -29,3 +31,4 @@ public class BookmarkListActivity extends Activity {
     }
 
 }
+

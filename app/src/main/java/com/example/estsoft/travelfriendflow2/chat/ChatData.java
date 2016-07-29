@@ -1,4 +1,4 @@
-package com.example.estsoft.travelfriendflow2;
+package com.example.estsoft.travelfriendflow2.chat;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

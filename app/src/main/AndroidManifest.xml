@@ -15,7 +15,7 @@
         android:theme="@style/Theme.AppCompat.Light">
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".basic.SplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".basic.MainActivity"
             android:icon="@drawable/logo"
             android:label="여친"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
@@ -33,38 +33,39 @@
             android:windowSoftInputMode="adjustPan"></activity>
 
         <activity
-            android:name=".FirstStartActivity"
+            android:name=".basic.FirstStartActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             >
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".basic.LoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".JoinActivity"
+            android:name=".basic.JoinActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".JoinWithEmailActivity"
+            android:name=".basic.JoinWithEmailActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".LookAroundActivity" />
-        <activity android:name=".SaleActivity" />
-        <activity android:name=".KorailActivity" />
-        <activity android:name=".ChatActivity" />
-        <activity android:name=".MyTravelActivity" />
+        <activity android:name=".lookaround.LookAroundActivity" />
+        <activity android:name=".sale.SaleActivity" />
+        <activity android:name=".korail.KorailActivity" />
+        <activity android:name=".chat.ChatActivity" />
+        <activity android:name=".mytravel.MyTravelActivity" />
         <activity
-            android:name=".SettingActivity"
+            android:name=".basic.SettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".AttractionActivity" />
         <activity
-            android:name=".NewTravelSettingActivity"
+            android:name=".mytravel.NewTravelSettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".MapActivity"
+            android:name=".mytravel.MapActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".MyTravelListActivity" />
-        <activity android:name=".BookmarkListActivity" />
-        <activity android:name=".ChatMainActivity"></activity>
+        <activity android:name=".mytravel.MyTravelListActivity" />
+        <activity android:name=".mytravel.BookmarkListActivity" />
+        <activity android:name=".chat.ChatMainActivity"></activity>
         <activity android:name=".map.MapViewActivity"></activity>
+
 
     </application>
 

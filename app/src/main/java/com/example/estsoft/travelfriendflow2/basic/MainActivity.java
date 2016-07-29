@@ -1,35 +1,26 @@
-package com.example.estsoft.travelfriendflow2;
+package com.example.estsoft.travelfriendflow2.basic;
 
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.design.widget.TabLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.basic.FirstStartActivity;
+import com.example.estsoft.travelfriendflow2.basic.SettingActivity;
+import com.example.estsoft.travelfriendflow2.chat.ChatActivity;
+import com.example.estsoft.travelfriendflow2.korail.KorailActivity;
+import com.example.estsoft.travelfriendflow2.lookaround.LookAroundActivity;
+import com.example.estsoft.travelfriendflow2.mytravel.MyTravelActivity;
+import com.example.estsoft.travelfriendflow2.sale.SaleActivity;
 
 public class MainActivity extends TabActivity {
 
