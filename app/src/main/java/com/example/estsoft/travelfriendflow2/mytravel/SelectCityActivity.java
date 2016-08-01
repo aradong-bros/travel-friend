@@ -146,11 +146,7 @@ class CityAdapter extends BaseAdapter {
         City c = city.get(position);
         icon.setImageResource(c.icon);
         title.setText(c.title);
-//
-//        if(position == nSelectedItem) {
-//            ImageView cover = (ImageView) convertView.findViewById(R.id.cover);
-//            cover.setVisibility(View.VISIBLE);
-//        }
+
 
         return v;
     }
