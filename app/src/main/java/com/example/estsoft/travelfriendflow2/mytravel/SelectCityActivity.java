@@ -2,12 +2,14 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -53,15 +55,34 @@ public class SelectCityActivity extends Activity {
         city.add(Yeosoo);
 
 
-        CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
+        final CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
         ListView lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(cityAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                ImageView cover = (ImageView)adapterView.findViewById(R.id.cover);
-                cover.setVisibility(View.VISIBLE);
+                City city = (City) cityAdapter.getItem(position);
+                city.selected = !city.selected;
+                cityAdapter.notifyDataSetChanged();
+
+                if(city.selected){
+                    Toast.makeText(getApplicationContext(),city.title+"담기 성공",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),city.title+"빼기 성공",Toast.LENGTH_SHORT).show();
+                }
+
+//                ImageView cover = (ImageView)adapterView.findViewById(R.id.cover);
+//                cover.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Button letsgo = (Button)findViewById(R.id.letsgo);
+        letsgo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),SelectedCityActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -96,26 +117,41 @@ class CityAdapter extends BaseAdapter {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
+        ViewHolder viewHolder;
+
         if(convertView == null){
             convertView = inf.inflate(layout, null);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        ImageView icon = (ImageView)convertView.findViewById(R.id.cityicon);
-        TextView title = (TextView)convertView.findViewById(R.id.citytitle);
-
         City c = city.get(position);
-        icon.setImageResource(c.icon);
-        title.setText(c.title);
-
-
+        viewHolder.icon.setImageResource(c.icon);
+        viewHolder.title.setText(c.title);
+        viewHolder.cover.setVisibility(c.selected? View.VISIBLE : View.INVISIBLE);
 
         return convertView;
+    }
+
+    class ViewHolder {
+        ImageView icon;
+        TextView title;
+        ImageView cover;
+
+        public ViewHolder(View view) {
+            icon = (ImageView)view.findViewById(R.id.cityicon);
+            title = (TextView)view.findViewById(R.id.citytitle);
+            cover = (ImageView)view.findViewById(R.id.cover);
+        }
     }
 }
 
 class City{
     String title = "";
     int icon;
+    boolean selected = false;
 
     public City(int icon,String title){
         this.icon = icon;

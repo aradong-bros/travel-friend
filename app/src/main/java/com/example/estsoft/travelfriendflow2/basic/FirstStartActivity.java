@@ -32,6 +32,7 @@ public class FirstStartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_firststart);
         setUpView();
         setTab();
+
     }
 
     private void setUpView(){
@@ -175,5 +176,5 @@ public class FirstStartActivity extends AppCompatActivity {
 //            return pager == obj;
 //        }
 //    }
-
-
+//
+//

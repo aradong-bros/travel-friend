@@ -66,6 +66,7 @@
         <activity android:name=".chat.ChatMainActivity"></activity>
         <activity android:name=".map.MapViewActivity"></activity>
         <activity android:name=".mytravel.SelectCityActivity"></activity>
+        <activity android:name=".mytravel.SelectedCityActivity"></activity>
 
 
     </application>

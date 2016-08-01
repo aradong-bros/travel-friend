@@ -7,4 +7,5 @@
     <color name="tabBackground">#FFF</color>
     <color name="tabTextColor">#b0acab</color>
     <color name="text_tab_indicator">#FFF</color>
+    <color name="orange">#eb9b00</color>
 </resources>

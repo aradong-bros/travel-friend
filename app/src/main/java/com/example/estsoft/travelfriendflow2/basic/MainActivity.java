@@ -45,11 +45,11 @@ public class MainActivity extends TabActivity {
         TabWidget tabWidget = mTab.getTabWidget();
         Intent intent;
 
-        mTab.addTab(mTab.newTabSpec("tab1").setIndicator("둘러보기",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,LookAroundActivity.class)));
-        mTab.addTab(mTab.newTabSpec("tab2").setIndicator("기차 정보",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,KorailActivity.class)));
-        mTab.addTab(mTab.newTabSpec("tab3").setIndicator("실시간 톡",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,ChatActivity.class)));
-        mTab.addTab(mTab.newTabSpec("tab4").setIndicator("할인 정보",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,SaleActivity.class)));
-        mTab.addTab(mTab.newTabSpec("tab5").setIndicator("나의 여행",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,MyTravelActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab1").setIndicator("",getResources().getDrawable(R.drawable.icon1)).setContent(new Intent(this,LookAroundActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab2").setIndicator("",getResources().getDrawable(R.drawable.icon2)).setContent(new Intent(this,KorailActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab3").setIndicator("",getResources().getDrawable(R.drawable.icon3)).setContent(new Intent(this,ChatActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab4").setIndicator("",getResources().getDrawable(R.drawable.icon4)).setContent(new Intent(this,SaleActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab5").setIndicator("",getResources().getDrawable(R.drawable.icon5)).setContent(new Intent(this,MyTravelActivity.class)));
 
         //상단 바 터치 - 설정
         ImageView setting = (ImageView)findViewById(R.id.setting);
@@ -69,7 +69,7 @@ public class MainActivity extends TabActivity {
             final View tabView = tw.getChildTabViewAt(i);
             final TextView tv = (TextView)tabView.findViewById(android.R.id.title);
             tv.setTextSize(8);
-            tabView.setBackgroundColor(Color.parseColor("#eb9b00"));
+            tabView.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
             final TextView tvv = (TextView) tabWidget.getChildAt(i).findViewById(android.R.id.title);
             tv.setTextColor(this.getResources().getColorStateList(R.color.text_tab_indicator));
