@@ -3,6 +3,7 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,13 @@ import android.widget.Toast;
 import com.example.estsoft.travelfriendflow2.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 
 public class SelectCityActivity extends Activity {
 
     ArrayList<City> city = new ArrayList<City>();
+    static int nSelectedItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +57,18 @@ public class SelectCityActivity extends Activity {
         city.add(Yeosoo);
 
 
-        CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
+        final CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
         ListView lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(cityAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                ImageView cover = (ImageView)adapterView.findViewById(R.id.cover);
-                cover.setVisibility(View.VISIBLE);
+
+//                ImageView cover = (ImageView)adapterView.findViewById(R.id.cover);
+//                cover.setVisibility(View.VISIBLE);
+                cityAdapter.setChecked(position);
+                cityAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -74,11 +81,30 @@ class CityAdapter extends BaseAdapter {
     ArrayList<City> city;
     LayoutInflater inf;
 
+    private ViewHolder viewHolder = null;
+    private boolean[] isCheckedConfirm;
+
     public CityAdapter(Context context, int layout, ArrayList<City> city){
         this.context = context;
         this.layout = layout;
         this.city = city;
         this.inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.isCheckedConfirm = new boolean[city.size()];
+    }
+
+    public void setChecked(int position){
+        isCheckedConfirm[position] = !isCheckedConfirm[position];
+    }
+
+    public ArrayList<Integer> getChecked(){
+        int tempSize = isCheckedConfirm.length;
+        ArrayList<Integer> mArrayList = new ArrayList<Integer>();
+        for(int b=0; b<tempSize; b++){
+            if(isCheckedConfirm[b]){
+                mArrayList.add(b);
+            }
+        }
+        return mArrayList;
     }
 
     @Override
@@ -96,9 +122,23 @@ class CityAdapter extends BaseAdapter {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        if(convertView == null){
-            convertView = inf.inflate(layout, null);
+
+        View v = convertView;
+        if(v == null){
+            viewHolder = new ViewHolder();
+            v = inf.inflate(layout, null);
+
+            viewHolder.title = (TextView)convertView.findViewById(R.id.citytitle);
+            viewHolder.icon = (ImageView)convertView.findViewById(R.id.cityicon);
+
+            v.setTag(viewHolder);
+        }else{
+            viewHolder = (ViewHolder)convertView.getTag();
         }
+
+
+        //            ImageView cover = (ImageView) convertView.findViewById(R.id.cover);
+//            cover.setVisibility(View.VISIBLE);
 
         ImageView icon = (ImageView)convertView.findViewById(R.id.cityicon);
         TextView title = (TextView)convertView.findViewById(R.id.citytitle);
@@ -106,10 +146,13 @@ class CityAdapter extends BaseAdapter {
         City c = city.get(position);
         icon.setImageResource(c.icon);
         title.setText(c.title);
+//
+//        if(position == nSelectedItem) {
+//            ImageView cover = (ImageView) convertView.findViewById(R.id.cover);
+//            cover.setVisibility(View.VISIBLE);
+//        }
 
-
-
-        return convertView;
+        return v;
     }
 }
 
@@ -123,4 +166,9 @@ class City{
     }
 
     public City(){}
+}
+
+class ViewHolder{
+    ImageView icon;
+    TextView title;
 }
