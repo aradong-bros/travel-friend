@@ -5,7 +5,11 @@ package com.example.estsoft.travelfriendflow2.map;
  */
 public class PinItem {
     public String no;       /*해당 지역 NO (PK)*/
+    public String title;
+    public String picture;
     public double latitude;
     public double longitude;
+    public String info;
     public String category;
+    public String address;
 }
