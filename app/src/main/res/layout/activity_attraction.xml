@@ -26,7 +26,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="함덕 해수욕장"
+        android:hint="title"
         android:id="@+id/txt_title"
         android:textColor="#000"
         android:textSize="30sp"
@@ -38,16 +38,26 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="고운 백사장과 얕은 바다 속 패사층이 만들어내는 푸른빛 바다가 아름다운 해수욕장이다. "
+        android:hint="info"
         android:id="@+id/txt_info"
-        android:textSize="13sp"/>
+        android:textSize="15sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="address"
+        android:id="@+id/txt_address"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:paddingTop="7dp"
+        android:textColor="#3F51B5"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="60dp">
+        android:paddingTop="50dp">
     <EditText
-        android:layout_width="295dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:id="@+id/edt_reply" />
 

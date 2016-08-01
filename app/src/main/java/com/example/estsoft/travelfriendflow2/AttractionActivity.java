@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -50,7 +53,8 @@ public class AttractionActivity extends Activity {
     private static final String TAG_ADDRESS = "address";
     private static final String TAG_CATEGORY ="category";
     private JSONArray datas = null;
-    private static TextView txt_title, txt_info;
+    private static TextView txt_title, txt_info, txt_addr;
+    private static EditText edt_reply;
     private static ImageView img_attraction;
 
     ArrayList<Reply> reply = new ArrayList<Reply>();
@@ -60,12 +64,17 @@ public class AttractionActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attraction);
 
-        Intent intent = getIntent();
-        String no = intent.getStringExtra("no");
-
         img_attraction = (ImageView)findViewById(R.id.img_attraction);
         txt_title = (TextView)findViewById(R.id.txt_title);
         txt_info = (TextView)findViewById(R.id.txt_info);
+        txt_addr = (TextView)findViewById(R.id.txt_address);
+        edt_reply = (EditText)findViewById(R.id.edt_reply);
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(edt_reply.getWindowToken(), 0);     // 키보드 감추기
+
+        Intent intent = getIntent();
+        String no = intent.getStringExtra("no");
 
         if(no == null){
             Log.e(LOG_TAG,"Incorrect Input : no");
@@ -146,6 +155,7 @@ public class AttractionActivity extends Activity {
             pinItem.longitude = (arr[1] != null ? Double.parseDouble(arr[1]) : null );
 
             pinItem.info = object.getString(TAG_INFO);
+
             pinItem.category = object.getString(TAG_CATEGORY);
             pinItem.address = object.getString(TAG_ADDRESS);
 
@@ -165,10 +175,11 @@ public class AttractionActivity extends Activity {
         }else{
             img_attraction.setImageResource(R.mipmap.ic_launcher);
         }
-
         txt_title.setText(item.title);
-        txt_info.setText(item.info);
+        txt_addr.setText(item.address);
 
+        item.info = item.info.replaceAll("<(/)?[bB][rR](\\s)*(/)?>","\n").replaceAll("strong","h2");// info의 <br>태그 삭제 및 <strong>태그 변환
+        txt_info.setText( Html.fromHtml(item.info));
 
     }
 
