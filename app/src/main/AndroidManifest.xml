@@ -65,7 +65,9 @@
         <activity
             android:name=".basic.SettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".AttractionActivity" />
+        <activity
+            android:name=".AttractionActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".mytravel.NewTravelSettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

@@ -18,39 +18,55 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:id="@+id/attraction"
-        android:background="@drawable/attraction" />
+        android:layout_height="200dp"
+        android:id="@+id/img_attraction"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="함덕 해수욕장"
-        android:id="@+id/textView15"
+        android:hint="title"
+        android:id="@+id/txt_title"
         android:textColor="#000"
-        android:textSize="30dp" />
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="고운 백사장과 얕은 바다 속 패사층이 만들어내는 푸른빛 바다가 아름다운 해수욕장이다. "
-        android:id="@+id/textView16" />
+        android:hint="info"
+        android:id="@+id/txt_info"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="address"
+        android:id="@+id/txt_address"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:paddingTop="7dp"
+        android:textColor="#3F51B5"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="60dp">
+        android:paddingTop="50dp">
     <EditText
-        android:layout_width="295dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:id="@+id/editText7" />
+        android:id="@+id/edt_reply" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="등록"
-        android:id="@+id/button2"
+        android:id="@+id/btn_reply"
         android:layout_gravity="right"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
