@@ -2,9 +2,7 @@ package com.example.estsoft.travelfriendflow2.basic;
 
 import android.app.TabActivity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-
 import android.os.Bundle;
 import android.view.View;
 
@@ -22,6 +20,7 @@ import com.example.estsoft.travelfriendflow2.lookaround.LookAroundActivity;
 import com.example.estsoft.travelfriendflow2.mytravel.MyTravelActivity;
 import com.example.estsoft.travelfriendflow2.sale.SaleActivity;
 
+
 public class MainActivity extends TabActivity {
 
     @Override
@@ -30,14 +29,14 @@ public class MainActivity extends TabActivity {
         setContentView(R.layout.activity_main);
 
         //앱 최초 실행
-        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-        int firstviewshow = pref.getInt("First", 0);
+        //SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        //int firstviewshow = pref.getInt("First", 0);
 
-        if (firstviewshow != 1) {
+        //if (firstviewshow != 1) {
             Intent showIntent = new Intent(this, FirstStartActivity.class);
             startActivity(showIntent);
 
-        }
+        //}
 
         //프레그먼트 탭
         TabHost mTab = getTabHost();
