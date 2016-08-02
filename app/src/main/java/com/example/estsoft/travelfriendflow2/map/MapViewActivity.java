@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.estsoft.travelfriendflow2.AttractionActivity;
@@ -45,7 +47,7 @@ import java.util.List;
  */
 public class MapViewActivity extends AppCompatActivity implements MapView.POIItemEventListener{
     private static final String LOG_TAG = "MapViewActivity";
-    private static final String URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getPinData/9";
+    private static final String URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getPinData/9/";
 
     private static final String TAG_RESULTS="atrList";
     private static final String TAG_NO = "no";
@@ -62,6 +64,35 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
+
+        Spinner spinner = (Spinner)findViewById(R.id.spin_category);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.e(LOG_TAG,position+""+parent.getItemAtPosition(position));
+
+                mapView.removeAllPOIItems(); /* 기존 검색 결과 삭제 */
+
+                String path = null;
+                if( position == 1 ){  /* eat */
+                    path = URL+"1";
+                }else if( position == 2 ){  /* stay */
+                    path = URL+"2";
+                }else if( position == 3 ){  /* play */
+                    path = URL+"3";
+                }else{
+                    path = URL+"0";
+                }
+                // all은 기존 URL
+                Log.e(LOG_TAG,path);
+                fetchData(path);              /* 데이터 가져오고, 검색 결과 보여줌 */
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         mapView = (MapView)findViewById(R.id.map_view);
         mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
@@ -124,9 +155,8 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             if(drawable != null){
                 imageViewBadge.setImageDrawable(drawable);
             }else{
-                imageViewBadge.setImageResource(R.mipmap.ic_launcher);
+                imageViewBadge.setImageResource(R.drawable.noimage);
             }
-
 
 //            imageViewBadge.setImageDrawable(createDrawableFromUrl(item.picture));
             TextView textViewTitle = (TextView) mCalloutBalloon.findViewById(R.id.title);
@@ -206,13 +236,13 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
             if( item.category.equals("inn")){
                 poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-                poiItem.setCustomImageResourceId(R.drawable.map_pin_blue);
+                poiItem.setCustomImageResourceId(R.drawable.pin_stay);
             }else if( item.category.equals("food") ){
                 poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-                poiItem.setCustomImageResourceId(R.drawable.map_pin_red);
-            }else{  // tour
+                poiItem.setCustomImageResourceId(R.drawable.pin_eat);
+            }else if( item.category.equals("tour") ){
                 poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-                 poiItem.setCustomImageResourceId(R.drawable.map_pin_yellow);
+                 poiItem.setCustomImageResourceId(R.drawable.pin_play);
             }
 //            poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
 //            poiItem.setCustomImageResourceId(R.drawable.map_pin_blue);

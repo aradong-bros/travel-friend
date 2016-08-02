@@ -69,9 +69,7 @@ public class AttractionActivity extends Activity {
         txt_info = (TextView)findViewById(R.id.txt_info);
         txt_addr = (TextView)findViewById(R.id.txt_address);
         edt_reply = (EditText)findViewById(R.id.edt_reply);
-
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(edt_reply.getWindowToken(), 0);     // 키보드 감추기
+        hideSoftKeyboard(); // 키보드 숨김
 
         Intent intent = getIntent();
         String no = intent.getStringExtra("no");
@@ -159,7 +157,6 @@ public class AttractionActivity extends Activity {
             pinItem.category = object.getString(TAG_CATEGORY);
             pinItem.address = object.getString(TAG_ADDRESS);
 
-
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -201,6 +198,11 @@ public class AttractionActivity extends Activity {
         URL url = new URL(address);
         Object content = url.getContent();
         return content;
+    }
+
+    private void hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(edt_reply.getWindowToken(), 0);
     }
 
 }

@@ -10,4 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <Spinner
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/spin_category"
+        android:entries="@array/category"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>
