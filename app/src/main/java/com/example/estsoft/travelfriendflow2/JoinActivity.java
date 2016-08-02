@@ -3,8 +3,6 @@ package com.example.estsoft.travelfriendflow2;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -111,7 +109,7 @@ public class JoinActivity extends AppCompatActivity {
 
 
 
-        //이메일로 회원가입
+        //카카오톡 로그아웃 (임시)
         Button startWithEmailButton = (Button) findViewById(R.id.startWithEmailbutton);
         startWithEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +150,7 @@ public class JoinActivity extends AppCompatActivity {
                             name = object.getString("name");
                             gender = object.getString("gender");
 
-                            handler.sendEmptyMessage(0);
+//                            handler.sendEmptyMessage(0);
 
                         }catch(Exception e){
                             e.printStackTrace();
@@ -244,7 +242,7 @@ public class JoinActivity extends AppCompatActivity {
 
                 Log.i("kakao login info----",""+userProfile);
 
-                handler.sendEmptyMessage(0);
+                //handler.sendEmptyMessage(0);
             }
 
             @Override
@@ -256,22 +254,22 @@ public class JoinActivity extends AppCompatActivity {
 
 
 
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-
-            info.setText(
-                    "User ID: "
-                            + userId
-                            +"\nAuth Token: "
-                            +token +
-                            "\nname: "
-                            +name + "\nemail: " +email + "\ngender: "+gender
-                    +"\nprofileUrl"+profileUrl
-            );
-
-        }
-    };
+//    Handler handler = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//
+//            info.setText(
+//                    "User ID: "
+//                            + userId
+//                            +"\nAuth Token: "
+//                            +token +
+//                            "\nname: "
+//                            +name + "\nemail: " +email + "\ngender: "+gender
+//                    +"\nprofileUrl"+profileUrl
+//            );
+//
+//        }
+//    };
 
 
 

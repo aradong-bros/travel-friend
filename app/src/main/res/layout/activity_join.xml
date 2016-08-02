@@ -36,7 +36,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="이메일로 시작하기"
+        android:text="카카오톡 로그아웃"
         android:id="@+id/startWithEmailbutton"
         android:layout_below="@+id/startWithKakaoButton"
         android:layout_centerHorizontal="true"
