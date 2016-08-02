@@ -5,4 +5,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="spinnerPrompt1">지역 설정</string>
     <string name="spinnerPrompt2">상세 지역 설정</string>
+    <string name="facebook_app_id">603787079797119</string>
+    <string name="kakao_app_key">4db49a3dfb3db28479c7056fabef3abe</string>
 </resources>
