@@ -233,7 +233,7 @@ public class ChatMainActivity extends Activity{
 
                                 if (userReceive.equals(Long.parseLong(loginID))) {
                                     lblReceive.setBackgroundResource(R.drawable.mymessage22);
-                                    profile = addImageView(R.drawable.profile1);
+                                    profile = addImageView(R.mipmap.ic_launcher);       // 원래 피카츄
                                     commentBubbleLay.addView(talkName);
                                     commentBubbleLay.addView(lblReceive);
                                     commentBubbleLay.setGravity(Gravity.RIGHT);
@@ -243,7 +243,7 @@ public class ChatMainActivity extends Activity{
                                     talkName.setLayoutParams(myparam);
                                 } else {
                                     lblReceive.setBackgroundResource(R.drawable.yourmessage22);
-                                    profile = addImageView(R.drawable.profile2);
+                                    profile = addImageView(R.mipmap.ic_launcher);  // 원래 피카츄
                                     profileLay.addView(profile);
                                     commentBubbleLay.addView(talkName);
                                     commentBubbleLay.addView(lblReceive);

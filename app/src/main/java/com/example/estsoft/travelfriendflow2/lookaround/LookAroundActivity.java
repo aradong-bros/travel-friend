@@ -3,6 +3,8 @@ package com.example.estsoft.travelfriendflow2.lookaround;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,10 @@ public class LookAroundActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lookaround);
+
+        Log.e("getNativeHeapSize",Debug.getNativeHeapSize()+"");
+        Log.e("getNativeHeapFreeSize",Debug.getNativeHeapFreeSize()+"");
+        Log.e("HeapAllocatedSize",Debug.getNativeHeapAllocatedSize()+"");
 
         tr.add(new Travel("제목"));
         tr.add(new Travel("제목2"));

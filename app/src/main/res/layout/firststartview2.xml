@@ -14,7 +14,7 @@
         android:layout_width="180dp"
         android:layout_height="350dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/phone_sample"
+        android:id="@+id/img_sample2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 

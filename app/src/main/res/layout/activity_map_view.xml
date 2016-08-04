@@ -11,10 +11,11 @@
         android:layout_height="match_parent" />
 
     <Spinner
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="45dp"
         android:id="@+id/spin_category"
         android:entries="@array/category"
+        android:background="#40C4FF"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

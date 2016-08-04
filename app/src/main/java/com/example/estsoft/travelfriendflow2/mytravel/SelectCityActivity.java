@@ -3,8 +3,14 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class SelectCityActivity extends Activity {
-
     ArrayList<City> city = new ArrayList<City>();
     static int nSelectedItem = 0;
+    private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +64,7 @@ public class SelectCityActivity extends Activity {
 
 
         final CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
-        ListView lv = (ListView)findViewById(R.id.listview);
+        lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(cityAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -86,13 +90,48 @@ public class SelectCityActivity extends Activity {
         letsgo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(getApplicationContext(),SelectedCityActivity.class);
+                ArrayList<String> selCity = new ArrayList<String>();        // intent로 넘길 Array
+
+                ArrayList<City> a = cityAdapter.city;
+                for(int i=0; i<a.size(); i++){
+                    if( a.get(i).selected )
+                        selCity.add( a.get(i).title );
+                }
+                intent.putStringArrayListExtra("selCity",selCity);
                 startActivity(intent);
 
             }
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindDrawables(lv);
+        System.gc();
+    }
+
+    private void unbindDrawables(View view) {
+        if (view == null)
+            return;
+
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageDrawable(null)  ;
+        }
+        if (view.getBackground() != null) {
+            view.getBackground().setCallback(null);
+            //((BitmapDrawable)view.getBackground()).getBitmap().recycle(); /* 재사용할꺼면 사용XXX */
+        }
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            view.setBackgroundResource(0);
+            view.setBackgroundDrawable(null);
+        }
+    }
 }
 
 class CityAdapter extends BaseAdapter {
@@ -140,6 +179,7 @@ class CityAdapter extends BaseAdapter {
     public long getItemId(int position){
         return position;
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
 
@@ -153,11 +193,10 @@ class CityAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-
         City c = city.get(position);
-        viewHolder.icon.setImageResource(c.icon);
         viewHolder.title.setText(c.title);
         viewHolder.cover.setVisibility(c.selected? View.VISIBLE : View.INVISIBLE);
+        viewHolder.icon.setImageResource(c.icon);
 
         return convertView;
     }

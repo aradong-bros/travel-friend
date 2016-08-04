@@ -170,7 +170,7 @@ public class AttractionActivity extends Activity {
         if(drawable != null){
             img_attraction.setImageDrawable(drawable);
         }else{
-            img_attraction.setImageResource(R.mipmap.ic_launcher);
+            img_attraction.setImageResource(R.drawable.noimage);
         }
         txt_title.setText(item.title);
         txt_addr.setText(item.address);

@@ -1,6 +1,7 @@
 package com.example.estsoft.travelfriendflow2.map;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.AttractionActivity;
 import com.example.estsoft.travelfriendflow2.R;
@@ -37,16 +39,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-/* 중심점 변경하기
- */
 
 /**
  * Created by yeonji on 2016-07-29.
  * 해당 지역 선택 시 관련 MARKER 전부 보여주기
+ *
  */
 public class MapViewActivity extends AppCompatActivity implements MapView.POIItemEventListener{
     private static final String LOG_TAG = "MapViewActivity";
-    private static final String URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getPinData/9/";
+    private static final String URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getPinData/";
 
     private static final String TAG_RESULTS="atrList";
     private static final String TAG_NO = "no";
@@ -64,24 +65,45 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
 
+        Intent intent = getIntent();
+        final int pos = intent.getIntExtra("pos", -1);
+        Log.e(LOG_TAG, pos+" ");
+
+        if( pos == -1 ){
+            Log.e(LOG_TAG, "pos == -1 error");
+            Toast.makeText(getApplicationContext(),"pos == -1",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mapView = (MapView)findViewById(R.id.map_view);
+        mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
+        mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
+        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());   //구현한 CalloutBalloonAdapter 등록
+        mapView.setPOIItemEventListener(this);
+
+       // fetchData(URL+pos);
+
+        // -------------
         Spinner spinner = (Spinner)findViewById(R.id.spin_category);
+        spinner.setSelection(0);    // default
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.e(LOG_TAG,position+""+parent.getItemAtPosition(position));
 
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                 mapView.removeAllPOIItems(); /* 기존 검색 결과 삭제 */
 
-                String path = null;
+                String path = URL + pos;
                 if( position == 1 ){  /* eat */
-                    path = URL+"1";
+                    path += "/1";
                 }else if( position == 2 ){  /* stay */
-                    path = URL+"2";
+                    path += "/2";
                 }else if( position == 3 ){  /* play */
-                    path = URL+"3";
+                    path += "/3";
                 }else{
-                    path = URL+"0";
+                    path += "/0";
                 }
                 // all은 기존 URL
                 Log.e(LOG_TAG,path);
@@ -92,22 +114,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
-        mapView = (MapView)findViewById(R.id.map_view);
-        mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
-        mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
-        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());   //구현한 CalloutBalloonAdapter 등록
-        mapView.setPOIItemEventListener(this);
-
-//        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(35.8241706, 127.1480532),5, true); // 중심점 변경 + 줌 레벨 변경
-//        // !!!나중에 해당 지역의 값으로 중심값 변경하기!!!
-//
-//        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-//        mapViewContainer.addView(mapView);
-
-        // --- DB에서 9(전주)지역의 값 가져오기
-        fetchData(URL);
-
     }
 
     @Override
@@ -135,6 +141,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
     }
 
+    // CustomCalloutBalloon
     class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
 
         private final View mCalloutBalloon;
@@ -157,9 +164,9 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                 imageViewBadge.setImageResource(R.drawable.noimage);
             }
 
-//            imageViewBadge.setImageDrawable(createDrawableFromUrl(item.picture));
             TextView textViewTitle = (TextView) mCalloutBalloon.findViewById(R.id.title);
             textViewTitle.setText(item.title);
+//            textViewTitle.setText(poiItem.getItemName());
 
             return mCalloutBalloon;
         }
@@ -215,9 +222,9 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     }
 
     private void showResult(List<PinItem> itemList) {
-        int padding = 10;
-        float minZoomLevel = 3;
-        float maxZoomLevel = 7;
+        int padding = 50;
+        float minZoomLevel = 7;
+        float maxZoomLevel = 10;
 
         MapPointBounds mapPointBounds = new MapPointBounds();
         Log.e(LOG_TAG, "size:"+itemList.size());
@@ -243,10 +250,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                 poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
                  poiItem.setCustomImageResourceId(R.drawable.pin_play);
             }
-//            poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-//            poiItem.setCustomImageResourceId(R.drawable.map_pin_blue);
-//            poiItem.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
-//            poiItem.setCustomSelectedImageResourceId(R.drawable.map_pin_red);
+
             poiItem.setCustomImageAutoscale(false);
             poiItem.setCustomImageAnchor(0.5f, 1.0f);
 
@@ -258,7 +262,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
         MapPOIItem[] poiItems = mapView.getPOIItems();
         if (poiItems.length > 0) {
-            mapView.deselectPOIItem(poiItems[0]);       // 특정 POI Item을 선택 해제
+            mapView.deselectPOIItem(poiItems[0]);       // 특정 POI Item 선택 해제
         }
     }
 
