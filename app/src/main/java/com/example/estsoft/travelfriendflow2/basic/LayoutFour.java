@@ -12,6 +12,8 @@ import com.example.estsoft.travelfriendflow2.R;
 
 public class LayoutFour extends Fragment {
 
+
+
     public static Fragment newInstance(Context context) {
         LayoutFour f = new LayoutFour();
 
@@ -20,8 +22,10 @@ public class LayoutFour extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.firststartview4, null);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.activity_join, null);
+
         return root;
     }
+
 
 }

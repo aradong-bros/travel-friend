@@ -25,6 +25,7 @@ import java.util.HashMap;
 public class SelectCityActivity extends Activity {
 
     ArrayList<City> city = new ArrayList<City>();
+    ArrayList<City> selectedCity = new ArrayList<City>();
     static int nSelectedItem = 0;
 
     @Override
@@ -82,6 +83,8 @@ public class SelectCityActivity extends Activity {
             }
         });
 
+
+
         Button letsgo = (Button)findViewById(R.id.letsgo);
         letsgo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,12 +119,13 @@ class CityAdapter extends BaseAdapter {
         isCheckedConfirm[position] = !isCheckedConfirm[position];
     }
 
-    public ArrayList<Integer> getChecked(){
+    public ArrayList<City> getChecked(){
         int tempSize = isCheckedConfirm.length;
-        ArrayList<Integer> mArrayList = new ArrayList<Integer>();
+        ArrayList<City> mArrayList = new ArrayList<City>();
         for(int b=0; b<tempSize; b++){
+            City city = new City();
             if(isCheckedConfirm[b]){
-                mArrayList.add(b);
+                mArrayList.add(city);
             }
         }
         return mArrayList;

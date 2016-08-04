@@ -1,10 +1,14 @@
 package com.example.estsoft.travelfriendflow2.basic;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,7 +23,9 @@ import com.example.estsoft.travelfriendflow2.CircleTransform;
 import com.example.estsoft.travelfriendflow2.R;
 import com.squareup.picasso.Picasso;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends Activity {
+
+    public String selectedImagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +33,18 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
 
         ImageView imageView = (ImageView)findViewById(R.id.profile);
-        Picasso.with(getApplicationContext()).load("https://scontent.xx.fbcdn.net/v/t1.0-9/12011354_171091463233969_4930354003965117617_n.jpg?oh=f14da56919c0cb11290d1427135cc785&oe=58293D19").transform(new CircleTransform()).into(imageView);
+        Picasso.with(getApplicationContext()).load(selectedImagePath).transform(new CircleTransform()).into(imageView);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select Picture"),1);
+            }
+
+        });
 
         Button logoutButton = (Button)findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +63,31 @@ public class SettingActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    public void onActivityResult(int requestCode,int resultCode, Intent data){
+        if(resultCode == RESULT_OK){
+            if(requestCode == 1){
+                Uri selectedImageUri = data.getData();
+                selectedImagePath = getPath(selectedImageUri);
+            }
+        }
+    }
+
+    public String getPath(Uri uri){
+        if(uri == null){
+            return null;
+        }
+
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if(cursor != null){
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        return uri.getPath();
     }
 
     public void dialogChangePassword(View view) {
