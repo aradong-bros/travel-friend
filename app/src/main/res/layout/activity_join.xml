@@ -7,38 +7,27 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/splash"
     tools:context="com.example.estsoft.travelfriendflow2.basic.JoinActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:text="Hello World!" />
-
     <com.facebook.login.widget.LoginButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
         android:id="@+id/startWithFacebookButton"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="101dp"
+        android:layout_above="@+id/customkakao"
+        android:layout_marginBottom="20dp"
         />
 
 
-    <com.kakao.usermgmt.LoginButton
-        android:id="@+id/startWithKakaoButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/startWithFacebookButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="31dp"
-        />
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="카카오톡 로그아웃"
-        android:id="@+id/startWithEmailbutton"
-        android:layout_below="@+id/startWithKakaoButton"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:id="@+id/customkakao"
+        android:background="@drawable/kakao_login_btn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="31dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp"/>
+
+
 </RelativeLayout>
