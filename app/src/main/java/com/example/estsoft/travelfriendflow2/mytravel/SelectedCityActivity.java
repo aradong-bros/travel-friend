@@ -18,6 +18,7 @@ import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SelectedCityActivity extends Activity {
     private static final String LOG_TAG = "SelectedCityActivity";
@@ -37,20 +38,13 @@ public class SelectedCityActivity extends Activity {
         cityMap.put("여수",12);
     }   // DB_cityList
 
-    ArrayList<City> city = new ArrayList<City>();
+    private ArrayList<City> city = new ArrayList<City>();
     private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmarklist);
-
-        Intent intent = getIntent();
-        ArrayList<String> selCity= intent.getStringArrayListExtra("selCity");
-        for(int i=0; i<selCity.size(); i++){
-            Log.e(LOG_TAG, selCity.get(i).toString());
-        }
-        // --> 선택된 애들로만 작업해주면 됨
 
         City Seoul = new City(R.drawable.seoul,"서울");
         City Gapyoeng = new City(R.drawable.gapyeong,"가평");
@@ -77,6 +71,30 @@ public class SelectedCityActivity extends Activity {
         city.add(Sooncheon);
         city.add(Boseong);
         city.add(Yeosoo);
+
+        Intent intent = getIntent();
+        ArrayList<String> selCity= intent.getStringArrayListExtra("selCity");
+
+        int cityLength = city.size();
+        boolean[] chk = new boolean[cityLength];
+
+        for(int i=0; i<selCity.size(); i++){
+            for(int j=0; j<cityLength; j++) {
+                if ( selCity.get(i).toString().equals(city.get(j).title) ) {   // 선택된 도시와 같은게 있는지 확인
+                    chk[j] = true;
+                }
+            }
+        }
+        // 거꾸로 뒤에서부터 삭제
+        int len = cityLength-1;
+        for(int idx=0; idx<cityLength ; idx++){
+            if( !chk[len-idx] ) {
+                city.remove(len-idx);
+            }
+        }
+
+        // --> 선택된 애들로만 작업해주면 됨
+
 
         CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
         lv = (ListView)findViewById(R.id.listview);
@@ -140,4 +158,3 @@ public class SelectedCityActivity extends Activity {
         }
     }
 }
-
