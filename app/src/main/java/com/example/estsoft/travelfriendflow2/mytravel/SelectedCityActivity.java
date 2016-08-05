@@ -3,6 +3,7 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
@@ -15,7 +16,12 @@ import android.widget.TextView;
 
 import com.example.estsoft.travelfriendflow2.R;
 import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
+import com.example.estsoft.travelfriendflow2.map.PinItem;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,49 +99,46 @@ public class SelectedCityActivity extends Activity {
             }
         }
 
-        // --> 선택된 애들로만 작업해주면 됨
+        /**
+         * ------------- SelectCityActivity -> SelectedCityActivity 값 가져와서 View에 뿌려주는 부분
+         * */
 
+    }
 
-        CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
         lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(cityAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent = new Intent(getApplicationContext(),MapViewActivity.class);
-               // Log.e(LOG_TAG, position+"");
-                int num = (position+1);
 
-                if( num == 5 ){
-                    intent.putExtra("pos",9);
-                }else if( num == 6 ){
-                    intent.putExtra("pos",5);
-                }else if( num == 7 ){
-                    intent.putExtra("pos",6);
-                }else if( num == 9 ){
-                    intent.putExtra("pos",7);
-                }else if( num == 10 ){
-                    intent.putExtra("pos",11);
-                }else if( num == 11 ){
-                    intent.putExtra("pos",10);
-                }else{
-                    intent.putExtra("pos",position+1);
-                }
+                Intent intent = new Intent(getApplicationContext(),MapViewActivity.class);
+
+                City city = (City) cityAdapter.getItem(position);
+                Log.e(LOG_TAG, city.title);
+                int cityNo = -1;
+
+                for(int i=0; i<cityMap.size(); i++)
+                    cityNo = cityMap.get(city.title);
+
+                if( cityNo != -1)
+                    intent.putExtra("pos",cityNo);
+
                 startActivity(intent);
             }
         });
-        /*
-            우선은 앞의 selectactivity의 선택된 값으로 XXX -> 나중에 화면 다 구현되면 이어서 하기
-            서울은 0번부터 시작
-            정이의 UI 순서와 DB의 순서가 안맞으므로 if문으로 조건 따짐!
-         */
-
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         unbindDrawables(lv);
+        System.gc();
     }
 
     private void unbindDrawables(View view) {

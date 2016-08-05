@@ -27,8 +27,8 @@ import java.util.ArrayList;
 
 
 public class SelectCityActivity extends Activity {
+    private static final String LOG_TAG = "SelectCityActivity";
     ArrayList<City> city = new ArrayList<City>();
-    static int nSelectedItem = 0;
     private ListView lv;
 
     @Override
@@ -62,6 +62,11 @@ public class SelectCityActivity extends Activity {
         city.add(Boseong);
         city.add(Yeosoo);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         final CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
         lv = (ListView)findViewById(R.id.listview);
@@ -104,6 +109,7 @@ public class SelectCityActivity extends Activity {
 
             }
         });
+
     }
 
     @Override
