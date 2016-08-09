@@ -28,9 +28,9 @@ public class LookAroundActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lookaround);
 
-        Log.e("getNativeHeapSize",Debug.getNativeHeapSize()+"");
-        Log.e("getNativeHeapFreeSize",Debug.getNativeHeapFreeSize()+"");
-        Log.e("HeapAllocatedSize",Debug.getNativeHeapAllocatedSize()+"");
+//        Log.e("getNativeHeapSize",Debug.getNativeHeapSize()+"");
+//        Log.e("getNativeHeapFreeSize",Debug.getNativeHeapFreeSize()+"");
+//        Log.e("HeapAllocatedSize",Debug.getNativeHeapAllocatedSize()+"");
 
         tr.add(new Travel("제목"));
         tr.add(new Travel("제목2"));

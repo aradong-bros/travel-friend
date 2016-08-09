@@ -1,15 +1,19 @@
 package com.example.estsoft.travelfriendflow2.map;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,11 +37,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -48,6 +54,7 @@ import java.util.List;
 public class MapViewActivity extends AppCompatActivity implements MapView.POIItemEventListener{
     private static final String LOG_TAG = "MapViewActivity";
     private static final String URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getPinData/";
+    private static final String attrURL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";
 
     private static final String TAG_RESULTS="atrList";
     private static final String TAG_NO = "no";
@@ -59,15 +66,20 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
     private MapView mapView;
     private HashMap<Integer, PinItem> mTagItemMap = new HashMap<Integer, PinItem>();
+    private Button btn_complete;
+    private HashMap<String, String> likeMap = new HashMap<String, String>();
+    public static final int REQUEST_CODE = 1001;
+    private static Intent attrIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
 
+        btn_complete = (Button)findViewById(R.id.btn_complete);
+
         Intent intent = getIntent();
         final int pos = intent.getIntExtra("pos", -1);
-        Log.e(LOG_TAG, pos+" ");
 
         if( pos == -1 ){
             Log.e(LOG_TAG, "pos == -1 error");
@@ -80,10 +92,18 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
         mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());   //구현한 CalloutBalloonAdapter 등록
         mapView.setPOIItemEventListener(this);
-
        // fetchData(URL+pos);
 
-        // -------------
+        btn_complete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new HttpConnectionThread().execute(attrURL);     // Thread for Http connection
+
+            }
+        });
+
+
         Spinner spinner = (Spinner)findViewById(R.id.spin_category);
         spinner.setSelection(0);    // default
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
@@ -116,6 +136,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         });
     }
 
+
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
 
@@ -125,9 +146,28 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
         Log.e(LOG_TAG, mapPOIItem.getItemName());
 
-        Intent intent = new Intent(getApplicationContext(), AttractionActivity.class);
-        intent.putExtra("no",mapPOIItem.getItemName());          // pk 넘기기
-        startActivity(intent);
+        attrIntent = new Intent(getApplicationContext(), AttractionActivity.class);
+        attrIntent.putExtra("no",mapPOIItem.getItemName());          // pk 넘기기
+        startActivityForResult(attrIntent, REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_CODE) {   // 액티비티가 정상적으로 종료되었을 경우
+            if(resultCode == RESULT_OK) {   // requestCode==1 로 호출한 경우에만 처리
+                String getNo = data.getStringExtra("no");
+                String getLoc = data.getStringExtra("location");
+
+                if( getNo != null && getLoc != null ){
+                    likeMap.put(getNo, getLoc);
+                }
+
+                Log.e(LOG_TAG, getNo+"_"+getLoc);
+
+            }
+        }
 
     }
 
@@ -283,6 +323,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
                 String location = object.getString(TAG_LOCATION);
                 String[] arr = location.split(",");
+
                 pinItem.latitude = (arr[0] != null ? Double.parseDouble(arr[0]) : null );
                 pinItem.longitude = (arr[1] != null ? Double.parseDouble(arr[1]) : null );
 
@@ -317,5 +358,79 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         Object content = url.getContent();
         return content;
     }
+
+
+    public class HttpConnectionThread extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... path){
+            // URL 연결이 구현될 부분
+            URL url;
+            String response = "";
+
+            try {
+                url = new URL(path[0]);
+                Log.e(LOG_TAG, path[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(10000); // 타임아웃: 10초
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Cache-Control", "no-cache");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                JSONArray jArray = new JSONArray();
+
+                Iterator<String> iterator = likeMap.keySet().iterator();
+                while (iterator.hasNext()) {
+                    JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
+
+                    String key = (String) iterator.next();
+                    sObject.put("no", key);
+                    sObject.put("location", likeMap.get(key));
+                    jArray.put(sObject);
+                }
+                Log.e(LOG_TAG, jArray.toString());
+
+                OutputStream os = conn.getOutputStream(); // 서버로 보내기 위한 출력 스트림
+                os.write(jArray.toString().getBytes());
+                os.flush();
+
+
+                Log.e("http response code", conn.getResponseCode()+"");
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) { // 연결에 성공한 경우
+                    Log.e(LOG_TAG, "연결 성공");
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream())); // 서버의 응답을 읽기 위한 입력 스트림
+
+                    while ((line = br.readLine()) != null) {// 서버의 응답을 읽어옴
+                        Log.e("line",line);
+                        response += line;
+                    }
+
+                    br.close();
+                    conn.disconnect();
+                    Log.e("RESPONSE", "The response is: " + response);
+                }
+
+            }catch (JSONException je){
+                je.printStackTrace();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // UI 업데이트가 구현될 부분
+            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+        }
+
+    }   // End_HttpConnectionThread
+
 
 }

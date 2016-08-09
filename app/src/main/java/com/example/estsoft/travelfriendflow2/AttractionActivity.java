@@ -3,6 +3,7 @@ package com.example.estsoft.travelfriendflow2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,6 +46,7 @@ import java.util.List;
 public class AttractionActivity extends Activity {
     private static final String LOG_TAG = "AttractionActivity";
     private static final String URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getDetailData/";
+
     private static final String TAG_RESULTS = "allAtrVo";
     private static final String TAG_NO = "no";
     private static final String TAG_TITLE = "name";
@@ -52,10 +55,14 @@ public class AttractionActivity extends Activity {
     private static final String TAG_INFO = "info";
     private static final String TAG_ADDRESS = "address";
     private static final String TAG_CATEGORY ="category";
+
     private JSONArray datas = null;
     private static TextView txt_title, txt_info, txt_addr;
     private static EditText edt_reply;
     private static ImageView img_attraction;
+    private static Button btn_like;
+    public String sendLocation;        // 서버로 넘길 데이터
+    private static Intent intent;
 
     ArrayList<Reply> reply = new ArrayList<Reply>();
 
@@ -69,10 +76,12 @@ public class AttractionActivity extends Activity {
         txt_info = (TextView)findViewById(R.id.txt_info);
         txt_addr = (TextView)findViewById(R.id.txt_address);
         edt_reply = (EditText)findViewById(R.id.edt_reply);
+        btn_like = (Button)findViewById(R.id.btn_like);
         hideSoftKeyboard(); // 키보드 숨김
 
-        Intent intent = getIntent();
-        String no = intent.getStringExtra("no");
+        // ---
+        intent = getIntent();
+        final String no = intent.getStringExtra("no");
 
         if(no == null){
             Log.e(LOG_TAG,"Incorrect Input : no");
@@ -80,7 +89,27 @@ public class AttractionActivity extends Activity {
         Log.e(LOG_TAG,URL+no);
         fetchData(URL+no);     // DB에서 상세정보 가져오기
 
-        // -----------
+        btn_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 버튼 이미지변화를 통해 선택했다는 UI 뿌려주기
+
+                if( sendLocation == null ){
+                    Log.e(LOG_TAG, "location == null");
+                }else{
+                    intent.putExtra("no", no);
+                    intent.putExtra("location", sendLocation);
+
+                }
+                Log.e("선택된 값",no+"_"+sendLocation);
+
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+
+
 //        reply.add(new Reply("아이디1","덧글내용1"));
 //        reply.add(new Reply("아이디2","덧글내용2"));
 //        reply.add(new Reply("아이디3","덧글내용3"));
@@ -118,11 +147,11 @@ public class AttractionActivity extends Activity {
             }
             @Override
             protected void onPostExecute(String result){
-                Log.e(LOG_TAG,result);
 
                 if(result == null){
                     return;
                 }
+                Log.e(LOG_TAG,result);
                 PinItem item = parsePinData(result);
 
                 if(item != null){
@@ -152,6 +181,8 @@ public class AttractionActivity extends Activity {
             pinItem.latitude = (arr[0] != null ? Double.parseDouble(arr[0]) : null );
             pinItem.longitude = (arr[1] != null ? Double.parseDouble(arr[1]) : null );
 
+            sendLocation = Double.toString(pinItem.latitude)+","+Double.toString(pinItem.longitude);
+
             pinItem.info = object.getString(TAG_INFO);
 
             pinItem.category = object.getString(TAG_CATEGORY);
@@ -177,7 +208,6 @@ public class AttractionActivity extends Activity {
 
         item.info = item.info.replaceAll("<(/)?[bB][rR](\\s)*(/)?>","\n").replaceAll("strong","h2");// info의 <br>태그 삭제 및 <strong>태그 변환
         txt_info.setText( Html.fromHtml(item.info));
-
     }
 
     private Drawable createDrawableFromUrl(String url) {

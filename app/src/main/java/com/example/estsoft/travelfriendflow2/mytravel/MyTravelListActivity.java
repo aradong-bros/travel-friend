@@ -33,7 +33,7 @@ public class MyTravelListActivity extends Activity {
         String edate = sharedPreferences.getString("edate", "null");
         String creationDate = sharedPreferences.getString("creationDate", "null");
         String title = sharedPreferences.getString("title","null");
-        Log.e(LOG_TAG, sdate+"-"+edate+"-->"+creationDate+"-"+title);
+      //  Log.e(LOG_TAG, sdate+"-"+edate+"-->"+creationDate+"-"+title);
         // ----
 
         tr.add(new Travel(title,creationDate));
