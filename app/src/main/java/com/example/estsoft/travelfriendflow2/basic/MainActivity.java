@@ -44,11 +44,11 @@ public class MainActivity extends TabActivity {
         TabWidget tabWidget = mTab.getTabWidget();
         Intent intent;
 
-        mTab.addTab(mTab.newTabSpec("tab1").setIndicator("",getResources().getDrawable(R.drawable.icon1)).setContent(new Intent(this,LookAroundActivity.class)));
-        mTab.addTab(mTab.newTabSpec("tab2").setIndicator("",getResources().getDrawable(R.drawable.icon2)).setContent(new Intent(this,KorailActivity.class)));
-        mTab.addTab(mTab.newTabSpec("tab3").setIndicator("",getResources().getDrawable(R.drawable.icon3)).setContent(new Intent(this,ChatActivity.class)));
-        mTab.addTab(mTab.newTabSpec("tab4").setIndicator("",getResources().getDrawable(R.drawable.icon4)).setContent(new Intent(this,SaleActivity.class)));
-        mTab.addTab(mTab.newTabSpec("tab5").setIndicator("",getResources().getDrawable(R.drawable.icon5)).setContent(new Intent(this,MyTravelActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab1").setIndicator("",getResources().getDrawable(R.drawable.icon1_selector)).setContent(new Intent(this,LookAroundActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab2").setIndicator("",getResources().getDrawable(R.drawable.icon2_selector)).setContent(new Intent(this,KorailActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab3").setIndicator("",getResources().getDrawable(R.drawable.icon3_selector)).setContent(new Intent(this,ChatActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab4").setIndicator("",getResources().getDrawable(R.drawable.icon4_selector)).setContent(new Intent(this,SaleActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab5").setIndicator("",getResources().getDrawable(R.drawable.icon5_selector)).setContent(new Intent(this,MyTravelActivity.class)));
 
         //상단 바 터치 - 설정
         ImageView setting = (ImageView)findViewById(R.id.setting);

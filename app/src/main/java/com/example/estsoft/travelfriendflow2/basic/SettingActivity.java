@@ -23,16 +23,20 @@ import com.example.estsoft.travelfriendflow2.CircleTransform;
 import com.example.estsoft.travelfriendflow2.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 public class SettingActivity extends Activity {
 
     public String selectedImagePath;
+    public ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        ImageView imageView = (ImageView)findViewById(R.id.profile);
+        //프로필 사진 바꾸기
+        imageView = (ImageView)findViewById(R.id.profile);
         Picasso.with(getApplicationContext()).load(selectedImagePath).transform(new CircleTransform()).into(imageView);
 
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +74,11 @@ public class SettingActivity extends Activity {
             if(requestCode == 1){
                 Uri selectedImageUri = data.getData();
                 selectedImagePath = getPath(selectedImageUri);
+                Log.d("-->selectedImagePath : ",selectedImagePath+"");
+
+                File f = new File(selectedImagePath);
+                Picasso.with(getApplicationContext()).load(f).transform(new CircleTransform()).into(imageView);
+
             }
         }
     }

@@ -12,17 +12,50 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#eb9b00">
+        android:id="@+id/linearLayout2">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="출발 일시"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="#eb9b00"
+            android:textStyle="bold"
             android:gravity="center_horizontal"/>
 
-        <EditText
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:layout_marginBottom="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:id="@+id/selected_sdate_textview"
+                android:text="0000/00/00"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:onClick="dialogSelectSDate"
+                />
+            ​
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="85dp"
+                android:textSize="20dp"
+                android:id="@+id/selected_stime_textview"
+                android:text="00-00"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:onClick="dialogSelectSTime"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +72,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="출발역"/>
+                    android:text="출발역"
+                    android:textColor="@color/orange"/>
                 <EditText
                     android:layout_width="100dp"
                     android:layout_height="wrap_content" />
@@ -63,5 +97,78 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="검색"
+        android:id="@+id/search_btn"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/header"
+        android:layout_below="@+id/search_btn"
+        android:gravity="center"
+        android:background="@color/orange">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="출발역"
+            android:id="@+id/textView15"
+            android:layout_below="@+id/search_btn"
+            android:layout_alignParentLeft="true"
+            android:textStyle="bold"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="도착역"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/textView16"
+            android:layout_below="@+id/search_btn"
+            android:layout_toLeftOf="@+id/search_btn"
+            android:layout_toStartOf="@+id/search_btn" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="출발 시간"
+            android:textStyle="bold"
+            android:id="@+id/textView19"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@+id/search_btn"
+            android:layout_alignRight="@+id/search_btn"
+            android:layout_alignEnd="@+id/search_btn" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="도착 시간"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/textView20"
+            android:layout_below="@+id/search_btn"
+            android:layout_alignRight="@+id/linearLayout2"
+            android:layout_alignEnd="@+id/header" />
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:id="@+id/trainlist">
+    </ListView>
 
 </RelativeLayout>
