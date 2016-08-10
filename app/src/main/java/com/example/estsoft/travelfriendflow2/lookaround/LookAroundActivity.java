@@ -2,6 +2,7 @@ package com.example.estsoft.travelfriendflow2.lookaround;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,11 @@ public class LookAroundActivity extends Activity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(),"234",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"234",Toast.LENGTH_SHORT).show();
+                String title = tr.get(i).getTitle();
+                Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
+                intent.putExtra("title",title);
+                startActivity(intent);
             }
         });
 
@@ -95,4 +100,8 @@ class Travel{
     }
 
     public Travel(){}
+
+    public String getTitle() {
+        return title;
+    }
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +18,12 @@ import android.widget.Toast;
 import com.example.estsoft.travelfriendflow2.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class SelectCityActivity extends Activity {
 
     ArrayList<City> city = new ArrayList<City>();
+    ArrayList<City> selectedCity = new ArrayList<City>();
     static int nSelectedItem = 0;
 
     @Override
@@ -82,6 +81,8 @@ public class SelectCityActivity extends Activity {
             }
         });
 
+
+
         Button letsgo = (Button)findViewById(R.id.letsgo);
         letsgo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,12 +117,13 @@ class CityAdapter extends BaseAdapter {
         isCheckedConfirm[position] = !isCheckedConfirm[position];
     }
 
-    public ArrayList<Integer> getChecked(){
+    public ArrayList<City> getChecked(){
         int tempSize = isCheckedConfirm.length;
-        ArrayList<Integer> mArrayList = new ArrayList<Integer>();
+        ArrayList<City> mArrayList = new ArrayList<City>();
         for(int b=0; b<tempSize; b++){
+            City city = new City();
             if(isCheckedConfirm[b]){
-                mArrayList.add(b);
+                mArrayList.add(city);
             }
         }
         return mArrayList;

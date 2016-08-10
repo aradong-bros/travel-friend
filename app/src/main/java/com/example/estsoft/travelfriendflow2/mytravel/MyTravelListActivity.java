@@ -2,18 +2,21 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.lookaround.OthersPlanActivity;
 
 import java.util.ArrayList;
 
@@ -36,7 +39,7 @@ public class MyTravelListActivity extends Activity {
         Log.e(LOG_TAG, sdate+"-"+edate+"-->"+creationDate+"-"+title);
         // ----
 
-        tr.add(new Travel(title,creationDate));
+        tr.add(new Travel("랄랄라",creationDate));
 
 //        tr.add(new Travel("제목"));
 //        tr.add(new Travel("제목2"));
@@ -44,6 +47,17 @@ public class MyTravelListActivity extends Activity {
         MyAdapter adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr);
         ListView lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Toast.makeText(getApplicationContext(),"234",Toast.LENGTH_SHORT).show();
+                String title = tr.get(i).getTitle();
+                Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
+                intent.putExtra("title",title);
+                startActivity(intent);
+            }
+        });
     }
 
 }
@@ -99,4 +113,8 @@ class Travel{
         this.title = title;
     }
     public Travel(){}
+
+    public String getTitle() {
+        return title;
+    }
 }

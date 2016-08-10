@@ -4,6 +4,7 @@ package com.example.estsoft.travelfriendflow2.basic;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;

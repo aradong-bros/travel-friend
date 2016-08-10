@@ -82,8 +82,14 @@
         <activity android:name=".map.MapViewActivity"></activity>
         <activity android:name=".mytravel.SelectCityActivity"></activity>
         <activity android:name=".mytravel.SelectedCityActivity"></activity>
+        <activity android:name=".lookaround.OthersPlanActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".lookaround.OthersPlanMapActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".lookaround.OthersPlanTableActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
 
 
     </application>
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 </manifest>
