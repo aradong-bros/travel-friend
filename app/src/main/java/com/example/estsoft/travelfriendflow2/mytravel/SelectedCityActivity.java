@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -61,10 +62,6 @@ public class SelectedCityActivity extends Activity {
 
     private ArrayList<City> city = new ArrayList<City>();
     private ListView lv;
-    private static final String URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";
-    private static final String URL2 = "http://222.239.250.207:8080/TravelFriendAndroid/android/object";
-    private static final String URL3 = "http://222.239.250.207:8080/TravelFriendAndroid/android/list";
-    private static final String URL4 = "http://222.239.250.207:8080/TravelFriendAndroid/android/array";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +119,16 @@ public class SelectedCityActivity extends Activity {
          * ------------- SelectCityActivity -> SelectedCityActivity 값 가져와서 View에 뿌려주는 부분
          * */
 
+        // 루트를 짜줘 버튼
+        findViewById(R.id.btn_wholeComplete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
     }
 
     @Override
@@ -149,8 +156,6 @@ public class SelectedCityActivity extends Activity {
                     intent.putExtra("pos",cityNo);
 
                 startActivity(intent);
-
-              //  new HttpConnectionThread().execute(URL);     // Thread for Http connection
 
             }
         });

@@ -23,7 +23,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_complete"
+        android:id="@+id/btn_selComplete"
         android:text="완료"
         android:background="#e2a8e9"
         />

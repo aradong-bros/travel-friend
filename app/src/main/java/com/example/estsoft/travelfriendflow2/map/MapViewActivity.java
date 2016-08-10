@@ -1,15 +1,11 @@
 package com.example.estsoft.travelfriendflow2.map;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -76,7 +72,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
 
-        btn_complete = (Button)findViewById(R.id.btn_complete);
+        btn_complete = (Button)findViewById(R.id.btn_selComplete);
 
         Intent intent = getIntent();
         final int pos = intent.getIntExtra("pos", -1);
@@ -99,7 +95,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             public void onClick(View v) {
 
                 new HttpConnectionThread().execute(attrURL);     // Thread for Http connection
-
             }
         });
 
@@ -165,7 +160,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                 }
 
                 Log.e(LOG_TAG, getNo+"_"+getLoc);
-
             }
         }
 
