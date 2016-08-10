@@ -10,6 +10,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,19 +27,33 @@ import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.CircleTransform;
 import com.example.estsoft.travelfriendflow2.R;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
+import com.kakao.auth.Session;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.squareup.picasso.Picasso;
+
 
 import java.io.File;
 
-public class SettingActivity extends Activity {
+
+public class SettingActivity extends AppCompatActivity {
 
     public String selectedImagePath;
     public ImageView imageView;
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+
 
         //프로필 사진 바꾸기
         imageView = (ImageView)findViewById(R.id.profile);
@@ -50,11 +70,48 @@ public class SettingActivity extends Activity {
 
         });
 
+
         Button logoutButton = (Button)findViewById(R.id.logoutButton);
+        assert logoutButton != null;
+        assert logoutButton != null;
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"로그아웃 되었습니다.",Toast.LENGTH_SHORT).show();
+                if(isFBLoggedIn()){
+                    LoginManager.getInstance().logOut();
+                    Toast.makeText(getApplicationContext(),"로그아웃 되었습니다.[Facebook]",Toast.LENGTH_SHORT).show();
+
+                }
+                if(isKakaoLoggedIn()){
+                    UserManagement.requestLogout(new LogoutResponseCallback() {
+                        @Override
+                        public void onCompleteLogout() {
+                            Log.e("kakao","logout");
+                            //Session.getCurrentSession().close();
+                        }
+                    });
+                    try {
+                        Thread.sleep(1000L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    UserManagement.requestLogout(new LogoutResponseCallback() {
+                        @Override
+                        public void onCompleteLogout() {
+                            Log.e("kakao","logout");
+                            //Session.getCurrentSession().close();
+                        }
+                    });
+                    Toast.makeText(getApplicationContext(),"로그아웃 되었습니다.[Kakao]",Toast.LENGTH_SHORT).show();
+                }
+                SharedPreferences a = getSharedPreferences("pref", MODE_PRIVATE);
+                SharedPreferences.Editor editor = a.edit();
+                editor.putString("userData", null);
+                editor.commit();
+                //String loggedoutinfo = a.getString("userData","없음");
+                //Log.e("logout success-----",loggedoutinfo);
+                //startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                startActivity(new Intent(getApplicationContext(),JoinActivity.class));
             }
         });
 
@@ -115,6 +172,16 @@ public class SettingActivity extends Activity {
                     }
                 }).
                 show();
+    }
+
+
+    public boolean isFBLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
+    }
+
+    public boolean isKakaoLoggedIn(){
+        return Session.getCurrentSession().isOpened();
     }
 
 

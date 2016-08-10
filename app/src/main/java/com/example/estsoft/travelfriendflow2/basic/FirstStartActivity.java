@@ -1,23 +1,12 @@
 package com.example.estsoft.travelfriendflow2.basic;
 
-import android.app.Fragment;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
-
-import me.relex.circleindicator.CircleIndicator;
 
 public class FirstStartActivity extends AppCompatActivity {
 
@@ -30,10 +19,38 @@ public class FirstStartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firststart);
+
+        int infoFirst = 1;
+        SharedPreferences a = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = a.edit();
+        editor.putInt("First", infoFirst);
+        editor.commit();
+
         setUpView();
         setTab();
 
     }
+
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        startActivity(new Intent(getApplicationContext(),JoinActivity.class));
+//        finish();
+//    }
+
+
+
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        switch (keyCode) {
+//            case KeyEvent.KEYCODE_BACK:
+//                return true;
+//         }
+//        return super.onKeyDown(keyCode, event);
+//    }
+
+
+
 
     private void setUpView(){
         _mViewPager = (ViewPager)findViewById(R.id.pager);
