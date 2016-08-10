@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,12 +29,12 @@ public class LookAroundActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lookaround);
 
-        tr.add(new Travel("제목"));
-        tr.add(new Travel("제목2"));
-        tr.add(new Travel("제목3"));
-        tr.add(new Travel("제목4"));
-        tr.add(new Travel("제목5"));
-        tr.add(new Travel("제목6"));
+        tr.add(new Travel("여행가쟈","2016/04/21","4박5일","여름",R.drawable.hadong));
+        tr.add(new Travel("아라동 여행","2016/06/25","4박5일","여름",R.drawable.gyeongju));
+        tr.add(new Travel("내일로 ㄱㄱ","2016/07/11","5박6일","여름",R.drawable.boseong));
+        tr.add(new Travel("우정여행","2016/05/04","7박8일","여름",R.drawable.yeosoo));
+        tr.add(new Travel("퇴근하고 싶당","2016/05/21","5박6일","여름",R.drawable.andong));
+        tr.add(new Travel("여러븐 화이띵","2016/06/05","4박5일","여름",R.drawable.busan));
 
         MyAdapter adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr);
         ListView lv = (ListView)findViewById(R.id.listview);
@@ -86,17 +88,34 @@ class MyAdapter extends BaseAdapter{
         }
 
         TextView title = (TextView)convertView.findViewById(R.id.lookAroundTextBox);
+        TextView txt_creationDate = (TextView)convertView.findViewById(R.id.txt_creationDate);
+        TextView plan_time = (TextView)convertView.findViewById(R.id.plan_time);
+        TextView plan_season = (TextView)convertView.findViewById(R.id.plan_season);
+        LinearLayout background = (LinearLayout)convertView.findViewById(R.id.row_layout);
 
         Travel t = tr.get(position);
         title.setText(t.title);
+        txt_creationDate.setText(t.txt_creationDate);
+        plan_time.setText(t.planTime);
+        plan_season.setText(t.planSeason);
+        background.setBackgroundResource(t.background);
         return convertView;
     }
 }
 
 class Travel{
     String title = "";
-    public Travel(String title){
+    String txt_creationDate;
+    String planTime;
+    String planSeason;
+    int background;
+
+    public Travel(String title, String txt_creationDate, String planTime, String planSeason,int background){
         this.title = title;
+        this.txt_creationDate = txt_creationDate;
+        this.planTime = planTime;
+        this.planSeason = planSeason;
+        this.background = background;
     }
 
     public Travel(){}

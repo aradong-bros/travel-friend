@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,10 +42,10 @@ public class KorailActivity extends Activity {
         sdate = (TextView)findViewById(R.id.selected_sdate_textview);
         stime = (TextView)findViewById(R.id.selected_stime_textview);
 
-        tr.add(new Train("서울역","부산역","04:20","06:40"));
-        tr.add(new Train("서울역","부산역","03:12","08:12"));
-        tr.add(new Train("서울역","부산역","05:24","01:43"));
-        tr.add(new Train("서울역","부산역","06:20","03:52"));
+        tr.add(new Train("서울역","부산역","04:20","06:40","무궁화호","1234"));
+        tr.add(new Train("서울역","부산역","03:12","08:12","새마을호","2345"));
+        tr.add(new Train("서울역","부산역","05:24","01:43","새마을호","4534"));
+        tr.add(new Train("서울역","부산역","06:20","03:52","무궁화호","3645"));
 
         TrainAdapter adapter = new TrainAdapter(getApplicationContext(),R.layout.train,tr);
         ListView lv = (ListView)findViewById(R.id.trainlist);
@@ -121,11 +122,15 @@ class TrainAdapter extends BaseAdapter {
         TextView eStation = (TextView)convertView.findViewById(R.id.station_end);
         TextView sTime = (TextView)convertView.findViewById(R.id.time_start);
         TextView eTime = (TextView)convertView.findViewById(R.id.time_end);
+        TextView trainType = (TextView)convertView.findViewById(R.id.train_type);
+        TextView trainNum = (TextView)convertView.findViewById(R.id.train_num);
         Train t = tr.get(position);
         sStation.setText(t.sStation);
         eStation.setText(t.eStation);
         sTime.setText(t.sTime);
         eTime.setText(t.eTime);
+        trainType.setText(t.trainType);
+        trainNum.setText(t.trainNum);
 
         return convertView;
     }
@@ -136,12 +141,16 @@ class Train{
     String eStation = "";
     String sTime = "";
     String eTime = "";
+    String trainType="";
+    String trainNum = "";
 
-    public Train(String sStation, String eStation, String sTime,  String eTime){
+    public Train(String sStation, String eStation, String sTime,  String eTime, String trainType,String trainNum){
         this.sStation = sStation;
         this.eStation = eStation;
         this.sTime = sTime;
         this.eTime = eTime;
+        this.trainType = trainType;
+        this.trainNum = trainNum;
     }
 
 
