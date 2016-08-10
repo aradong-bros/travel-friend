@@ -3,6 +3,7 @@ package com.example.estsoft.travelfriendflow2.chat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -11,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -27,18 +29,26 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.estsoft.travelfriendflow2.CircleTransform;
 import com.example.estsoft.travelfriendflow2.R;
-import com.example.estsoft.travelfriendflow2.chat.ChatData;
+import com.example.estsoft.travelfriendflow2.ChatData;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
+
 public class ChatMainActivity extends Activity{
     //private final static String IP = "115.68.116.235";
 
-    private final static String IP = "192.168.230.4";
+    private final static String IP = "192.168.22.74";
     private final static int PORT = 10001;
     private final static String LOGIN_ID="AndroidClient";
 
@@ -48,7 +58,8 @@ public class ChatMainActivity extends Activity{
     private String txtReceive;
 
     private Long regionReceive;
-    private Long userReceive;
+    private String userReceive;
+    private String pictureReceive;
 
     private Socket socket;
     private InputStream in;
@@ -62,19 +73,32 @@ public class ChatMainActivity extends Activity{
     private EditText editText;
     private String loginID;
     private Long regionNum;
+    private String userImage;
     private ScrollView scrollView;
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onDestroy() {
+        super.onDestroy();
 
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat_main);
-//        RelativeLayout layout = (RelativeLayout)findViewById(R.id.centerLayout);
-        //layout.setBackgroundColor(Color.rgb(200, 200, 200));
 
+        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+
+        try {
+            JSONObject userData = new JSONObject(pref.getString("userData", ""));
+            loginID = userData.getString("name");
+            userImage = userData.getString("picture");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
         scrollView = (ScrollView)findViewById(R.id.scrollView) ;
         scrollView.setOnClickListener(new View.OnClickListener() {
@@ -85,11 +109,24 @@ public class ChatMainActivity extends Activity{
             }
         });
 
-
-
         Intent intent = getIntent();
-        loginID = intent.getExtras().getString("ID");
         regionNum = intent.getExtras().getLong("RegionNum");
+        TextView regionInformer = (TextView)findViewById(R.id.textview_region);
+        int rgrg = Integer.parseInt(regionNum.toString());
+        switch (rgrg){
+            case 1:
+                regionInformer.setText("서울/경기(가평)");
+                break;
+            case 2:
+                regionInformer.setText("강원(강릉)/충북/충남");
+                break;
+            case 3:
+                regionInformer.setText("경북(안동,경주)/경남(부산,통영)");
+                break;
+            case 4:
+                regionInformer.setText("전북(전주)/전남(보성,순천,여수,하동)");
+                break;
+        }
 
         editText = (EditText)findViewById(R.id.editText);
 
@@ -102,20 +139,8 @@ public class ChatMainActivity extends Activity{
             }
         });
 
-// -- label for messages
-//        lblReceive = new TextView(this);
-//        //lblReceive.setId(ID);
-//        lblReceive.setText("");
-//        lblReceive.setTextSize(16.0f);
-//        lblReceive.setTextColor(Color.rgb(0,0,0));
-//        //RelativeLayout.LayoutParams param1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
-//        //lblReceive.setLayoutParams(param1);
-//        layout.addView(lblReceive);
-
-
 // -- Thread for Connection
         Thread cThread = new Thread(){public void run() {
-
             try {
                 connect(IP, PORT);
                 Log.i("실행------------->","소켓 연결 시도");
@@ -124,7 +149,6 @@ public class ChatMainActivity extends Activity{
             }
         }
         };
-
         cThread.start();
     }
 
@@ -132,52 +156,28 @@ public class ChatMainActivity extends Activity{
         int size;
         byte[] w = new byte[10240];
         txtReceive="";
-
         try{
             socket = new Socket(ip,port);
             Log.i("수신 소켓시작됨------------->",socket.toString());
-
-
             if(socket != null) {
-                //in = socket.getInputStream();
-                //out = socket.getOutputStream();
-
                 ois = new ObjectInputStream(socket.getInputStream());
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 oos.flush();
-
                 ChatData d= new ChatData();
-                d.setId(Long.parseLong(loginID));
+                d.setId(loginID);
                 d.setRegionNum(regionNum);
                 d.setTxt("has entered");
-
-
+                d.setImage(userImage);
                 oos.writeObject(d);
                 oos.flush();
-
-                //PrintWriter pw = new PrintWriter( new OutputStreamWriter( out ) );
-                //pw.println(loginID);
-                //pw.flush() ;
-
                 ChatData dd = new ChatData();
                 while(socket != null && socket.isConnected()){
 
                     if((dd=(ChatData)ois.readObject())==null) continue;
-                    //size = in.read(w);
-                    //if(size<=0)continue;
-
-//                    if(obj instanceof ChatData)
-//                        dd = (ChatData)obj;
-//                    else continue;
-
                     txtReceive = new String(dd.getTxt());
-                    Log.e("txt",txtReceive);
-                    userReceive = new Long(dd.getId());
-                    Log.e("user",userReceive.toString());
+                    userReceive = new String(dd.getId());
                     regionReceive = new Long(dd.getRegionNum());
-                    Log.e("region",regionReceive.toString());
-
-
+                    pictureReceive = new String(dd.getImage());
                     handler.post(new Runnable(){
                         public void run() {
 
@@ -213,27 +213,14 @@ public class ChatMainActivity extends Activity{
                             LinearLayout.LayoutParams yourparam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                             yourparam.leftMargin= 30;
 
-
-                            //String idid = "";
-                            //Long regionregion = 0L;
-                            //int endofID = txtReceive.indexOf("%");
-                            //int endofRegion = txtReceive.indexOf("$");
-
-                            //if(endofRegion>0){
-                            //    regionregion = Long.parseLong(txtReceive.substring(endofID+1,endofRegion));
-                            //}
-
-                            Log.e("before if","123123");
                             if(regionReceive.equals(regionNum)) {
-                                Log.e("after if","12312312312311231723971239");
                                 talkName.setText(userReceive.toString());
-
                                 //프로필 사진 선언
-                                ImageView profile;
-
-                                if (userReceive.equals(Long.parseLong(loginID))) {
+                                ImageView profile = new ImageView(getApplicationContext());
+                                if (userReceive.equals(loginID)) {
                                     lblReceive.setBackgroundResource(R.drawable.mymessage22);
-                                    profile = addImageView(R.mipmap.ic_launcher);       // 원래 피카츄
+                                    //profile = addImageView(R.drawable.profile1);
+                                    Picasso.with(getApplicationContext()).load(userImage).resize(120,120).transform(new CircleTransform()).into(profile);
                                     commentBubbleLay.addView(talkName);
                                     commentBubbleLay.addView(lblReceive);
                                     commentBubbleLay.setGravity(Gravity.RIGHT);
@@ -243,7 +230,8 @@ public class ChatMainActivity extends Activity{
                                     talkName.setLayoutParams(myparam);
                                 } else {
                                     lblReceive.setBackgroundResource(R.drawable.yourmessage22);
-                                    profile = addImageView(R.mipmap.ic_launcher);  // 원래 피카츄
+                                    //profile = addImageView(R.drawable.profile2);
+                                    Picasso.with(getApplicationContext()).load(pictureReceive).resize(120,120).transform(new CircleTransform()).into(profile);
                                     profileLay.addView(profile);
                                     commentBubbleLay.addView(talkName);
                                     commentBubbleLay.addView(lblReceive);
@@ -252,9 +240,7 @@ public class ChatMainActivity extends Activity{
                                     profileLay.setGravity(Gravity.TOP);
                                     talkName.setLayoutParams(yourparam);
                                 }
-
                                 lblReceive.setLayoutParams(paramparam);
-
                                 LinearLayout layout = (LinearLayout) findViewById(R.id.centerLayout);
                                 layout.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -267,16 +253,6 @@ public class ChatMainActivity extends Activity{
                                 lblReceive.setText(txtReceive);
                                 layout.addView(profileLay);
 
-
-//                            LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                            addLay = (LinearLayout) inflater.inflate(R.layout.chatting_message, addLay);
-//                            TextView taav = (TextView)addLay.findViewById(R.id.chatmessage);
-//                            taav.setText(bb);
-
-
-                                // 자동 스크롤 되는 부분
-                                //참조 http://egloos.zum.com/Mitcehll/v/999007
-
                                 scrollView.post(new Runnable() {
                                     public void run() {
                                         scrollView.fullScroll(View.FOCUS_DOWN);
@@ -287,31 +263,40 @@ public class ChatMainActivity extends Activity{
                     });
                 }
             }
-        } catch (Exception ex) {Log.e("socket",ex.toString());
-            ex.printStackTrace();}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            try{
+                if(ois!=null) ois.close();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            try{
+                if(oos!=null) oos.close();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            try{
+                if(socket!=null) socket.close();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
 
     public void sendClicked(View v) throws Exception{
-        //PrintWriter pw = new PrintWriter( new OutputStreamWriter( out ) );
-
-        Log.e("111",editText.getText().toString());
         if(editText.getText().toString().length()!=0  && !editText.getText().toString().equals(" ")){
-
-            //pw.println(regionNum+"$"+editText.getText());
-            //pw.flush();
             ChatData d = new ChatData();
             d.setRegionNum(regionNum);
-            d.setId(Long.parseLong(loginID));
+            d.setId(loginID);
             d.setTxt(editText.getText().toString());
-
+            d.setImage(userImage);
             oos.writeObject(d);
             oos.flush();
-
             editText.setText("");
         };
     }
-
 
     public ImageView addImageView(int drawable){
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), drawable);

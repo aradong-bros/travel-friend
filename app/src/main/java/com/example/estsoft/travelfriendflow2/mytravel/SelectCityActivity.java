@@ -3,14 +3,8 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class SelectCityActivity extends Activity {
@@ -95,7 +91,6 @@ public class SelectCityActivity extends Activity {
         letsgo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(getApplicationContext(),SelectedCityActivity.class);
                 ArrayList<String> selCity = new ArrayList<String>();        // intent로 넘길 Array
 
@@ -185,7 +180,6 @@ class CityAdapter extends BaseAdapter {
     public long getItemId(int position){
         return position;
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
 
@@ -199,10 +193,11 @@ class CityAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+
         City c = city.get(position);
+        viewHolder.icon.setImageResource(c.icon);
         viewHolder.title.setText(c.title);
         viewHolder.cover.setVisibility(c.selected? View.VISIBLE : View.INVISIBLE);
-        viewHolder.icon.setImageResource(c.icon);
 
         return convertView;
     }

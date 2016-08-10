@@ -16,58 +16,10 @@
         android:orientation="vertical"
         android:gravity="center_vertical">
 
-        <LinearLayout
+        <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/editText_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="아이디 입력"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/button_idcheck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="확인"
-                android:onClick="setIdsss"/>
-        </LinearLayout>
-
-
-        <Button
-            android:id="@+id/button_region_no1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="1. 서울/경기(가평)"
-            android:layout_margin="15dp"
-            android:onClick="setRegionsss"/>
-
-        <Button
-            android:id="@+id/button_region_no2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="2. 강원(강릉)/충북/충남"
-            android:layout_margin="15dp"
-            android:onClick="setRegionsss"/>
-
-        <Button
-            android:id="@+id/button_region_no3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="3. 경북(안동,경주)/경남(부산,통영)"
-            android:layout_margin="15dp"
-            android:onClick="setRegionsss"/>
-
-        <Button
-            android:id="@+id/button_region_no4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="4. 전북(전주)/전남(보성,순천,여수,하동)"
-            android:layout_margin="15dp"
-            android:onClick="setRegionsss"/>
+            android:id="@+id/listViewaaa"/>
 
 
     </LinearLayout>

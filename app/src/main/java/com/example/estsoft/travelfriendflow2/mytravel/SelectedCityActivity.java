@@ -188,7 +188,7 @@ public class SelectedCityActivity extends Activity {
         }
     }
 
-
+/*
     public class HttpConnectionThread extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... path){
@@ -255,7 +255,7 @@ public class SelectedCityActivity extends Activity {
             Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
         }
 
-    }
+    }*/
 
 
 }
