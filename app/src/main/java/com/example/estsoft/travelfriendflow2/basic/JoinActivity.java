@@ -80,31 +80,31 @@ public class JoinActivity extends AppCompatActivity {
 
 
 
-//        //페이스북 key 가져오기
-//        try {
-//            PackageInfo info = getApplicationContext().getPackageManager().getPackageInfo(
-//                    "com.example.estsoft.travelfriendflow2", //앱의 패키지 명
-//                    PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        } catch (PackageManager.NameNotFoundException e) {
-//        } catch (NoSuchAlgorithmException e) {
-//        }
-//
-//        //카카오톡 키 가져오기
-//        try {
-//            PackageInfo info = getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.i("keyhash: ", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        }
-//        catch(PackageManager.NameNotFoundException e){}
-//        catch(NoSuchAlgorithmException e){}
+        //페이스북 key 가져오기
+        try {
+            PackageInfo info = getApplicationContext().getPackageManager().getPackageInfo(
+                    "com.example.estsoft.travelfriendflow2", //앱의 패키지 명
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+        } catch (NoSuchAlgorithmException e) {
+        }
+
+        //카카오톡 키 가져오기
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.i("keyhash: ", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        }
+        catch(PackageManager.NameNotFoundException e){}
+        catch(NoSuchAlgorithmException e){}
 
 
 
