@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.AttractionActivity;
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.thread.HttpConnectionThread;
 
 import net.daum.mf.map.api.CalloutBalloonAdapter;
 import net.daum.mf.map.api.CameraUpdateFactory;
@@ -94,7 +95,26 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             @Override
             public void onClick(View v) {
 
-                new HttpConnectionThread().execute(attrURL);     // Thread for Http connection
+                try {
+                    JSONArray jArray = new JSONArray();
+
+                    Iterator<String> iterator = likeMap.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
+
+                        String key = (String) iterator.next();
+                        sObject.put("no", key);
+                        sObject.put("location", likeMap.get(key));
+                        jArray.put(sObject);
+                    }
+                    Log.e(LOG_TAG, jArray.toString());
+
+                    new HttpConnectionThread().execute(attrURL, jArray.toString());     // Thread for Http connection
+
+                }catch (JSONException je){
+                    je.printStackTrace();
+                }
+
             }
         });
 
@@ -159,7 +179,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                     likeMap.put(getNo, getLoc);
                 }
 
-                Log.e(LOG_TAG, getNo+"_"+getLoc);
             }
         }
 
@@ -352,79 +371,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         Object content = url.getContent();
         return content;
     }
-
-
-    public class HttpConnectionThread extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... path){
-            // URL 연결이 구현될 부분
-            URL url;
-            String response = "";
-
-            try {
-                url = new URL(path[0]);
-                Log.e(LOG_TAG, path[0]);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(10000); // 타임아웃: 10초
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Cache-Control", "no-cache");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setRequestProperty("Content-Type", "application/json");
-
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                JSONArray jArray = new JSONArray();
-
-                Iterator<String> iterator = likeMap.keySet().iterator();
-                while (iterator.hasNext()) {
-                    JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
-
-                    String key = (String) iterator.next();
-                    sObject.put("no", key);
-                    sObject.put("location", likeMap.get(key));
-                    jArray.put(sObject);
-                }
-                Log.e(LOG_TAG, jArray.toString());
-
-                OutputStream os = conn.getOutputStream(); // 서버로 보내기 위한 출력 스트림
-                os.write(jArray.toString().getBytes());
-                os.flush();
-
-
-                Log.e("http response code", conn.getResponseCode()+"");
-                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) { // 연결에 성공한 경우
-                    Log.e(LOG_TAG, "연결 성공");
-                    String line;
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream())); // 서버의 응답을 읽기 위한 입력 스트림
-
-                    while ((line = br.readLine()) != null) {// 서버의 응답을 읽어옴
-                        Log.e("line",line);
-                        response += line;
-                    }
-
-                    br.close();
-                    conn.disconnect();
-                    Log.e("RESPONSE", "The response is: " + response);
-                }
-
-            }catch (JSONException je){
-                je.printStackTrace();
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // UI 업데이트가 구현될 부분
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-        }
-
-    }   // End_HttpConnectionThread
 
 
 }
