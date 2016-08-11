@@ -28,5 +28,25 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="44dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="완성/미완성"
+        android:id="@+id/txt_isFinished"
+        android:textSize="30sp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/txt_isPublic"    />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="완성"
+        android:textOff="미완성"
+        android:id="@+id/tg_isFinished"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/txt_isFinished" />
+
+
 
 </RelativeLayout>

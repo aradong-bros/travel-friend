@@ -17,6 +17,7 @@ import java.net.URLEncoder;
  * get방식으로 parameter로 넘길 경우
  * !MyTravelListActivity에서 사용!
  * ex)http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelect/{no}
+ *
  */
 public class HttpParamConnThread extends AsyncTask<String, Void, String> {
     private static String LOG_TAG = "HttpParamConnThread";
@@ -34,7 +35,7 @@ public class HttpParamConnThread extends AsyncTask<String, Void, String> {
             Log.e(LOG_TAG, CONNURL+"/"+VALUE);
             conn = (HttpURLConnection) url.openConnection();
 
-            conn.setConnectTimeout(7000); // 타임아웃: 10초
+            conn.setConnectTimeout(3000);
 
             conn.setDoInput(true);
 

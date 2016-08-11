@@ -84,7 +84,8 @@
         <activity
             android:name=".map.MapViewActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".mytravel.MySettingActivity"></activity>
+        <activity android:name=".mytravel.MySettingActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".korail.DirectPathActivity"></activity>
         <activity android:name=".korail.TransferPathActivity"></activity>
 

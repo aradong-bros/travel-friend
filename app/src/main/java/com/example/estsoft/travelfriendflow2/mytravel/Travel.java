@@ -11,6 +11,7 @@ public class Travel{
     String planTime;
     String planSeason;
     int background;
+    int schNo;
 
     public Travel(String title, String txt_creationDate, String planTime, String planSeason,int background){
         this.title = title;
@@ -32,4 +33,6 @@ public class Travel{
     public void setPlanSeason(String planSeason) {   this.planSeason = planSeason;   }
     public int getBackground() {    return background;   }
     public void setBackground(int background) {  this.background = background;   }
+    public int getSchNo() {   return schNo;  }
+    public void setSchNo(int schNo) {     this.schNo = schNo;  }
 }

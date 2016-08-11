@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -43,11 +44,9 @@ public class NewTravelSettingActivity extends AppCompatActivity {
 
     private final Handler handler = new Handler();
     private DatePicker datePicker;
-    private TextView sdate;
-    private TextView stime;
-    private TextView edate;
-    private TextView etime;
+    private TextView sdate, stime, edate, etime;
     private TextView title;
+    private EditText stStation, endStation;
     private Button btnConfirm;      // 확인 버튼
 
     int mYear;
@@ -69,7 +68,8 @@ public class NewTravelSettingActivity extends AppCompatActivity {
         edate = (TextView)findViewById(R.id.selected_edate_textview);
         etime = (TextView)findViewById(R.id.selected_etime_textview);
         title = (TextView)findViewById(R.id.edt_title);
-
+        stStation = (EditText)findViewById(R.id.edt_stStation);
+        endStation = (EditText)findViewById(R.id.edt_endStation);
 
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +91,8 @@ public class NewTravelSettingActivity extends AppCompatActivity {
                     sObject.put("startDate",  startDate);
                     sObject.put("endDate",  endDate);
                     sObject.put("isfinished",  "ongoing");        // 0:미완, 1:완성
+                    sObject.put("firstStation", stStation.getText().toString());
+                    sObject.put("lastStation", endStation.getText().toString());
                     Log.e(LOG_TAG, sObject.toString());
 
                     new HttpConnectionThread().execute(schInsertURL,  sObject.toString());     // Thread for Http connection
