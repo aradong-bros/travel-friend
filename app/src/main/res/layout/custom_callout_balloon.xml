@@ -17,8 +17,9 @@
             android:layout_height="60dp"
             android:layout_marginBottom="5dp"
             android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher" >
+            android:src="@drawable/noimage" >
         </ImageView>
 
 

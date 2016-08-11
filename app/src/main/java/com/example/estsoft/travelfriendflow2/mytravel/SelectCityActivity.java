@@ -21,10 +21,10 @@ import java.util.ArrayList;
 
 
 public class SelectCityActivity extends Activity {
-
+    private static final String LOG_TAG = "SelectCityActivity";
     ArrayList<City> city = new ArrayList<City>();
-    ArrayList<City> selectedCity = new ArrayList<City>();
-    static int nSelectedItem = 0;
+
+    private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +57,14 @@ public class SelectCityActivity extends Activity {
         city.add(Boseong);
         city.add(Yeosoo);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         final CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
-        ListView lv = (ListView)findViewById(R.id.listview);
+        lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(cityAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,12 +93,47 @@ public class SelectCityActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),SelectedCityActivity.class);
+                ArrayList<String> selCity = new ArrayList<String>();        // intent로 넘길 Array
+
+                ArrayList<City> a = cityAdapter.city;
+                for(int i=0; i<a.size(); i++){
+                    if( a.get(i).selected )
+                        selCity.add( a.get(i).title );
+                }
+                intent.putStringArrayListExtra("selCity",selCity);
                 startActivity(intent);
 
             }
         });
+
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindDrawables(lv);
+        System.gc();
+    }
+
+    private void unbindDrawables(View view) {
+        if (view == null)
+            return;
+
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageDrawable(null)  ;
+        }
+        if (view.getBackground() != null) {
+            view.getBackground().setCallback(null);
+            //((BitmapDrawable)view.getBackground()).getBitmap().recycle(); /* 재사용할꺼면 사용XXX */
+        }
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            view.setBackgroundResource(0);
+            view.setBackgroundDrawable(null);
+        }
+    }
 }
 
 class CityAdapter extends BaseAdapter {

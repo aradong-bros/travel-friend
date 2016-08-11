@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,9 @@ public class LookAroundActivity extends Activity {
         tr.add(new Travel("우정여행","2016/05/04","7박8일","여름",R.drawable.yeosoo));
         tr.add(new Travel("퇴근하고 싶당","2016/05/21","5박6일","여름",R.drawable.andong));
         tr.add(new Travel("여러븐 화이띵","2016/06/05","4박5일","여름",R.drawable.busan));
+//        Log.e("getNativeHeapSize",Debug.getNativeHeapSize()+"");
+//        Log.e("getNativeHeapFreeSize",Debug.getNativeHeapFreeSize()+"");
+//        Log.e("HeapAllocatedSize",Debug.getNativeHeapAllocatedSize()+"");
 
         MyAdapter adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr);
         ListView lv = (ListView)findViewById(R.id.listview);

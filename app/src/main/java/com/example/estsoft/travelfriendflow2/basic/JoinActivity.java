@@ -92,32 +92,32 @@ public class JoinActivity extends AppCompatActivity {
 
 
 
-//        //페이스북 key 가져오기
-//        try {
-//            PackageInfo info = getApplicationContext().getPackageManager().getPackageInfo(
-//                    "com.example.estsoft.travelfriendflow2", //앱의 패키지 명
-//                    PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        } catch (PackageManager.NameNotFoundException e) {
-//        } catch (NoSuchAlgorithmException e) {
-//        }
-//
-//        //카카오톡 키 가져오기
-//        try {
-//            PackageInfo info = getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.i("keyhash: ", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        }
-//        catch(PackageManager.NameNotFoundException e){}
-//        catch(NoSuchAlgorithmException e){}
 
+        //페이스북 key 가져오기
+        try {
+            PackageInfo info = getApplicationContext().getPackageManager().getPackageInfo(
+                    "com.example.estsoft.travelfriendflow2", //앱의 패키지 명
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+        } catch (NoSuchAlgorithmException e) {
+        }
+
+        //카카오톡 키 가져오기
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.i("keyhash: ", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        }
+        catch(PackageManager.NameNotFoundException e){}
+        catch(NoSuchAlgorithmException e){}
 
 
         if(isFBLoggedIn()){
@@ -291,31 +291,6 @@ public class JoinActivity extends AppCompatActivity {
                 // 자동가입이 아닐경우 동의창
             }
         });
-        //페이스북 key 가져오기
-//        try {
-//            PackageInfo info = getApplicationContext().getPackageManager().getPackageInfo(
-//                    "com.example.estsoft.travelfriendflow2", //앱의 패키지 명
-//                    PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        } catch (PackageManager.NameNotFoundException e) {
-//        } catch (NoSuchAlgorithmException e) {
-//        }
-
-        //카카오톡 키 가져오기
-//        try {
-//            PackageInfo info = getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                Log.i("keyhash: ", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-//            }
-//        }
-//        catch(PackageManager.NameNotFoundException e){}
-//        catch(NoSuchAlgorithmException e){}
     }
 
     @Override
@@ -327,7 +302,7 @@ public class JoinActivity extends AppCompatActivity {
                 break;
             default:
                 break;
-         }
+        }
         return super.onKeyDown(keyCode, event);
     }
 
@@ -408,9 +383,7 @@ public class JoinActivity extends AppCompatActivity {
                         JSONObject getFromDB = new JSONObject(sb.toString()).getJSONObject("userVo");
                         //Log.e("getFromDB is -->",getFromDB.toString());
 
-
-                        profileData.put("name", getFromDB.getString("name")).put("userID", getFromDB.getString("userID")).put("picture", getFromDB.getString("picture")).put("platform", getFromDB.getString("platform"));
-
+                        profileData.put("name", getFromDB.getString("name")).put("userID", getFromDB.getString("userID")).put("picture", getFromDB.getString("picture")).put("platform", getFromDB.getString("platform")).put("no",getFromDB.getString(("no")));
 
                         SharedPreferences a = getSharedPreferences("pref", MODE_PRIVATE);
                         SharedPreferences.Editor editor = a.edit();
@@ -446,6 +419,3 @@ public class JoinActivity extends AppCompatActivity {
     }
 
 }
-
-
-

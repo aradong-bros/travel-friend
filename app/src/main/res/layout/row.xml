@@ -9,9 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:gravity="center"
-
         android:id="@+id/row_layout"
-
         android:background="@drawable/hadong"
         android:orientation="vertical">
 
@@ -47,12 +45,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="6박7일"
         android:textColor="#FFF"
-
         android:background="#CCeb9b00"
         android:layout_marginTop="3dp"
         android:layout_marginLeft="3dp"
         android:id="@+id/plan_time"
-
         android:layout_gravity="center_horizontal" />
 
     <TextView
@@ -61,7 +57,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="여름"
         android:textColor="#FFF"
-
         android:background="#CCeb9b00"
         android:id="@+id/plan_season"
         android:layout_marginLeft="3dp"
@@ -78,6 +73,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp"/>
+
 
 
 </RelativeLayout>

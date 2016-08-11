@@ -13,7 +13,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light">
+        android:theme="@style/Theme.AppCompat.Light"
+        android:largeHeap="true">
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -72,14 +73,10 @@
             android:name=".mytravel.NewTravelSettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <!--<activity-->
-            <!--android:name=".mytravel.MapActivity"-->
-            <!--android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
         <activity android:name=".mytravel.MyTravelListActivity" />
         <activity android:name=".mytravel.BookmarkListActivity" />
         <activity android:name=".chat.ChatMainActivity"></activity>
 
-        <activity android:name=".map.MapViewActivity"></activity>
         <activity android:name=".mytravel.SelectCityActivity"></activity>
         <activity android:name=".mytravel.SelectedCityActivity"></activity>
         <activity android:name=".lookaround.OthersPlanActivity"
@@ -89,6 +86,9 @@
         <activity android:name=".lookaround.OthersPlanTableActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
 
+        <activity
+            android:name=".map.MapViewActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
     </application>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>

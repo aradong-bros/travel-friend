@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 public class MyTravelListActivity extends Activity {
     private static final String LOG_TAG = "MyTravelListActivity";
-    private SharedPreferences sharedPreferences;
     ArrayList<Travel> tr = new ArrayList<Travel>();
 
     @Override
@@ -30,16 +29,7 @@ public class MyTravelListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mytravellist);
 
-        // ----
-        sharedPreferences = getSharedPreferences("MyBookMarkList",MODE_PRIVATE);
-        String sdate = sharedPreferences.getString("sdate", "null");
-        String edate = sharedPreferences.getString("edate", "null");
-        String creationDate = sharedPreferences.getString("creationDate", "null");
-        String title = sharedPreferences.getString("title","null");
-        Log.e(LOG_TAG, sdate+"-"+edate+"-->"+creationDate+"-"+title);
-        // ----
-
-        tr.add(new Travel("랄랄라",creationDate));
+        tr.add(new Travel("랄랄라","testtest"));
 
 //        tr.add(new Travel("제목"));
 //        tr.add(new Travel("제목2"));
