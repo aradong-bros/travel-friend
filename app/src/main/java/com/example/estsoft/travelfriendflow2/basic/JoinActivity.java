@@ -4,10 +4,17 @@ import android.content.Context;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.KeyEvent;
@@ -43,6 +50,8 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class JoinActivity extends AppCompatActivity {
@@ -56,7 +65,9 @@ public class JoinActivity extends AppCompatActivity {
     private com.kakao.usermgmt.LoginButton kakaoLogin;
     //private String profileUrl;
 
+
     String email, name, gender, userId, token, picture, platform;
+
 
 
     @Override
@@ -76,6 +87,36 @@ public class JoinActivity extends AppCompatActivity {
         loginButton = (LoginButton) findViewById(R.id.startWithFacebookButton);
         loginButton.setReadPermissions(Arrays.asList("email"));
         callbackManager = CallbackManager.Factory.create();
+
+
+
+
+//        //페이스북 key 가져오기
+//        try {
+//            PackageInfo info = getApplicationContext().getPackageManager().getPackageInfo(
+//                    "com.example.estsoft.travelfriendflow2", //앱의 패키지 명
+//                    PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//        } catch (NoSuchAlgorithmException e) {
+//        }
+//
+//        //카카오톡 키 가져오기
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.i("keyhash: ", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        }
+//        catch(PackageManager.NameNotFoundException e){}
+//        catch(NoSuchAlgorithmException e){}
+
 
 
         if(isFBLoggedIn()){
@@ -138,7 +179,6 @@ public class JoinActivity extends AppCompatActivity {
                             platform = "facebook";
 
                             Log.e("facebook login info--->", userId + name + picture);
-
 
                             insertToDatabase(name, userId, picture, platform);
                             //gender = object.getString("gender");
@@ -278,7 +318,6 @@ public class JoinActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
@@ -308,6 +347,7 @@ public class JoinActivity extends AppCompatActivity {
 
         class InsertData extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
+
 
 
 
@@ -343,6 +383,7 @@ public class JoinActivity extends AppCompatActivity {
                     URL url = new URL(link);
                     URLConnection conn = url.openConnection();
 
+
                     conn.setDoOutput(true);
                     OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 
@@ -366,7 +407,9 @@ public class JoinActivity extends AppCompatActivity {
                     try {
                         JSONObject getFromDB = new JSONObject(sb.toString()).getJSONObject("userVo");
                         //Log.e("getFromDB is -->",getFromDB.toString());
+
                         profileData.put("name", getFromDB.getString("name")).put("userID", getFromDB.getString("userID")).put("picture", getFromDB.getString("picture")).put("platform", getFromDB.getString("platform"));
+
                         SharedPreferences a = getSharedPreferences("pref", MODE_PRIVATE);
                         SharedPreferences.Editor editor = a.edit();
                         editor.putString("userData", profileData.toString());
@@ -395,6 +438,7 @@ public class JoinActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
     }
+
 
     public boolean isKakaoLoggedIn(){
         return Session.getCurrentSession().isOpened();

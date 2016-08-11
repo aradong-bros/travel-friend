@@ -40,6 +40,7 @@ import java.io.File;
 
 public class SettingActivity extends AppCompatActivity {
 
+
     public String selectedImagePath;
     public ImageView imageView;
 
@@ -69,6 +70,7 @@ public class SettingActivity extends AppCompatActivity {
             }
 
         });
+
 
 
         Button logoutButton = (Button)findViewById(R.id.logoutButton);
