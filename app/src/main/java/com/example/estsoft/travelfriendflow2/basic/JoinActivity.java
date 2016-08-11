@@ -383,7 +383,7 @@ public class JoinActivity extends AppCompatActivity {
                         JSONObject getFromDB = new JSONObject(sb.toString()).getJSONObject("userVo");
                         //Log.e("getFromDB is -->",getFromDB.toString());
 
-                        profileData.put("name", getFromDB.getString("name")).put("userID", getFromDB.getString("userID")).put("picture", getFromDB.getString("picture")).put("platform", getFromDB.getString("platform")).put("no",getFromDB.getString(("no")));
+                        profileData.put("name", getFromDB.getString("name")).put("userID", getFromDB.getString("userID")).put("picture", getFromDB.getString("picture")).put("platform", getFromDB.getString("platform")).put("no",getFromDB.getString("no"));
 
                         SharedPreferences a = getSharedPreferences("pref", MODE_PRIVATE);
                         SharedPreferences.Editor editor = a.edit();

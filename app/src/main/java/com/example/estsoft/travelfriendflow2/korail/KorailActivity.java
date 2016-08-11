@@ -53,12 +53,7 @@ public class KorailActivity extends Activity {
         path.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count ++;
-                if(count%2==1) {
-                    v.setSelected(true);
-                }else{
-                    v.setSelected(false);
-                }
+                v.setSelected(!v.isSelected());
             }
         });
 
@@ -75,6 +70,8 @@ public class KorailActivity extends Activity {
                     Intent intent = new Intent(getApplicationContext(), DirectPathActivity.class);
                     startActivity(intent);
                 }
+
+
             }
         });
     }

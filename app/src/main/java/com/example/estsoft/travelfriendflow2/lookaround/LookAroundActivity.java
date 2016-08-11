@@ -56,6 +56,8 @@ public class LookAroundActivity extends Activity {
             }
         });
 
+
+
     }
 
 }
@@ -97,6 +99,14 @@ class MyAdapter extends BaseAdapter{
         TextView plan_time = (TextView)convertView.findViewById(R.id.plan_time);
         TextView plan_season = (TextView)convertView.findViewById(R.id.plan_season);
         LinearLayout background = (LinearLayout)convertView.findViewById(R.id.row_layout);
+        ImageView heart = (ImageView)convertView.findViewById(R.id.heart);
+
+        heart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setSelected(!v.isSelected());
+            }
+        });
 
         Travel t = tr.get(position);
         title.setText(t.title);
