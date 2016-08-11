@@ -1,5 +1,6 @@
 package com.example.estsoft.travelfriendflow2.basic;
 
+
 import android.content.Context;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.SharedPreferences;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -17,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +72,6 @@ public class JoinActivity extends AppCompatActivity {
     String email, name, gender, userId, token, picture, platform;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +89,6 @@ public class JoinActivity extends AppCompatActivity {
         loginButton = (LoginButton) findViewById(R.id.startWithFacebookButton);
         loginButton.setReadPermissions(Arrays.asList("email"));
         callbackManager = CallbackManager.Factory.create();
-
 
 
 
@@ -317,7 +318,6 @@ public class JoinActivity extends AppCompatActivity {
 //        catch(NoSuchAlgorithmException e){}
     }
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
@@ -347,8 +347,6 @@ public class JoinActivity extends AppCompatActivity {
 
         class InsertData extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
-
-
 
 
             @Override
@@ -384,8 +382,10 @@ public class JoinActivity extends AppCompatActivity {
                     URLConnection conn = url.openConnection();
 
 
+
                     conn.setDoOutput(true);
                     OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+
 
                     wr.write( data );
                     wr.flush();
@@ -408,7 +408,9 @@ public class JoinActivity extends AppCompatActivity {
                         JSONObject getFromDB = new JSONObject(sb.toString()).getJSONObject("userVo");
                         //Log.e("getFromDB is -->",getFromDB.toString());
 
+
                         profileData.put("name", getFromDB.getString("name")).put("userID", getFromDB.getString("userID")).put("picture", getFromDB.getString("picture")).put("platform", getFromDB.getString("platform"));
+
 
                         SharedPreferences a = getSharedPreferences("pref", MODE_PRIVATE);
                         SharedPreferences.Editor editor = a.edit();
@@ -439,11 +441,11 @@ public class JoinActivity extends AppCompatActivity {
         return accessToken != null;
     }
 
-
     public boolean isKakaoLoggedIn(){
         return Session.getCurrentSession().isOpened();
     }
 
 }
+
 
 

@@ -61,6 +61,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="여름"
         android:textColor="#FFF"
+
         android:background="#CCeb9b00"
         android:id="@+id/plan_season"
         android:layout_marginLeft="3dp"
