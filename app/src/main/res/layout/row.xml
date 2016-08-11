@@ -69,10 +69,11 @@
     <ImageView
         android:layout_width="25dp"
         android:layout_height="23dp"
-        android:background="@drawable/heart_full"
+        android:id="@+id/heart"
+        android:background="@drawable/heart_selector"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="5dp"/>
 
 

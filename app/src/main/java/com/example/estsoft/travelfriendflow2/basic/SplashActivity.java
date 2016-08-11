@@ -22,8 +22,8 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.splashLayout);
-        relativeLayout.setBackground(new BitmapDrawable(getResources(),
-                BitmapFactory.decodeResource(getResources(),R.drawable.splash)));
+//        relativeLayout.setBackground(new BitmapDrawable(getResources(),
+//                BitmapFactory.decodeResource(getResources(),R.drawable.splash)));
 
         new Handler().postDelayed(new Runnable() {
             @Override
