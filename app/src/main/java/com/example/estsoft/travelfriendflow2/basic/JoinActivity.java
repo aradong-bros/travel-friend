@@ -56,7 +56,7 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-
+// 1. 브랜치 열고 기능 추가
 public class JoinActivity extends AppCompatActivity {
 
     //페이스북 용
