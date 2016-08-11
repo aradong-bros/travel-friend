@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
-
+// 1. master에서 수정
 public class JoinWithEmailActivity extends AppCompatActivity {
 
     @Override
