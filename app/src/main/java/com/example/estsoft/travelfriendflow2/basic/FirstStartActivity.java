@@ -8,6 +8,8 @@ import android.widget.Button;
 
 import com.example.estsoft.travelfriendflow2.R;
 
+//정이의 주석입니댜!!!!!!!!!!!
+//ㅇㅅㅇ!!!!!!!!!!!!!!!!
 public class FirstStartActivity extends AppCompatActivity {
 
     private static final int MAX_VIEWS = 4;
