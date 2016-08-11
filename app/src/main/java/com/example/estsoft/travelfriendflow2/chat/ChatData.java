@@ -4,24 +4,15 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-/**
- * Created by estsoft on 2016-07-22.
- */
-
 public class ChatData implements Serializable {
-    private static final long serialVersionUID = 12344321L;
+
+    private Long no;
+    private Long userNum;
     private String id;
     private Long regionNum;
     private String txt;
     private String image;
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
+    private static final long serialVersionUID = 12344321L;
 
     public ChatData(){
 
@@ -33,7 +24,12 @@ public class ChatData implements Serializable {
         this.txt = txt;
         this.image = image;
     }
-
+    public String getImage() {
+        return image;
+    }
+    public void setImage(String image) {
+        this.image = image;
+    }
     public String getId() {
         return id;
     }
@@ -52,17 +48,29 @@ public class ChatData implements Serializable {
     public void setTxt(String txt) {
         this.txt = txt;
     }
+    public Long getNo() {
+        return no;
+    }
+    public void setNo(Long no) {
+        this.no = no;
+    }
+    public Long getUserNum() {
+        return userNum;
+    }
 
-
+    public void setUserNum(Long userNum) {
+        this.userNum = userNum;
+    }
 
     @Override
     public String toString() {
-        return "ChatData [id=" + id + ", regionNum=" + regionNum + ", txt=" + txt + "]";
+        return "ChatData [no=" + no + ", userNum=" + userNum + ", id=" + id + ", regionNum=" + regionNum + ", txt="
+                + txt + ", image=" + image + "]";
     }
 
-    private void writObject(ObjectOutputStream stream) throws IOException {
+    private void writObject(ObjectOutputStream stream) throws IOException{
         stream.defaultWriteObject();
     }
 
-}
 
+}

@@ -60,6 +60,7 @@ public class ChatMainActivity extends Activity{
     private Long regionReceive;
     private String userReceive;
     private String pictureReceive;
+    private Long noReceive;
 
     private Socket socket;
     private InputStream in;
@@ -71,6 +72,7 @@ public class ChatMainActivity extends Activity{
 
     private final Handler handler = new Handler();
     private EditText editText;
+    private Long userNo;
     private String loginID;
     private Long regionNum;
     private String userImage;
@@ -95,6 +97,7 @@ public class ChatMainActivity extends Activity{
         try {
             JSONObject userData = new JSONObject(pref.getString("userData", ""));
             loginID = userData.getString("name");
+            userNo = Long.parseLong(userData.getString("no"));
             userImage = userData.getString("picture");
         }catch(Exception e){
             e.printStackTrace();
@@ -164,6 +167,7 @@ public class ChatMainActivity extends Activity{
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 oos.flush();
                 ChatData d= new ChatData();
+                d.setUserNum(userNo);
                 d.setId(loginID);
                 d.setRegionNum(regionNum);
                 d.setTxt("has entered");
@@ -178,6 +182,7 @@ public class ChatMainActivity extends Activity{
                     userReceive = new String(dd.getId());
                     regionReceive = new Long(dd.getRegionNum());
                     pictureReceive = new String(dd.getImage());
+                    noReceive = new Long(dd.getNo());
                     handler.post(new Runnable(){
                         public void run() {
 
@@ -250,7 +255,7 @@ public class ChatMainActivity extends Activity{
                                     }
                                 });
 
-                                lblReceive.setText(txtReceive);
+                                lblReceive.setText(txtReceive+"["+noReceive+"]");
                                 layout.addView(profileLay);
 
                                 scrollView.post(new Runnable() {
@@ -288,6 +293,7 @@ public class ChatMainActivity extends Activity{
     public void sendClicked(View v) throws Exception{
         if(editText.getText().toString().length()!=0  && !editText.getText().toString().equals(" ")){
             ChatData d = new ChatData();
+            d.setUserNum(userNo);
             d.setRegionNum(regionNum);
             d.setId(loginID);
             d.setTxt(editText.getText().toString());

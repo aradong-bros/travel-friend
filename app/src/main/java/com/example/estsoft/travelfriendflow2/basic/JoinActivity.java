@@ -91,8 +91,6 @@ public class JoinActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
 
-
-
         //페이스북 key 가져오기
         try {
             PackageInfo info = getApplicationContext().getPackageManager().getPackageInfo(
