@@ -12,18 +12,22 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.mytravel.SelectedCityActivity;
 
 import java.util.ArrayList;
 
 public class SaleActivity extends Activity {
 
     ArrayList<SaleItem> saleItems = new ArrayList<SaleItem>();
+    private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +50,10 @@ public class SaleActivity extends Activity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin2.setAdapter(adapter2);
 
-
-        saleItems.add(new SaleItem("하동으로 놀러오세여 게스트하우스가 삼마넌", ContextCompat.getDrawable(this,R.drawable.hadong)));
+        saleItems.add(new SaleItem("asdfasdfasdfasdfasdfasdfasdfasdfasdf", ContextCompat.getDrawable(this,R.drawable.attraction)));
+        saleItems.add(new SaleItem("배고프다 ~(ㅇㅅㅇ~)", ContextCompat.getDrawable(this,R.drawable.hadong)));
         saleItems.add(new SaleItem("여기서 발권하면 혜택 마니줌!!! ㅇㅅㅇ//", ContextCompat.getDrawable(this,R.drawable.attraction)));
+        saleItems.add(new SaleItem("하동으로 놀러오세여 게스트하우스가 삼마넌", ContextCompat.getDrawable(this,R.drawable.hadong)));
         saleItems.add(new SaleItem("내일로 혜택 여기서 확인!", ContextCompat.getDrawable(this,R.drawable.seoul)));
         saleItems.add(new SaleItem("내일로 여행자 입장권 무료!!!!!!!", ContextCompat.getDrawable(this,R.drawable.gapyeong)));
         saleItems.add(new SaleItem("배고프다 ~(ㅇㅅㅇ~)", ContextCompat.getDrawable(this,R.drawable.attraction)));
@@ -56,8 +61,14 @@ public class SaleActivity extends Activity {
 
 
 
-        SaleItemAdapter saleItemAdapter = new SaleItemAdapter(getApplicationContext(),R.layout.saleitem,saleItems);
-        ListView lv = (ListView)findViewById(R.id.salelist);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final SaleItemAdapter saleItemAdapter = new SaleItemAdapter(getApplicationContext(),R.layout.saleitem,saleItems);
+        lv = (ListView)findViewById(R.id.salelist);
         lv.setAdapter(saleItemAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -71,6 +82,36 @@ public class SaleActivity extends Activity {
             }
         });
 
+
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindDrawables(lv);
+        System.gc();
+    }
+
+    private void unbindDrawables(View view) {
+        if (view == null)
+            return;
+
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageDrawable(null)  ;
+        }
+        if (view.getBackground() != null) {
+            view.getBackground().setCallback(null);
+            //((BitmapDrawable)view.getBackground()).getBitmap().recycle(); /* 재사용할꺼면 사용XXX */
+        }
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            view.setBackgroundResource(0);
+            view.setBackgroundDrawable(null);
+        }
     }
 
 }
@@ -81,6 +122,8 @@ class SaleItemAdapter extends BaseAdapter {
     int layout;
     ArrayList<SaleItem> saleItems;
     LayoutInflater inf;
+
+    private ViewHolder viewHolder = null;
 
     public SaleItemAdapter(Context context, int layout, ArrayList<SaleItem> saleItems){
         this.context = context;
@@ -104,8 +147,16 @@ class SaleItemAdapter extends BaseAdapter {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
+
+        ViewHolder viewHolder;
+
         if(convertView == null){
-            convertView = inf.inflate(layout, null);
+            convertView = inf.inflate(R.layout.saleitem, parent, false);
+//            convertView = inf.inflate(layout, null);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
         TextView title = (TextView)convertView.findViewById(R.id.SaleTextBox);
@@ -115,6 +166,16 @@ class SaleItemAdapter extends BaseAdapter {
         title.setText(t.title);
         image.setImageDrawable(t.image);
         return convertView;
+    }
+
+    class ViewHolder {
+        ImageView image;
+        TextView title;
+
+        public ViewHolder(View view) {
+            image = (ImageView)view.findViewById(R.id.SaleImage);
+            title = (TextView)view.findViewById(R.id.SaleTextBox);
+        }
     }
 }
 
@@ -132,3 +193,4 @@ class SaleItem{
         return title;
     }
 }
+
