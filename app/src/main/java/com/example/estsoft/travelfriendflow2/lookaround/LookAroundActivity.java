@@ -115,7 +115,7 @@ public class LookAroundActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            if(result==null) {
+            if(result.equals(null)) {
                 //  로딩바 띄우기
                 Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다. 다시 시도해주세요!", Toast.LENGTH_LONG).show();
                 return;

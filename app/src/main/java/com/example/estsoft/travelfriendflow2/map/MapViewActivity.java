@@ -51,7 +51,7 @@ import java.util.List;
 public class MapViewActivity extends AppCompatActivity implements MapView.POIItemEventListener{
     private static final String LOG_TAG = "MapViewActivity";
     private static final String URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getPinData/";
-    private static final String attrURL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";
+    private static final String POSTINSERTURL = "http://222.239.250.207:8080/TravelFriendAndroid/post/postInsert";
 
     private static final String TAG_RESULTS="atrList";
     private static final String TAG_NO = "no";
@@ -64,7 +64,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     private MapView mapView;
     private HashMap<Integer, PinItem> mTagItemMap = new HashMap<Integer, PinItem>();
     private Button btn_complete;
-    private HashMap<String, String> likeMap = new HashMap<String, String>();
+    private HashMap<String, String> likeMap = new HashMap<String, String>();        //<postList_no, location>
     public static final int REQUEST_CODE = 1001;
     private static Intent attrIntent;
 
@@ -76,11 +76,12 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         btn_complete = (Button)findViewById(R.id.btn_selComplete);
 
         Intent intent = getIntent();
-        final int pos = intent.getIntExtra("pos", -1);
+        final int cityList_no = intent.getIntExtra("cityList_no", -1);
+        final int city_no = intent.getIntExtra("city_no", -1);
 
-        if( pos == -1 ){
-            Log.e(LOG_TAG, "pos == -1 error");
-            Toast.makeText(getApplicationContext(),"pos == -1",Toast.LENGTH_SHORT).show();
+        if( cityList_no == -1 || city_no == -1 ){
+            Log.e(LOG_TAG, "intent value error");
+            Toast.makeText(getApplicationContext(),"intent value error",Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -97,20 +98,20 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
                 try {
                     JSONArray jArray = new JSONArray();
-
                     Iterator<String> iterator = likeMap.keySet().iterator();
                     while (iterator.hasNext()) {
                         JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
-
                         String key = (String) iterator.next();
-                        sObject.put("no", key);
-                        sObject.put("location", likeMap.get(key));
+
+                        sObject.put("city_no", city_no);
+                        sObject.put("postList_no", key);
+                        sObject.put("postOrder", "-1");
                         jArray.put(sObject);
                     }
                     Log.e(LOG_TAG, jArray.toString());
+                    new HttpConnectionThread(getApplicationContext()).execute(POSTINSERTURL, jArray.toString());     // Thread for Http connection   // POST TABLE_INSERT
 
-                    new HttpConnectionThread().execute(attrURL, jArray.toString());     // Thread for Http connection
-
+                    finish();
                 }catch (JSONException je){
                     je.printStackTrace();
                 }
@@ -130,7 +131,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                 mapView.removeAllPOIItems(); /* 기존 검색 결과 삭제 */
 
-                String path = URL + pos;
+                String path = URL + cityList_no;
                 if( position == 1 ){  /* eat */
                     path += "/1";
                 }else if( position == 2 ){  /* stay */
@@ -162,7 +163,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         Log.e(LOG_TAG, mapPOIItem.getItemName());
 
         attrIntent = new Intent(getApplicationContext(), AttractionActivity.class);
-        attrIntent.putExtra("no",mapPOIItem.getItemName());          // pk 넘기기
+        attrIntent.putExtra("no",mapPOIItem.getItemName());          // postList_no(pk) 넘기기
         startActivityForResult(attrIntent, REQUEST_CODE);
     }
 

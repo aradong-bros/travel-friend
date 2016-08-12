@@ -86,21 +86,20 @@ public class NewTravelSettingActivity extends AppCompatActivity {
                     // -- 보낼 데이터
                     JSONObject sObject = new JSONObject();      //배열 내에 들어갈 json
                     sObject.put("user_no", getUserNo());
-                    sObject.put("title",  title.getText().toString());
+                    sObject.put("title",  title.getText().toString()==null?"null":title.getText().toString());
                     sObject.put("isPublic",  "0");          // 0:비공개, 1:공개
-                    sObject.put("startDate",  startDate);
-                    sObject.put("endDate",  endDate);
+                    sObject.put("startDate",  startDate==null?"9999-99-99 99:99:99":startDate);
+                    sObject.put("endDate",  endDate==null?"9999-99-99 99:99:99":endDate);
                     sObject.put("isfinished",  "ongoing");        // 0:미완, 1:완성
-                    sObject.put("firstStation", stStation.getText().toString());
-                    sObject.put("lastStation", endStation.getText().toString());
+                    sObject.put("firstStation", stStation.getText().toString()==null?"null":stStation.getText().toString());
+                    sObject.put("lastStation", endStation.getText().toString()==null?"null":endStation.getText().toString());
                     Log.e(LOG_TAG, sObject.toString());
 
-                    new HttpConnectionThread().execute(schInsertURL,  sObject.toString());     // Thread for Http connection
+                    new HttpConnectionThread(getApplicationContext()).execute(schInsertURL,  sObject.toString());     // Thread for Http connection
 
                 }catch (JSONException je){
                     je.printStackTrace();
                 }
-
 
 
             }
