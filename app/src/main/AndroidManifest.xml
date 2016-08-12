@@ -87,6 +87,7 @@
         <activity android:name=".mytravel.MySettingActivity"></activity>
         <activity android:name=".korail.DirectPathActivity"></activity>
         <activity android:name=".korail.TransferPathActivity"></activity>
+        <activity android:name=".sale.SaleItemActivity"></activity>
 
     </application>
 
