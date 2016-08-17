@@ -103,6 +103,12 @@ public class LookAroundActivity extends Activity {
 
                 }else{
                     Log.e(LOG_TAG, "서버 접속 실패");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
 
             }catch (IOException e) {
@@ -117,13 +123,12 @@ public class LookAroundActivity extends Activity {
         protected void onPostExecute(String result) {
             if(result.equals(null)) {
                 //  로딩바 띄우기
-                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다. 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            if( parsePinData(result) ){
+            if( parsePinData(result) )
                 showResult();
-            }
 
         }
 
@@ -141,11 +146,10 @@ public class LookAroundActivity extends Activity {
 
                 Travel t = new Travel();
                 t.setTitle(object.getString(TAG_TITLE));
-
                 String sdate = object.getString(TAG_SDATE);
                 String edate = object.getString(TAG_EDATE);
 
-                if( sdate == "null" || edate == "null" ){
+                if( sdate.equals(null)|| edate.equals(null) ){              // <<<
                     return false;
                 }
 
@@ -167,7 +171,6 @@ public class LookAroundActivity extends Activity {
                 t.setPlanTime((day-1)+"박"+day+"일");
 
                 t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
-
                 tr.add(t);
             }
 
@@ -175,7 +178,7 @@ public class LookAroundActivity extends Activity {
             e.printStackTrace();
         }
         return true;
-    }// End_parsePinData
+    }   // End_parsePinData
 
     private void showResult() {
 
@@ -186,15 +189,12 @@ public class LookAroundActivity extends Activity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(getApplicationContext(),"234",Toast.LENGTH_SHORT).show();
                 String title = tr.get(i).getTitle();
                 Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
                 intent.putExtra("title",title);
                 startActivity(intent);
             }
         });
-
-
 
     }
 

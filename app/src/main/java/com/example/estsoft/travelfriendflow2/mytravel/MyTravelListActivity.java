@@ -7,10 +7,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -65,7 +68,6 @@ public class MyTravelListActivity extends Activity {
         setContentView(R.layout.activity_mytravellist);
 
 //        new HttpParamConnThread().execute(oneSrchURL, getSchNo());
-
     }
 
     @Override
@@ -93,12 +95,12 @@ public class MyTravelListActivity extends Activity {
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
                 new HttpParamConnThread().execute(deleteURL, Integer.toString(tr.get(position).getSchNo()));
                 tr.remove(position);
                 return true;
             }
         });
+
     }
 
 
@@ -141,7 +143,12 @@ public class MyTravelListActivity extends Activity {
 
                 }else{
                     Log.e(LOG_TAG, "서버 접속 실패");
-                    Toast.makeText(getApplicationContext(), "서버 연결에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                        }
+                    });
                     //  로딩바 띄우기
                 }
 
@@ -160,7 +167,7 @@ public class MyTravelListActivity extends Activity {
         protected void onPostExecute(String result) {
             if(result==null) {
                 //  로딩바 띄우기
-                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다. 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -198,7 +205,7 @@ public class MyTravelListActivity extends Activity {
 
                 String[] sdateArr = s[0].split("-");
                 String[] edateArr = e[0].split("-");
-                int sMonth = Integer.parseInt(sdateArr[1]);    // month
+                int sMonth = Integer.parseInt(sdateArr[1]);
 
                 if( sMonth >= 5 && sMonth <= 9 ){
                     t.setPlanSeason("여름");
