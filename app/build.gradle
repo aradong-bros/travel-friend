@@ -8,13 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.estsoft.travelfriendflow2"
-<<<<<<< HEAD
-//        minSdkVersion 'N'
-//        targetSdkVersion 'N'
-        minSdkVersion 15
-=======
-        minSdkVersion 16
->>>>>>> map
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -83,3 +77,6 @@ dependencies {
     compile group: 'com.kakao.sdk', name: 'push', version: project.KAKAO_SDK_VERSION
 }
 
+dependencies {
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+}

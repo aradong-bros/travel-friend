@@ -3,13 +3,13 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 /**
  * Created by estsoft on 2016-08-05.
  */
-public class AttractionVo {
+public class AttractionVO {
     int no;
     String location;
 
-    public AttractionVo(){    }
+    public AttractionVO(){    }
 
-    public AttractionVo(int no, String location) {
+    public AttractionVO(int no, String location) {
         this.no = no;
         this.location = location;
     }

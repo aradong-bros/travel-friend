@@ -12,6 +12,9 @@ public class ChatData implements Serializable {
     private Long regionNum;
     private String txt;
     private String image;
+    private String time;
+
+
     private static final long serialVersionUID = 12344321L;
 
     public ChatData(){
@@ -57,15 +60,21 @@ public class ChatData implements Serializable {
     public Long getUserNum() {
         return userNum;
     }
-
     public void setUserNum(Long userNum) {
         this.userNum = userNum;
+    }
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     @Override
     public String toString() {
         return "ChatData [no=" + no + ", userNum=" + userNum + ", id=" + id + ", regionNum=" + regionNum + ", txt="
-                + txt + ", image=" + image + "]";
+                + txt + ", image=" + image + ", time=" + time + "]";
     }
 
     private void writObject(ObjectOutputStream stream) throws IOException{

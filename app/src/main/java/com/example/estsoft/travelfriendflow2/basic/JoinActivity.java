@@ -56,9 +56,7 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-// 1. 브랜치 열고 기능 추가
-// 2. 기능 완료
-// 3. 기능 완료 다시
+
 public class JoinActivity extends AppCompatActivity {
 
     //페이스북 용
@@ -381,9 +379,9 @@ public class JoinActivity extends AppCompatActivity {
                     JSONObject profileData = new JSONObject();
                     try {
                         JSONObject getFromDB = new JSONObject(sb.toString()).getJSONObject("userVo");
-                        //Log.e("getFromDB is -->",getFromDB.toString());
+                        Log.e("getFromDB is -->",getFromDB.toString());
 
-                        profileData.put("name", getFromDB.getString("name")).put("userID", getFromDB.getString("userID")).put("picture", getFromDB.getString("picture")).put("platform", getFromDB.getString("platform")).put("no",getFromDB.getString(("no")));
+                        profileData.put("name", getFromDB.getString("name")).put("userID", getFromDB.getString("userID")).put("picture", getFromDB.getString("picture")).put("platform", getFromDB.getString("platform")).put("no",getFromDB.getString("no"));
 
                         SharedPreferences a = getSharedPreferences("pref", MODE_PRIVATE);
                         SharedPreferences.Editor editor = a.edit();
