@@ -29,7 +29,7 @@ public class LayoutOne extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = (ViewGroup) inflater.inflate(R.layout.firststartview1, null);
         ImageView imageView = (ImageView)root.findViewById(R.id.img_sample1);
-        imageView.setBackground(new BitmapDrawable(getResources(),
+        imageView.setBackgroundDrawable(new BitmapDrawable(getResources(),
                 BitmapFactory.decodeResource(getResources(),R.drawable.phone_sample)));
 
         return root;

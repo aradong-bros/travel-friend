@@ -4,19 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:layout_marginTop="8dp"
+    android:id="@+id/parent"
     android:background="#FFF">
 
     <ImageView
+        android:layout_width="3dp"
+        android:layout_height="80dp"
+        android:id="@+id/orangeline"
+        android:background="@color/orange"/>
+    <ImageView
         android:layout_height="80dp"
         android:layout_width="80dp"
-        android:id="@+id/SaleImage">
+        android:id="@+id/SaleImage"
+        android:background="@drawable/hadong">
     </ImageView>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/SaleTextBox"
-        android:gravity="center_vertical"
 
-        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:id="@+id/SaleTextBox"
+        android:textColor="#000"
+        android:textSize="15dp"
+        android:layout_marginLeft="10dp"
+        android:text="테스트다 랄랄라"
+        android:gravity="center"
+ />
 </LinearLayout>

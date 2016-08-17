@@ -22,12 +22,12 @@ public class BookmarkListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmarklist);
 
-        tr.add(new Travel("겨"));
-        tr.add(new Travel("울"));
-        tr.add(new Travel("여"));
-        tr.add(new Travel("름"));
-        tr.add(new Travel("름"));
-        tr.add(new Travel("름"));
+//        tr.add(new Travel("겨"));
+//        tr.add(new Travel("울"));
+//        tr.add(new Travel("여"));
+//        tr.add(new Travel("름"));
+//        tr.add(new Travel("름"));
+//        tr.add(new Travel("름"));
 
         MyAdapter adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr);
         ListView lv = (ListView)findViewById(R.id.listview);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,17 +12,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.basic.SettingActivity;
 import com.example.estsoft.travelfriendflow2.lookaround.OthersPlanActivity;
+import com.example.estsoft.travelfriendflow2.map.PinItem;
+import com.example.estsoft.travelfriendflow2.thread.HttpConnectionThread;
+import com.example.estsoft.travelfriendflow2.thread.HttpParamConnThread;
+import com.example.estsoft.travelfriendflow2.thread.Preference;
 
+import net.daum.mf.map.api.CameraUpdateFactory;
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapPointBounds;
+
+import org.apache.http.conn.ConnectTimeoutException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyTravelListActivity extends Activity {
     private static final String LOG_TAG = "MyTravelListActivity";
+    private static String schSrchURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelect";    // 글 1개 조회
+    private static String schAllSrchURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelectByUser";    // 사용자 글 전체 조회
+
+    private static final String TAG_RESULTS="schList";
+    private static final String TAG_TITLE="title";
+    private static final String TAG_SDATE="startDate";
+    private static final String TAG_EDATE="endDate";
+
     ArrayList<Travel> tr = new ArrayList<Travel>();
 
     @Override
@@ -29,10 +62,137 @@ public class MyTravelListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mytravellist);
 
-        tr.add(new Travel("랄랄라","testtest"));
+//        new HttpParamConnThread().execute(schSrchURL, getUserNo());
 
-//        tr.add(new Travel("제목"));
-//        tr.add(new Travel("제목2"));
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Preference pf = new Preference(this);
+        new HttpParamConnThread().execute(schAllSrchURL, pf.getUserNo());
+    }
+
+
+    public class HttpParamConnThread extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... path){
+            // URL 연결이 구현될 부분
+            URL url;
+            String response = "";
+            String CONNURL = path[0];
+            String VALUE = path[1];
+            HttpURLConnection conn = null;
+            try {
+
+                url = new URL(CONNURL+"/"+VALUE);
+                Log.e(LOG_TAG, CONNURL+"/"+VALUE);
+                conn = (HttpURLConnection) url.openConnection();
+
+                conn.setConnectTimeout(2000);
+                conn.setReadTimeout(2000);
+                conn.setDoInput(true);
+
+
+                int responseCode = conn.getResponseCode();
+                Log.e("http response code", responseCode+"");
+
+                if ( responseCode == HttpURLConnection.HTTP_OK ) { // 연결에 성공한 경우
+                    Log.e(LOG_TAG, "연결 성공");
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream())); // 서버의 응답을 읽기 위한 입력 스트림
+
+                    while ((line = br.readLine()) != null) {// 서버의 응답을 읽어옴
+                        response += line;
+                    }
+
+                    br.close();
+                    conn.disconnect();
+                    Log.e("RESPONSE", "The response is: " + response);
+                }else{
+                    Log.e(LOG_TAG, "연결결 실패");
+                   return "";
+                }
+
+            }catch (ConnectTimeoutException ue){
+                Log.e(LOG_TAG, "ConnectTimeoutException");
+            }catch (IOException e) {
+                e.printStackTrace();
+            }finally{
+                conn.disconnect();
+            }
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // UI 업데이트가 구현될 부분
+            if(result==null) {
+                //  로딩바 띄우기
+                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다. 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if( parsePinData(result) ){
+                showResult();
+            }
+
+        }
+
+    }   // End_HttpParamConnThread
+
+    protected boolean parsePinData(String myJSON){
+
+        try {
+            JSONObject jsonObj = new JSONObject(myJSON);
+            JSONArray datas = jsonObj.getJSONArray(TAG_RESULTS);
+
+            for(int i = 0; i< datas.length(); i++){
+                JSONObject object = datas.getJSONObject(i);
+
+                Travel t = new Travel();
+                t.setTitle(object.getString(TAG_TITLE));
+
+                String sdate = object.getString(TAG_SDATE);
+                String edate = object.getString(TAG_EDATE);
+
+                if( sdate == null || edate == null ){
+                    return false;
+                }
+
+                String[] s = sdate.split(" ");
+                String[] e = edate.split(" ");
+                t.setTxt_creationDate(s[0].replaceAll("-", "/"));
+
+                String[] sdateArr = s[0].split("-");
+                String[] edateArr = e[0].split("-");
+                int sMonth = Integer.parseInt(sdateArr[1]);    // month
+
+                if( sMonth >= 5 && sMonth <= 9 ){
+                    t.setPlanSeason("여름");
+                }else if( sMonth >= 10 & sMonth <= 3 ){
+                    t.setPlanSeason("겨울");
+                }
+
+                int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
+                t.setPlanTime((day-1)+"박"+day+"일");
+
+                t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
+
+                tr.add(t);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }// End_parsePinData
+
+    private void showResult() {
 
         MyAdapter adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr);
         ListView lv = (ListView)findViewById(R.id.listview);
@@ -41,7 +201,6 @@ public class MyTravelListActivity extends Activity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(getApplicationContext(),"234",Toast.LENGTH_SHORT).show();
                 String title = tr.get(i).getTitle();
                 Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
                 intent.putExtra("title",title);
@@ -51,6 +210,8 @@ public class MyTravelListActivity extends Activity {
     }
 
 }
+
+
 
 class MyAdapter extends BaseAdapter {
     Context context;
@@ -88,23 +249,8 @@ class MyAdapter extends BaseAdapter {
         TextView creationDate = (TextView)convertView.findViewById(R.id.txt_creationDate);
         Travel t = tr.get(position);
         title.setText(t.title);
-        creationDate.setText(t.creationDate);
+        creationDate.setText(t.getTxt_creationDate());
 
         return convertView;
-    }
-}
-
-class Travel{
-    String title = "";
-    String creationDate = "";
-
-    public Travel(String title, String creationDate){ this.title = title; this.creationDate = creationDate; }
-    public Travel(String title){
-        this.title = title;
-    }
-    public Travel(){}
-
-    public String getTitle() {
-        return title;
     }
 }

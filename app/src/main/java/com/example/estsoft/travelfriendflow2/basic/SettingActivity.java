@@ -120,13 +120,6 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-        Button dropoutButton = (Button)findViewById(R.id.dropoutButton);
-        dropoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"회원탈퇴 되었습니다",Toast.LENGTH_LONG).show();
-            }
-        });
 
 
     }
@@ -140,7 +133,6 @@ public class SettingActivity extends AppCompatActivity {
 
                 File f = new File(selectedImagePath);
                 Picasso.with(getApplicationContext()).load(f).transform(new CircleTransform()).into(imageView);
-
             }
         }
     }
@@ -159,24 +151,6 @@ public class SettingActivity extends AppCompatActivity {
             return cursor.getString(column_index);
         }
         return uri.getPath();
-    }
-
-    public void dialogChangePassword(View view) {
-        LayoutInflater inflater = getLayoutInflater();
-        final View customView = inflater.inflate(R.layout.dialog_password, null);
-
-        new android.app.AlertDialog.Builder(this).
-                setTitle("비밀 번호 변경").
-                setView(customView).
-                setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        TextView tv = (TextView) customView.findViewById(R.id.password);
-                        String password = tv.getText().toString();
-                        Log.d("-------->", password);
-                    }
-                }).
-                show();
     }
 
 

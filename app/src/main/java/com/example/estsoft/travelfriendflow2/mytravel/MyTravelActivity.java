@@ -35,10 +35,10 @@ public class MyTravelActivity extends TabActivity {
         mTab.addTab(mTab.newTabSpec("tab1").setIndicator("나의 여행",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,MyTravelListActivity.class)));
         mTab.addTab(mTab.newTabSpec("tab2").setIndicator("보관함",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,BookmarkListActivity.class)));
 
-        tr.add(new Travel("제목"));
-        tr.add(new Travel("제목2"));
-        tr.add(new Travel("제목3"));
-        tr.add(new Travel("제목4"));
+//        tr.add(new Travel("제목"));
+//        tr.add(new Travel("제목2"));
+//        tr.add(new Travel("제목3"));
+//        tr.add(new Travel("제목4"));
 
 
         ImageView newTravel = (ImageView)findViewById(R.id.newtravel);

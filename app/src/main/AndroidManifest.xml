@@ -6,23 +6,22 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".GlobalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="여행친구"
+        android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light"
-        android:largeHeap="true">
-
+        android:theme="@style/Theme.AppCompat.Light">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-
+            android:value="@string/facebook_app_id" />
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="@string/kakao_app_key"/>
+            android:value="@string/kakao_app_key" />
 
         <activity
             android:name=".basic.SplashActivity"
@@ -33,15 +32,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".basic.MainActivity"
             android:icon="@drawable/logo"
             android:label="여친"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:uiOptions="splitActionBarWhenNarrow"
-            android:windowSoftInputMode="adjustPan"></activity>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".basic.FirstStartActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -56,13 +53,11 @@
         <activity
             android:name=".basic.JoinWithEmailActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity android:name=".lookaround.LookAroundActivity" />
         <activity android:name=".sale.SaleActivity" />
         <activity android:name=".korail.KorailActivity" />
         <activity android:name=".chat.ChatActivity" />
         <activity android:name=".mytravel.MyTravelActivity" />
-
         <activity
             android:name=".basic.SettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -72,20 +67,20 @@
         <activity
             android:name=".mytravel.NewTravelSettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity android:name=".mytravel.MyTravelListActivity" />
         <activity android:name=".mytravel.BookmarkListActivity" />
-        <activity android:name=".chat.ChatMainActivity"></activity>
-
-        <activity android:name=".mytravel.SelectCityActivity"></activity>
-        <activity android:name=".mytravel.SelectedCityActivity"></activity>
-        <activity android:name=".lookaround.OthersPlanActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity android:name=".lookaround.OthersPlanMapActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity android:name=".lookaround.OthersPlanTableActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-
+        <activity android:name=".chat.ChatMainActivity" />
+        <activity android:name=".mytravel.SelectCityActivity" />
+        <activity android:name=".mytravel.SelectedCityActivity" />
+        <activity
+            android:name=".lookaround.OthersPlanActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".lookaround.OthersPlanMapActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".lookaround.OthersPlanTableActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".map.MapViewActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
@@ -93,7 +88,12 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <activity android:name=".mytravel.MySettingActivity"></activity>
+        <activity android:name=".korail.DirectPathActivity"></activity>
+        <activity android:name=".korail.TransferPathActivity"></activity>
+        <activity android:name=".sale.SaleItemActivity"></activity>
+
 
     </application>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 </manifest>

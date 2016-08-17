@@ -32,7 +32,7 @@ public class AttractionVO {
 
     @Override
     public String toString() {
-        return "AttractionVo{" +
+        return "AttractionVO{" +
                 "no=" + no +
                 ", location='" + location + '\'' +
                 '}';
