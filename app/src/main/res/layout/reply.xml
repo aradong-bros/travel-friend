@@ -8,18 +8,23 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:id="@+id/idBox"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_vertical"
+        android:text="idid"
+        android:textStyle="bold"
+
         android:textColor="#000" />
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="1dp"
+        android:background="#000"/>
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:id="@+id/contextBox"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_vertical"
+        android:text="context"
         android:textColor="#000" />
 
 

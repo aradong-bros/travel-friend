@@ -27,7 +27,7 @@ public class LayoutTwo extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = (ViewGroup) inflater.inflate(R.layout.firststartview2, null);
         ImageView imageView = (ImageView)root.findViewById(R.id.img_sample2);
-        imageView.setBackground(new BitmapDrawable(getResources(),
+        imageView.setBackgroundDrawable(new BitmapDrawable(getResources(),
                 BitmapFactory.decodeResource(getResources(),R.drawable.phone_sample)));
 
         return root;

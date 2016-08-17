@@ -26,6 +26,7 @@
         android:id="@+id/SaleTextBox"
         android:textColor="#000"
         android:textSize="15dp"
+        android:layout_marginLeft="10dp"
         android:text="테스트다 랄랄라"
         android:gravity="center"
  />
