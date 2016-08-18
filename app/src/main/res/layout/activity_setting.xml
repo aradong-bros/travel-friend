@@ -48,6 +48,12 @@
         android:layout_alignLeft="@+id/textView11"
         android:layout_alignStart="@+id/textView11" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="변경"
+        android:layout_alignLeft="@+id/editText6"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,9 +80,6 @@
         android:textSize="18dp" />
 
 
-
-
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,9 +90,6 @@
         android:layout_below="@+id/chagePasswordButton"
         android:layout_alignLeft="@+id/chagePasswordButton"
         android:layout_alignStart="@+id/chagePasswordButton" />
-
-
-
 
 
 </LinearLayout>
