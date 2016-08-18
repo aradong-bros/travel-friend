@@ -15,8 +15,10 @@ import java.net.URLEncoder;
  * Created by YeonJi on 2016-08-11.
  * HttpParamConnThread
  * get방식으로 parameter로 넘길 경우
- * !MyTravelListActivity에서 사용!
- * ex)http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelect/{no}
+ * !MyTravelListActivity, BookMarkListActivity에서 사용! -> ui문제때문에 결국 activity에서 따로 구현...
+ * ui 문제 없는 단순 조회기능(BookMarkList확인용)에서만 사용
+ * ex) http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelect/{no}
+ * ex) http://222.239.250.207:8080/TravelFriendAndroid/favorite/selectFavoriteList/{user_no 값}
  *
  */
 public class HttpParamConnThread extends AsyncTask<String, Void, String> {
@@ -36,7 +38,6 @@ public class HttpParamConnThread extends AsyncTask<String, Void, String> {
             conn = (HttpURLConnection) url.openConnection();
 
             conn.setConnectTimeout(3000);
-
             conn.setDoInput(true);
 
             Log.e("http response code", conn.getResponseCode()+"");

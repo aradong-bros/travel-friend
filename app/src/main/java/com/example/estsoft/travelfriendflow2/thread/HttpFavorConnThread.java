@@ -10,31 +10,31 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by YeonJi on 2016-08-11.
- * HttpSendschNoConnThread
- * 관광지 다 담은 후 최종적으로 Schedule_no 보내는 URL
- * !SelectedCityActivity에서 사용!
- * ex) http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot?schedule_no={schedule_no 값}
- *
+ * Created by YeonJi on 2016-08-18.
+ * HttpFavorConnThread
+ * get방식으로 parameter로 넘길 경우
+ * LookAroundActivity) Favorite 테이블에 삽입할 때 사용
+ * ex)   - url : http://222.239.250.207:8080/TravelFriendAndroid/favorite/insertFavoriteData?user_no={user_no 값}&schedule_no={schedule_no 값}
  */
-public class HttpSendSchNoConnThread extends AsyncTask<String, Void, String> {
-    private static String LOG_TAG = "HttpParamConnThread";
+public class HttpFavorConnThread extends AsyncTask<String, Void, String> {
+    private static String LOG_TAG = "HttpFavorConnThread";
     @Override
     protected String doInBackground(String... path){
         // URL 연결이 구현될 부분
         URL url;
         String response = "";
         String CONNURL = path[0];
-        String VALUE = "?schedule_no="+path[1];
+        String VALUE = "?user_no="+path[1];
+        String VALUE2 = "&schedule_no="+path[2];
+
         HttpURLConnection conn = null;
         try {
 
-            url = new URL(CONNURL+VALUE);
-            Log.e(LOG_TAG, CONNURL+VALUE);
+            url = new URL(CONNURL+VALUE+VALUE2);
+            Log.e(LOG_TAG, CONNURL+VALUE+VALUE2);
             conn = (HttpURLConnection) url.openConnection();
 
             conn.setConnectTimeout(3000);
-
             conn.setDoInput(true);
 
             Log.e("http response code", conn.getResponseCode()+"");
@@ -69,4 +69,4 @@ public class HttpSendSchNoConnThread extends AsyncTask<String, Void, String> {
         // ...
     }
 
-}   // End_HttpSendschNoConnThread
+}   // End_HttpFavorInsertConnThread

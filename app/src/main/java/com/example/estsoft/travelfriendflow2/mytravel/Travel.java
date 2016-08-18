@@ -12,6 +12,7 @@ public class Travel{
     String planSeason;
     int background;
     int schNo;
+    boolean heart;
 
     public Travel(String title, String txt_creationDate, String planTime, String planSeason,int background){
         this.title = title;
@@ -35,4 +36,6 @@ public class Travel{
     public void setBackground(int background) {  this.background = background;   }
     public int getSchNo() {   return schNo;  }
     public void setSchNo(int schNo) {     this.schNo = schNo;  }
+    public boolean isHeart() {       return heart;     }
+    public void setHeart(boolean heart) {      this.heart = heart;   }
 }
