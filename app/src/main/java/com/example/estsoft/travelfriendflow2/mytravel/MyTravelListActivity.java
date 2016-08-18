@@ -49,7 +49,7 @@ public class MyTravelListActivity extends Activity {
     private static final String LOG_TAG = "MyTravelListActivity";
     private static String oneSrchURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelect";    // 글 1개 조회
     private static String schAllSrchURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelectByUser";    // 사용자 글 전체 조회
-    private static String deleteURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schDelete";    // isDelete 수정
+    private static String deleteURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schDelete";    // 스케쥴 1개 삭제
 
     private static final String TAG_RESULTS="schList";
     private static final String TAG_TITLE="title";
@@ -213,6 +213,7 @@ public class MyTravelListActivity extends Activity {
                 t.setPlanTime((day-1)+"박"+day+"일");
                 t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
 
+                t.setSetting(true);
                 tr.add(t);
             }
 
@@ -270,7 +271,6 @@ class MyAdapter extends BaseAdapter {
         ImageView heart = (ImageView)convertView.findViewById(R.id.heart);
         ImageView btn_setting = (ImageView)convertView.findViewById(R.id.btn_setting);
 
-
         heart.setVisibility(View.INVISIBLE);
         btn_setting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -288,8 +288,12 @@ class MyAdapter extends BaseAdapter {
         plan_time.setText(t.getPlanTime());
         plan_season.setText(t.getPlanSeason());
         background.setBackgroundResource(t.getBackground());
-
         heart.setVisibility(View.INVISIBLE);
+
+        if( t.isSetting() )
+            btn_setting.setVisibility(View.VISIBLE);
+        else
+            btn_setting.setVisibility(View.INVISIBLE);
 
         return convertView;
     }

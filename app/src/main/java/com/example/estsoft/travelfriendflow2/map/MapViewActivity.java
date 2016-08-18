@@ -339,8 +339,8 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                 String location = object.getString(TAG_LOCATION);
                 String[] arr = location.split(",");
 
-                pinItem.latitude = (arr[0] != null ? Double.parseDouble(arr[0]) : null );
-                pinItem.longitude = (arr[1] != null ? Double.parseDouble(arr[1]) : null );
+                pinItem.latitude = ( !arr[0].equals("") ? Double.parseDouble(arr[0]) : null );
+                pinItem.longitude = ( !arr[1].equals("") ? Double.parseDouble(arr[1]) : null );
 
                 pinItem.category = object.getString(TAG_CATEGORY);
 

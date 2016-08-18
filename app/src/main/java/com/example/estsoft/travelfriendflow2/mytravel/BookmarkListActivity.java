@@ -193,6 +193,7 @@ public class BookmarkListActivity extends Activity {
                 t.setPlanTime((day-1)+"박"+day+"일");
                 t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
 
+                t.setSetting(false);
                 tr.add(t);
             }
 
