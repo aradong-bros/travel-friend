@@ -83,12 +83,16 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".map.MapViewActivity"
+
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <activity android:name=".mytravel.MySettingActivity"></activity>
+
+        <activity android:name=".mytravel.MySettingActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <activity android:name=".korail.DirectPathActivity"></activity>
         <activity android:name=".korail.TransferPathActivity"></activity>
         <activity android:name=".sale.SaleItemActivity"></activity>

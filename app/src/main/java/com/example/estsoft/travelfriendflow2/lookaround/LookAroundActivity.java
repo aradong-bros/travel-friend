@@ -59,6 +59,7 @@ public class LookAroundActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
+        tr.clear(); // 초기화
         Preference pf = new Preference(this);
         new HttpParamConnThread().execute(othAllSrchURL, pf.getUserNo());
 
@@ -97,38 +98,37 @@ public class LookAroundActivity extends Activity {
                     br.close();
                     conn.disconnect();
                     Log.e("RESPONSE", "The response is: " + response);
+
+                    return response;
+
                 }else{
-                    Log.e(LOG_TAG, "연결결 실패");
-                    return "";
+                    Log.e(LOG_TAG, "서버 접속 실패");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
 
-            }catch (ConnectTimeoutException ue){
-                Log.e(LOG_TAG, "ConnectTimeoutException");
-            }catch (UnknownHostException ue){
-                Log.e(LOG_TAG, "서버 접속 실패");
-                Toast.makeText(getApplicationContext(), "서버 연결에 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show();
-                //  로딩바 띄우기
             }catch (IOException e) {
                 e.printStackTrace();
             }finally{
                 conn.disconnect();
             }
-
-            return response;
+            return "";
         }
 
         @Override
         protected void onPostExecute(String result) {
-            // UI 업데이트가 구현될 부분
-            if(result==null) {
+            if(result.equals(null)) {
                 //  로딩바 띄우기
-                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다. 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            if( parsePinData(result) ){
+            if( parsePinData(result) )
                 showResult();
-            }
 
         }
 
@@ -146,11 +146,10 @@ public class LookAroundActivity extends Activity {
 
                 Travel t = new Travel();
                 t.setTitle(object.getString(TAG_TITLE));
-
                 String sdate = object.getString(TAG_SDATE);
                 String edate = object.getString(TAG_EDATE);
 
-                if( sdate == "null" || edate == "null" ){
+                if( sdate.equals(null)|| edate.equals(null) ){              // <<<
                     return false;
                 }
 
@@ -172,7 +171,6 @@ public class LookAroundActivity extends Activity {
                 t.setPlanTime((day-1)+"박"+day+"일");
 
                 t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
-
                 tr.add(t);
             }
 
@@ -180,7 +178,7 @@ public class LookAroundActivity extends Activity {
             e.printStackTrace();
         }
         return true;
-    }// End_parsePinData
+    }   // End_parsePinData
 
     private void showResult() {
 
@@ -191,15 +189,12 @@ public class LookAroundActivity extends Activity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(getApplicationContext(),"234",Toast.LENGTH_SHORT).show();
                 String title = tr.get(i).getTitle();
                 Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
                 intent.putExtra("title",title);
                 startActivity(intent);
             }
         });
-
-
 
     }
 
@@ -247,6 +242,7 @@ class MyAdapter extends BaseAdapter{
 
         heart.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View v) {
                 v.setSelected(!v.isSelected());
             }

@@ -76,6 +76,14 @@
         android:layout_marginBottom="20dp"
         android:layout_marginRight="5dp"/>
 
+    <Button
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:id="@+id/btn_setting"
+        android:background="#c15eec"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:focusable="false"/>
 
 
 
