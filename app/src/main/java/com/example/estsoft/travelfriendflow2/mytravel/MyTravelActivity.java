@@ -3,6 +3,7 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -35,18 +36,24 @@ public class MyTravelActivity extends TabActivity {
         mTab.addTab(mTab.newTabSpec("tab1").setIndicator("나의 여행",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,MyTravelListActivity.class)));
         mTab.addTab(mTab.newTabSpec("tab2").setIndicator("보관함",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,BookmarkListActivity.class)));
 
-//        tr.add(new Travel("제목"));
-//        tr.add(new Travel("제목2"));
-//        tr.add(new Travel("제목3"));
-//        tr.add(new Travel("제목4"));
-
-
-        ImageView newTravel = (ImageView)findViewById(R.id.newtravel);
+        final ImageView newTravel = (ImageView)findViewById(R.id.newtravel);
         newTravel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),NewTravelSettingActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        mTab.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+
+                if( tabId.equals("tab2") ) {
+                    newTravel.setVisibility(View.INVISIBLE);
+                }else {
+                    newTravel.setVisibility(View.VISIBLE);
+                }
             }
         });
 
