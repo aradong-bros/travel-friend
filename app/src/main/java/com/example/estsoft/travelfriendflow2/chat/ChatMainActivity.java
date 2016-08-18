@@ -309,7 +309,7 @@ public class ChatMainActivity extends Activity {
                                     profileLay.setGravity(Gravity.RIGHT | Gravity.TOP);
                                 } else {
                                     lblReceive.setBackgroundResource(R.drawable.yourmessage);
-                                    Picasso.with(getApplicationContext()).load(pictureReceive).resize(120, 120).transform(new CircleTransform()).into(profile);
+                                    Picasso.with(getApplicationContext()).load(pictureReceive).resize(60, 60).transform(new CircleTransform()).into(profile);
                                     profileLay.addView(profile);
                                     commentBubbleLay.addView(talkName);
                                     commentBubbleLay.addView(lblReceive);
@@ -504,7 +504,7 @@ public class ChatMainActivity extends Activity {
                     talkName.setLayoutParams(myparam);
                 } else {
                     lblReceive.setBackgroundResource(R.drawable.yourmessage);
-                    Picasso.with(getApplicationContext()).load(pictureReceive).resize(120, 120).transform(new CircleTransform()).into(profile);
+                    Picasso.with(getApplicationContext()).load(pictureReceive).resize(60, 60).transform(new CircleTransform()).into(profile);
                     profileLay.addView(profile);
                     commentBubbleLay.addView(talkName);
                     commentBubbleLay.addView(lblReceive);

@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
 import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
-import com.example.estsoft.travelfriendflow2.thread.HttpSendschNoConnThread;
+import com.example.estsoft.travelfriendflow2.thread.HttpSendSchNoConnThread;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
 
 import org.json.JSONArray;
@@ -79,7 +79,7 @@ public class SelectedCityActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
 
                 if( SCHEDULE_NO != null) {
-                    new HttpSendschNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection
+                    new HttpSendSchNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection
                 }else {
                     Toast.makeText(getApplicationContext(), "SCHEDULE NO ERROR", Toast.LENGTH_LONG).show();
                     Log.e(LOG_TAG, SCHEDULE_NO);

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -239,6 +240,8 @@ class MyAdapter extends BaseAdapter{
         TextView plan_season = (TextView)convertView.findViewById(R.id.plan_season);
         LinearLayout background = (LinearLayout)convertView.findViewById(R.id.row_layout);
         ImageView heart = (ImageView)convertView.findViewById(R.id.heart);
+        ImageView btn_setting = (ImageView)convertView.findViewById(R.id.btn_setting);
+
 
         heart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -254,6 +257,8 @@ class MyAdapter extends BaseAdapter{
         plan_time.setText(t.getPlanTime());
         plan_season.setText(t.getPlanSeason());
         background.setBackgroundResource(t.getBackground());
+
+        btn_setting.setVisibility(View.INVISIBLE);
         return convertView;
     }
 }

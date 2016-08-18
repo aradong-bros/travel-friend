@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.basic.MainActivity;
 import com.example.estsoft.travelfriendflow2.thread.HttpMySetConnThread;
 import com.example.estsoft.travelfriendflow2.thread.HttpParamConnThread;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
@@ -25,6 +27,8 @@ public class MySettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_setting);
+
+        Button save_btn = (Button)findViewById(R.id.save_btn);
 
         Intent intent = getIntent();
         final int schNo = intent.getIntExtra("schNo", -1);
@@ -58,6 +62,14 @@ public class MySettingActivity extends AppCompatActivity {
                 }
             }
         });
+
+        save_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
     }
 }

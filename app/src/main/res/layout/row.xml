@@ -71,19 +71,19 @@
         android:layout_height="23dp"
         android:id="@+id/heart"
         android:background="@drawable/heart_selector"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="70dp"
         android:layout_marginRight="5dp"/>
 
-    <Button
+    <ImageView
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/btn_setting"
-        android:background="#c15eec"
-        android:layout_alignParentTop="true"
+        android:background="@drawable/setting"
         android:layout_alignParentRight="true"
-        android:focusable="false"/>
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="70dp"
+        android:focusable="false" />
 
 
 

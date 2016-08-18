@@ -15,16 +15,21 @@
         android:layout_height="45dp"
         android:id="@+id/spin_category"
         android:entries="@array/category"
-        android:background="#40C4FF"
+        android:background="@drawable/rounded_edittext"
+        android:gravity="center"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_selComplete"
-        android:text="완료"
-        android:background="#e2a8e9"
+        android:text="저장"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:background="@drawable/rounded_edittext"
         />
+
 </RelativeLayout>

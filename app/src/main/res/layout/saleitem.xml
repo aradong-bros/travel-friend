@@ -16,8 +16,7 @@
     <ImageView
         android:layout_height="80dp"
         android:layout_width="80dp"
-        android:id="@+id/SaleImage"
-        android:background="@drawable/hadong">
+        android:id="@+id/SaleImage">
     </ImageView>
 
     <TextView
