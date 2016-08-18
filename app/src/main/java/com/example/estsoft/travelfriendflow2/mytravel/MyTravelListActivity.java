@@ -7,12 +7,16 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,33 +51,56 @@ import java.util.List;
 
 public class MyTravelListActivity extends Activity {
     private static final String LOG_TAG = "MyTravelListActivity";
-    private static String schSrchURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelect";    // 글 1개 조회
+    private static String oneSrchURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelect";    // 글 1개 조회
     private static String schAllSrchURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelectByUser";    // 사용자 글 전체 조회
+    private static String deleteURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schDelete";    // isDelete 수정
 
     private static final String TAG_RESULTS="schList";
     private static final String TAG_TITLE="title";
     private static final String TAG_SDATE="startDate";
     private static final String TAG_EDATE="endDate";
+    private MyAdapter adapter;
 
     ArrayList<Travel> tr = new ArrayList<Travel>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mytravellist);
 
-//        new HttpParamConnThread().execute(schSrchURL, getUserNo());
-
-
-
+//        new HttpParamConnThread().execute(oneSrchURL, getSchNo());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        tr.clear(); // 초기화
         Preference pf = new Preference(this);
         new HttpParamConnThread().execute(schAllSrchURL, pf.getUserNo());
+
+        adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr);
+        ListView lv = (ListView)findViewById(R.id.listview);
+        lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String title = tr.get(i).getTitle();
+                Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
+                intent.putExtra("title",title);
+                startActivity(intent);
+            }
+        });
+
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                new HttpParamConnThread().execute(deleteURL, Integer.toString(tr.get(position).getSchNo()));
+                tr.remove(position);
+                return true;
+            }
+        });
+
     }
 
 
@@ -112,9 +139,17 @@ public class MyTravelListActivity extends Activity {
                     br.close();
                     conn.disconnect();
                     Log.e("RESPONSE", "The response is: " + response);
+                    return response;
+
                 }else{
-                    Log.e(LOG_TAG, "연결결 실패");
-                   return "";
+                    Log.e(LOG_TAG, "서버 접속 실패");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    //  로딩바 띄우기
                 }
 
             }catch (ConnectTimeoutException ue){
@@ -125,15 +160,14 @@ public class MyTravelListActivity extends Activity {
                 conn.disconnect();
             }
 
-            return response;
+            return null;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            // UI 업데이트가 구현될 부분
             if(result==null) {
                 //  로딩바 띄우기
-                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다. 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -155,12 +189,13 @@ public class MyTravelListActivity extends Activity {
                 JSONObject object = datas.getJSONObject(i);
 
                 Travel t = new Travel();
+                t.setSchNo(object.getInt("no"));
                 t.setTitle(object.getString(TAG_TITLE));
 
                 String sdate = object.getString(TAG_SDATE);
                 String edate = object.getString(TAG_EDATE);
 
-                if( sdate == null || edate == null ){
+                if( sdate == null || edate == null || object.getString("firstStation") == null || object.getString("lastStation") == null){
                     return false;
                 }
 
@@ -170,7 +205,7 @@ public class MyTravelListActivity extends Activity {
 
                 String[] sdateArr = s[0].split("-");
                 String[] edateArr = e[0].split("-");
-                int sMonth = Integer.parseInt(sdateArr[1]);    // month
+                int sMonth = Integer.parseInt(sdateArr[1]);
 
                 if( sMonth >= 5 && sMonth <= 9 ){
                     t.setPlanSeason("여름");
@@ -180,7 +215,6 @@ public class MyTravelListActivity extends Activity {
 
                 int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
                 t.setPlanTime((day-1)+"박"+day+"일");
-
                 t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
 
                 tr.add(t);
@@ -193,24 +227,10 @@ public class MyTravelListActivity extends Activity {
     }// End_parsePinData
 
     private void showResult() {
-
-        MyAdapter adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr);
-        ListView lv = (ListView)findViewById(R.id.listview);
-        lv.setAdapter(adapter);
-
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String title = tr.get(i).getTitle();
-                Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
-                intent.putExtra("title",title);
-                startActivity(intent);
-            }
-        });
+        adapter.notifyDataSetChanged();
     }
 
 }
-
 
 
 class MyAdapter extends BaseAdapter {
@@ -240,17 +260,36 @@ class MyAdapter extends BaseAdapter {
         return position;
     }
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, ViewGroup parent){
         if(convertView == null){
             convertView = inf.inflate(layout, null);
         }
 
         TextView title = (TextView)convertView.findViewById(R.id.lookAroundTextBox);
         TextView creationDate = (TextView)convertView.findViewById(R.id.txt_creationDate);
+        TextView plan_time = (TextView)convertView.findViewById(R.id.plan_time);
+        TextView plan_season = (TextView)convertView.findViewById(R.id.plan_season);
+        LinearLayout background = (LinearLayout)convertView.findViewById(R.id.row_layout);
+        Button btn_setting = (Button)convertView.findViewById(R.id.btn_setting);
+
+        btn_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context.getApplicationContext(), MySettingActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);      // 새로운 task 만들겠다는 의미
+                i.putExtra("schNo", tr.get(position).getSchNo());
+                context.startActivity(i);
+            }
+        });
+
         Travel t = tr.get(position);
         title.setText(t.title);
         creationDate.setText(t.getTxt_creationDate());
+        plan_time.setText(t.getPlanTime());
+        plan_season.setText(t.getPlanSeason());
+        background.setBackgroundResource(t.getBackground());
 
         return convertView;
     }
+
 }

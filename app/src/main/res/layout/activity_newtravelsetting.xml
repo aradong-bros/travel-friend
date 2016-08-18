@@ -53,13 +53,17 @@
         android:id="@+id/edt_title"
         android:gravity="center"
         android:hint="ex. 얄리와 함께 기차여행"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="5dp"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
+        android:lines="1"
+        android:nextFocusDown="@id/selected_sdate_textview"/>
     ​
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:id="@+id/layout1">
 
@@ -69,7 +73,7 @@
             android:layout_height="wrap_content"
             android:text="출발 날짜"
             android:textColor="#000"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:layout_gravity="left"/>
 
         <TextView
@@ -77,15 +81,16 @@
             android:layout_height="wrap_content"
             android:textSize="20dp"
             android:id="@+id/selected_sdate_textview"
-            android:text="0000/00/00"
+            android:hint="0000/00/00"
             android:textColor="#000"
             android:textStyle="bold"
             android:clickable="true"
             android:onClick="dialogSelectSDate"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-        ​
+            android:layout_alignParentEnd="true"
+            android:imeOptions="actionNext"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -93,13 +98,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginBottom="10dp">
+
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:text="출발 시간"
             android:textColor="#000"
 
@@ -110,14 +117,16 @@
             android:layout_height="wrap_content"
             android:textSize="20dp"
             android:id="@+id/selected_stime_textview"
-            android:text="00-00"
+            android:hint="00:00"
             android:textColor="#000"
             android:textStyle="bold"
             android:clickable="true"
             android:onClick="dialogSelectSTime"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:imeOptions="actionNext"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -133,7 +142,7 @@
             android:layout_height="wrap_content"
             android:text="도착 날짜"
             android:textColor="#000"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:layout_gravity="left"/>
 
         <TextView
@@ -141,14 +150,15 @@
             android:layout_height="wrap_content"
             android:textSize="20dp"
             android:id="@+id/selected_edate_textview"
-            android:text="0000/00/00"
+            android:hint="0000/00/00"
             android:textColor="#000"
             android:textStyle="bold"
             android:clickable="true"
-            android:onClick="dialogSelectSDate"
+            android:onClick="dialogSelectEDate"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:imeOptions="actionNext"/>
         ​
     </RelativeLayout>
 
@@ -164,7 +174,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:text="도착 시간"
             android:textColor="#000"
 
@@ -175,14 +185,15 @@
             android:layout_height="wrap_content"
             android:textSize="20dp"
             android:id="@+id/selected_etime_textview"
-            android:text="00-00"
+            android:hint="00:00"
             android:textColor="#000"
             android:textStyle="bold"
             android:clickable="true"
-            android:onClick="dialogSelectSTime"
+            android:onClick="dialogSelectETime"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:imeOptions="actionNext"/>
     </RelativeLayout>
 
 
@@ -191,22 +202,41 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <AutoCompleteTextView
+            android:id="@+id/edt_stStation"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:hint="기차"
+            android:completionThreshold="1"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/txt_stStation"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:lines="1"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="출발역"
             android:id="@+id/startStationEditText"
-            android:textSize="20dp"
-            android:textColor="#000"/>
-        ​
-        <EditText
-            android:layout_width="100dp"
+            android:layout_alignBaseline="@id/edt_stStation"
+            android:textSize="20sp"
+            android:textColor="#000"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/edt_stStation"
-            android:layout_alignParentTop="true"
+            android:text="역"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:id="@+id/txt_stStation"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignBaseline="@id/edt_stStation"
+            android:gravity="center"/>
+
     </RelativeLayout>
 
 
@@ -215,21 +245,41 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <AutoCompleteTextView
+            android:id="@+id/edt_endStation"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:hint="기차"
+            android:completionThreshold="1"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/txt_endStation"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:lines="1"
+            android:nextFocusForward="@id/edt_stStation"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#000"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:id="@+id/endStationEditText"
-            android:text="도착역"/>
-        <EditText
-            android:layout_width="100dp"
+            android:text="도착역"
+            android:layout_alignBaseline="@id/edt_endStation"/>
+                ​
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/edt_endStation"
-            android:layout_alignParentTop="true"
+            android:text="역"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:id="@+id/txt_endStation"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignBaseline="@id/edt_endStation"
+            android:gravity="center"/>
+
     </RelativeLayout>
 
 

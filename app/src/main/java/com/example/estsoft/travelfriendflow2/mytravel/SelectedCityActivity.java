@@ -2,10 +2,8 @@ package com.example.estsoft.travelfriendflow2.mytravel;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,34 +11,27 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
 import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
-import com.example.estsoft.travelfriendflow2.map.PinItem;
+import com.example.estsoft.travelfriendflow2.thread.HttpSendschNoConnThread;
+import com.example.estsoft.travelfriendflow2.thread.Preference;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator;
 
-import javax.net.ssl.HttpsURLConnection;
 
 public class SelectedCityActivity extends Activity {
     private static final String LOG_TAG = "SelectedCityActivity";
@@ -63,11 +54,107 @@ public class SelectedCityActivity extends Activity {
     private ArrayList<City> city = new ArrayList<City>();
     private ListView lv;
 
+    private static String cityInsertURL = " http://222.239.250.207:8080/TravelFriendAndroid/city/cityInsert";
+    private static final String travelRootURL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";
+
+    private static HashMap<String, Integer> postMap = new HashMap<String, Integer>(); // KEY: city title -> cityList_no, VALUE:city_no(pk)
+    /** 원래 구조상 K,V값이 반대로 들어가야 하지만 city table에 schedule_no로 list_no가 다 mapping되어 있으므로 이렇게 구현.*/
+    private static final String TAG_RESULTS= "noList";
+    CityAdapter cityAdapter;
+    private static String SCHEDULE_NO = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmarklist);
 
+        cityInit();
+        /**
+         * ------------- SelectCityActivity -> SelectedCityActivity 값 가져와서 View에 뿌려주는 부분
+         * */
+        Button btn_wholeComplete = (Button)findViewById(R.id.btn_wholeComplete);
+        btn_wholeComplete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
+
+                if( SCHEDULE_NO != null) {
+                    new HttpSendschNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection
+                }else {
+                    Toast.makeText(getApplicationContext(), "SCHEDULE NO ERROR", Toast.LENGTH_LONG).show();
+                    Log.e(LOG_TAG, SCHEDULE_NO);
+                }
+            }
+        });
+
+
+        try {
+            JSONArray jArray = new JSONArray();
+
+            for(int i=0; i<city.size(); i++) {
+                JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
+                int cityNo = cityMap.get(city.get(i).title);
+                postMap.put( city.get(i).title , -1 );
+
+                sObject.put("schedule_no", SCHEDULE_NO);
+                sObject.put("cityList_no", cityNo+"");    //cityList_no
+                sObject.put("status", "none");
+                sObject.put("cityOrder", "-1");
+
+                jArray.put(sObject);
+            }
+            Log.e(LOG_TAG, jArray.toString());
+
+            new HttpPostConnThread().execute(cityInsertURL, jArray.toString());     // Thread for Http connection
+
+        }catch (JSONException je){
+            je.printStackTrace();
+        }
+        // ---
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
+        lv = (ListView)findViewById(R.id.listview);
+        lv.setAdapter(cityAdapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                Intent intent = new Intent(getApplicationContext(),MapViewActivity.class);
+
+                City city = (City) cityAdapter.getItem(position);
+                Log.e(LOG_TAG, city.title);
+                int cityList_No = -1;
+
+                for(int i=0; i<cityMap.size(); i++)
+                    cityList_No = cityMap.get(city.title);
+
+                if( cityList_No != -1) {
+                    intent.putExtra("cityList_no", cityList_No);
+
+                    String ctrNo = Integer.toString(cityList_No);
+                    intent.putExtra("city_no", postMap.get(ctrNo));
+                }
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindDrawables(lv);
+        System.gc();
+    }
+
+    public void cityInit(){
         City Seoul = new City(R.drawable.seoul,"서울");
         City Gapyoeng = new City(R.drawable.gapyeong,"가평");
         City Gangrueng = new City(R.drawable.gangrueng,"강릉");
@@ -115,62 +202,16 @@ public class SelectedCityActivity extends Activity {
             }
         }
 
-        /**
-         * ------------- SelectCityActivity -> SelectedCityActivity 값 가져와서 View에 뿌려주는 부분
-         * */
+        Preference pref = new Preference(this);
+        SCHEDULE_NO = pref.getValue("prefSchNo","null");
+        Log.e("prefSchNo",SCHEDULE_NO);
 
-        // 루트를 짜줘 버튼
-        findViewById(R.id.btn_wholeComplete).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        final CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
-        lv = (ListView)findViewById(R.id.listview);
-        lv.setAdapter(cityAdapter);
-
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                Intent intent = new Intent(getApplicationContext(),MapViewActivity.class);
-
-                City city = (City) cityAdapter.getItem(position);
-                Log.e(LOG_TAG, city.title);
-                int cityNo = -1;
-
-                for(int i=0; i<cityMap.size(); i++)
-                    cityNo = cityMap.get(city.title);
-
-                if( cityNo != -1)
-                    intent.putExtra("pos",cityNo);
-
-                startActivity(intent);
-
-            }
-        });
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unbindDrawables(lv);
-        System.gc();
     }
 
     private void unbindDrawables(View view) {
         if (view == null)
             return;
+
 
         if (view instanceof ImageView) {
             ((ImageView) view).setImageDrawable(null);
@@ -188,6 +229,100 @@ public class SelectedCityActivity extends Activity {
         }
     }
 
+    public class HttpPostConnThread extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... path){
+            // URL 연결이 구현될 부분
+            URL url;
+            String response = "";
+            String CONNURL = path[0];
+            String VALUE = path[1];
+            HttpURLConnection conn = null;
+            try {
+
+                url = new URL(CONNURL);
+                Log.e(LOG_TAG, CONNURL);
+                Log.e(LOG_TAG, VALUE);
+
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(3000); // 타임아웃: 10초
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Cache-Control", "no-cache");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                OutputStream os = conn.getOutputStream(); // 서버로 보내기 위한 출력 스트림
+                os.write(VALUE.getBytes());
+                os.flush();
+
+                Log.e("http response code", conn.getResponseCode()+"");
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) { // 연결에 성공한 경우
+                    Log.e(LOG_TAG, "연결 성공");
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream())); // 서버의 응답을 읽기 위한 입력 스트림
+
+                    while ((line = br.readLine()) != null) {// 서버의 응답을 읽어옴
+                        response += line;
+                    }
+
+                    br.close();
+                    conn.disconnect();
+                    Log.e("HttpPostConnThread", "The response is: " + response);
+                }
+
+            }catch (IOException e) {
+                e.printStackTrace();
+            }finally{
+                conn.disconnect();
+            }
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            if(result==null)
+                return;
+
+            try {
+                // The response is: {"noList":[{"no":3},{"no":4},{"no":5}]}
+                JSONObject jsonObject = new JSONObject(result);
+                JSONArray datas = jsonObject.getJSONArray("noList");
+                int[] cityNoArr = new int[datas.length()];
+
+                for(int i=0; i<datas.length(); i++){
+                    JSONObject obj = datas.getJSONObject(i);
+                    cityNoArr[i] = obj.getInt("no");
+                }
+
+                int idx = 0;
+                Iterator iterator = ((HashMap<String, Integer>)postMap.clone()).keySet().iterator();
+                while (iterator.hasNext()) {
+                    String key = (String) iterator.next();
+                    Log.e("key-----", key); // 도시 이름
+                    postMap.put( cityMap.get(key)+"", cityNoArr[idx++] );       // <cityList_no, city_no>  ADD
+                    postMap.remove(key);                                        // ORIGINAL VALUE < city_title, defaultValue> DELETE
+                }
+
+//                Iterator<String> i = postMap.keySet().iterator();
+//                while (i.hasNext()) {
+//                    String key = (String) i.next();
+//                    Log.e("key:"+key, "value:"+postMap.get(key));
+//                }
+
+                cityAdapter.notifyDataSetChanged();
+
+            }catch (JSONException je){
+                je.printStackTrace();
+            }
+        }
+
+    }   // End_HttpPostConnThread
 
 
 }

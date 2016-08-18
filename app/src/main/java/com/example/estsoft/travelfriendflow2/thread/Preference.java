@@ -33,4 +33,32 @@ public class Preference {
 
         return  no;
     }
+
+    public void put(String key, String value) {
+        SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    public String getValue(String key, String dftValue) {
+        SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+
+        try {
+            return pref.getString(key, dftValue);
+        } catch (Exception e) {
+            return dftValue;
+        }
+
+    }
+
+    public void initialization(){
+        SharedPreferences pref = mContext.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+
 }
