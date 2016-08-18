@@ -9,7 +9,15 @@
     <ListView
         android:id="@+id/listview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
     </ListView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_wholeComplete"
+        android:text="이제 루트를 짜줘"
+        android:background="#f4bb70" />
 
 </LinearLayout>

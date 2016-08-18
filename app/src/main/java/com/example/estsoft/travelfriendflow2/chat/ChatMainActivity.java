@@ -274,6 +274,7 @@ public class ChatMainActivity extends Activity {
                                     ((TextView)kk.findViewById(R.id.userId)).setText(userReceive);
                                     ((TextView)kk.findViewById(R.id.chatbubble)).setText(txtReceive);
                                     ((TextView)kk.findViewById(R.id.time)).setText(timeTv);
+
                                 }
 
                                 LinearLayout layout = (LinearLayout) findViewById(R.id.centerLayout);
@@ -415,12 +416,12 @@ public class ChatMainActivity extends Activity {
                     ((TextView)kk.findViewById(R.id.chatbubble)).setText(txtReceive);
                     ((TextView)kk.findViewById(R.id.time)).setText(timeTv);
                 } else {
-
                     kk = (LinearLayout)inflater.inflate(R.layout.yourchat,null);
                     Picasso.with(getApplicationContext()).load(pictureReceive).resize(120, 120).transform(new CircleTransform()).into(((ImageView)kk.findViewById(R.id.imageView)));
                     ((TextView)kk.findViewById(R.id.userId)).setText(userReceive);
                     ((TextView)kk.findViewById(R.id.chatbubble)).setText(txtReceive);
                     ((TextView)kk.findViewById(R.id.time)).setText(timeTv);
+
                 }
 
                 LinearLayout layout = (LinearLayout) findViewById(R.id.centerLayout);

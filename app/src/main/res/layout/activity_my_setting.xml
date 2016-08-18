@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
     tools:context="com.example.estsoft.travelfriendflow2.mytravel.MySettingActivity">
 
     <TextView
@@ -10,30 +12,31 @@
         android:layout_height="wrap_content"
         android:text="공개 여부"
         android:id="@+id/txt_isPublic"
-        android:textSize="30sp"
-        android:layout_alignTop="@+id/tg_isPublic"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignBottom="@id/tg_isPublic"
-        />
+        android:textSize="20sp"
+        android:layout_marginTop="200dp"
+        android:layout_below="@+id/tg_isPublic"
+        android:layout_alignRight="@+id/txt_isFinished"
+        android:layout_alignEnd="@+id/txt_isFinished" />
 
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textOn="공개"
         android:textOff="비공개"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_edittext"
         android:id="@+id/tg_isPublic"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="44dp" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="완성/미완성"
+        android:text="완성 여부"
         android:id="@+id/txt_isFinished"
-        android:textSize="30sp"
+        android:textSize="20sp"
+        android:layout_marginTop="30dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/txt_isPublic"    />
@@ -43,10 +46,20 @@
         android:layout_height="wrap_content"
         android:textOn="완성"
         android:textOff="미완성"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_edittext"
         android:id="@+id/tg_isFinished"
         android:layout_alignParentRight="true"
         android:layout_alignBottom="@id/txt_isFinished" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:id="@+id/save_btn"
+        android:background="#FFF"
+        android:layout_marginTop="130dp"/>
 
 
-</RelativeLayout>
+
+</LinearLayout>

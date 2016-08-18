@@ -29,6 +29,7 @@ import net.daum.mf.map.api.MapView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -63,7 +64,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
     private MapView mapView;
     private HashMap<Integer, PinItem> mTagItemMap = new HashMap<Integer, PinItem>();
-    private Button btn_complete;
+    private TextView btn_complete;
     private HashMap<String, String> likeMap = new HashMap<String, String>();        //<postList_no, location>
     public static final int REQUEST_CODE = 1001;
     private static Intent attrIntent;
@@ -73,7 +74,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
 
-        btn_complete = (Button)findViewById(R.id.btn_selComplete);
+        btn_complete = (TextView)findViewById(R.id.btn_selComplete);
 
         Intent intent = getIntent();
         final int cityList_no = intent.getIntExtra("cityList_no", -1);

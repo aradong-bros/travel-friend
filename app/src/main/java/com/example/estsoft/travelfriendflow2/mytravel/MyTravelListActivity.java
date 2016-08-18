@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,11 +30,6 @@ import com.example.estsoft.travelfriendflow2.map.PinItem;
 import com.example.estsoft.travelfriendflow2.thread.HttpConnectionThread;
 import com.example.estsoft.travelfriendflow2.thread.HttpParamConnThread;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
-
-import net.daum.mf.map.api.CameraUpdateFactory;
-import net.daum.mf.map.api.MapPOIItem;
-import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapPointBounds;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONArray;
@@ -270,8 +266,12 @@ class MyAdapter extends BaseAdapter {
         TextView plan_time = (TextView)convertView.findViewById(R.id.plan_time);
         TextView plan_season = (TextView)convertView.findViewById(R.id.plan_season);
         LinearLayout background = (LinearLayout)convertView.findViewById(R.id.row_layout);
-        Button btn_setting = (Button)convertView.findViewById(R.id.btn_setting);
 
+        ImageView heart = (ImageView)convertView.findViewById(R.id.heart);
+        ImageView btn_setting = (ImageView)convertView.findViewById(R.id.btn_setting);
+
+
+        heart.setVisibility(View.INVISIBLE);
         btn_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -288,6 +288,8 @@ class MyAdapter extends BaseAdapter {
         plan_time.setText(t.getPlanTime());
         plan_season.setText(t.getPlanSeason());
         background.setBackgroundResource(t.getBackground());
+
+        heart.setVisibility(View.INVISIBLE);
 
         return convertView;
     }

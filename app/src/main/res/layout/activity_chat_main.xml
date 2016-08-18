@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingBottom="3dp"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="8dp"
     android:id="@+id/main_background"
     tools:context=".chat.ChatMainActivity">
 
@@ -22,7 +22,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textview_region"
+            android:background="@drawable/rounded_edittext"
+            android:padding="5dp"
             android:text="dd"
+            android:layout_gravity="center"
             android:textSize="13dp"/>
     </LinearLayout>
 
@@ -32,7 +35,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/topLayout"
         android:layout_above="@+id/bottomLayout"
-        android:background="#88A19099">
+        android:layout_marginTop="10dp"
+        android:background="#FFF">
 
         <LinearLayout
             android:id="@+id/centerLayout"
@@ -44,9 +48,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:id="@+id/btn_callmore"
+                android:background="#FFF"
                 android:layout_gravity="center"
                 android:text="대화내용 더 불러오기"
-                android:textSize="7dp"/>
+                android:textSize="10sp"/>
         </LinearLayout>
     </ScrollView>
 
@@ -62,15 +67,18 @@
             android:layout_height="wrap_content"
             android:id="@+id/editText"
             android:hint="대화내용을 입력하세요"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:maxHeight="150dp"/>
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="전송"
             android:id="@+id/send"
             android:layout_weight="5"
+            android:background="@color/orange"
+            android:textColor="#FFF"
             android:onClick="sendClicked"/>
     </LinearLayout>
 
