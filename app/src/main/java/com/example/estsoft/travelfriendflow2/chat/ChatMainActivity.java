@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -220,13 +221,6 @@ public class ChatMainActivity extends Activity {
 
                     handler.post(new Runnable() {
                         public void run() {
-
-                            lblReceive = new TextView(getApplicationContext());
-                            lblReceive.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
-                            lblReceive.setTextColor(Color.rgb(0, 0, 0));
-
-
-
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                             try {
                                 Date thisdate = simpleDateFormat.parse(timeReceive);
@@ -254,71 +248,34 @@ public class ChatMainActivity extends Activity {
                                 e.printStackTrace();
                             }
 
-                            TextView timeTv = new TextView(getApplicationContext());
-                            timeTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                            timeTv.setTextColor(Color.rgb(0, 0, 0));
+                            String timeTv = "";
                             SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             try {
                                 Date dddd = simpleDateFormat2.parse(timeReceive);
-                                timeTv.setText(String.format("%02d:%02d",dddd.getHours(),dddd.getMinutes()));
+                                timeTv=String.format("%02d:%02d",dddd.getHours(),dddd.getMinutes());
                             }
                             catch (Exception e){
                                 e.printStackTrace();
                             }
 
-                            //프로필 사진 레이아웃
-                            LinearLayout profileLay = new LinearLayout(getApplicationContext());
-                            profileLay.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                            profileLay.setOrientation(LinearLayout.HORIZONTAL);
-
-                            //대화명과 말풍선 레이아웃
-                            LinearLayout commentBubbleLay = new LinearLayout(getApplicationContext());
-                            commentBubbleLay.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                            commentBubbleLay.setOrientation(LinearLayout.VERTICAL);
-
-                            TextView talkName = new TextView(getApplicationContext());
-
-                            talkName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                            talkName.setGravity(Gravity.CENTER_HORIZONTAL);
-                            talkName.setTextColor(Color.rgb(0, 0, 0));
-                            talkName.setMaxLines(1);
-                            talkName.setEllipsize(TextUtils.TruncateAt.END);
-
-                            //말풍선 텍뷰 속성
-                            LinearLayout.LayoutParams paramparam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                            paramparam.bottomMargin = 25;
-                            //본인 레이아웃 속성
-                            LinearLayout.LayoutParams myparam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                            myparam.rightMargin = 30;
-                            myparam.gravity = Gravity.BOTTOM;
-                            //상대 레이아웃 속성
-                            LinearLayout.LayoutParams yourparam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                            yourparam.leftMargin = 30;
-                            yourparam.gravity = Gravity.BOTTOM;
-
                             if (regionReceive.equals(regionNum)) {
-                                talkName.setText(userReceive);
-                                //프로필 사진 선언
-                                ImageView profile = new ImageView(getApplicationContext());
+
+                                LinearLayout kk = new LinearLayout(getApplicationContext());
+                                LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+
                                 if (userReceive.equals(loginID)) {
-                                    lblReceive.setBackgroundResource(R.drawable.mymessage);
-                                    commentBubbleLay.addView(lblReceive);
-                                    commentBubbleLay.setGravity(Gravity.RIGHT);
-                                    profileLay.addView(timeTv);
-                                    profileLay.addView(commentBubbleLay);
-                                    profileLay.setGravity(Gravity.RIGHT | Gravity.TOP);
+                                    kk = (LinearLayout)inflater.inflate(R.layout.mychat,null);
+                                    ((TextView)kk.findViewById(R.id.chatbubble)).setText(txtReceive);
+                                    ((TextView)kk.findViewById(R.id.time)).setText(timeTv);
                                 } else {
-                                    lblReceive.setBackgroundResource(R.drawable.yourmessage);
-                                    Picasso.with(getApplicationContext()).load(pictureReceive).resize(120, 120).transform(new CircleTransform()).into(profile);
-                                    profileLay.addView(profile);
-                                    commentBubbleLay.addView(talkName);
-                                    commentBubbleLay.addView(lblReceive);
-                                    commentBubbleLay.setGravity(Gravity.LEFT);
-                                    profileLay.addView(commentBubbleLay);
-                                    profileLay.addView(timeTv);
-                                    profileLay.setGravity(Gravity.TOP);
+
+                                    kk = (LinearLayout)inflater.inflate(R.layout.yourchat,null);
+                                    Picasso.with(getApplicationContext()).load(pictureReceive).resize(120, 120).transform(new CircleTransform()).into(((ImageView)kk.findViewById(R.id.imageView)));
+                                    ((TextView)kk.findViewById(R.id.userId)).setText(userReceive);
+                                    ((TextView)kk.findViewById(R.id.chatbubble)).setText(txtReceive);
+                                    ((TextView)kk.findViewById(R.id.time)).setText(timeTv);
                                 }
-                                lblReceive.setLayoutParams(paramparam);
+
                                 LinearLayout layout = (LinearLayout) findViewById(R.id.centerLayout);
                                 layout.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -328,8 +285,7 @@ public class ChatMainActivity extends Activity {
                                     }
                                 });
 
-                                lblReceive.setText(txtReceive);
-                                layout.addView(profileLay);
+                                layout.addView(kk);
 
                                 scrollView.post(new Runnable() {
                                     public void run() {
@@ -418,12 +374,6 @@ public class ChatMainActivity extends Activity {
                     e.printStackTrace();
                 }
 
-
-                lblReceive = new TextView(getApplicationContext());
-                lblReceive.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
-                lblReceive.setTextColor(Color.rgb(0, 0, 0));
-
-
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 try {
                     Date thisdate = simpleDateFormat.parse(timeReceiveforCaller);
@@ -447,74 +397,32 @@ public class ChatMainActivity extends Activity {
                     e.printStackTrace();
                 }
 
-                TextView timeTv = new TextView(getApplicationContext());
-                timeTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                timeTv.setTextColor(Color.rgb(0, 0, 0));
+                String timeTv = "";
                 SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date dddd = simpleDateFormat2.parse(timeReceiveforCaller);
-                    timeTv.setText(String.format("%02d:%02d",dddd.getHours(),dddd.getMinutes()));
+                    timeTv=String.format("%02d:%02d",dddd.getHours(),dddd.getMinutes());
                 }
                 catch (Exception e){
                     e.printStackTrace();
                 }
 
+                LinearLayout kk = new LinearLayout(getApplicationContext());
+                LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 
-                //프로필 사진 레이아웃
-                LinearLayout profileLay = new LinearLayout(getApplicationContext());
-                profileLay.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                profileLay.setOrientation(LinearLayout.HORIZONTAL);
-
-                //대화명과 말풍선 레이아웃
-                LinearLayout commentBubbleLay = new LinearLayout(getApplicationContext());
-                commentBubbleLay.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                commentBubbleLay.setOrientation(LinearLayout.VERTICAL);
-
-                TextView talkName = new TextView(getApplicationContext());
-
-                talkName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                talkName.setGravity(Gravity.CENTER_HORIZONTAL);
-                talkName.setTextColor(Color.rgb(0, 0, 0));
-                talkName.setMaxLines(1);
-                talkName.setEllipsize(TextUtils.TruncateAt.END);
-
-                //말풍선 텍뷰 속성
-                LinearLayout.LayoutParams paramparam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                paramparam.bottomMargin = 25;
-                //본인 레이아웃 속성
-                LinearLayout.LayoutParams myparam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                myparam.rightMargin = 30;
-                myparam.gravity = Gravity.BOTTOM;
-                //상대 레이아웃 속성
-                LinearLayout.LayoutParams yourparam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                yourparam.leftMargin = 30;
-                yourparam.gravity = Gravity.BOTTOM;
-
-
-                talkName.setText(userReceive);
-                //프로필 사진 선언
-                ImageView profile = new ImageView(getApplicationContext());
                 if (userReceive.equals(loginID)) {
-                    lblReceive.setBackgroundResource(R.drawable.mymessage);
-                    commentBubbleLay.addView(lblReceive);
-                    commentBubbleLay.setGravity(Gravity.RIGHT);
-                    profileLay.addView(timeTv);
-                    profileLay.addView(commentBubbleLay);
-                    profileLay.setGravity(Gravity.RIGHT | Gravity.TOP);
-                    talkName.setLayoutParams(myparam);
+                    kk = (LinearLayout)inflater.inflate(R.layout.mychat,null);
+                    ((TextView)kk.findViewById(R.id.chatbubble)).setText(txtReceive);
+                    ((TextView)kk.findViewById(R.id.time)).setText(timeTv);
                 } else {
-                    lblReceive.setBackgroundResource(R.drawable.yourmessage);
-                    Picasso.with(getApplicationContext()).load(pictureReceive).resize(120, 120).transform(new CircleTransform()).into(profile);
-                    profileLay.addView(profile);
-                    commentBubbleLay.addView(talkName);
-                    commentBubbleLay.addView(lblReceive);
-                    commentBubbleLay.setGravity(Gravity.LEFT);
-                    profileLay.addView(commentBubbleLay);
-                    profileLay.addView(timeTv);
-                    profileLay.setGravity(Gravity.TOP);
-                    talkName.setLayoutParams(yourparam);
+
+                    kk = (LinearLayout)inflater.inflate(R.layout.yourchat,null);
+                    Picasso.with(getApplicationContext()).load(pictureReceive).resize(120, 120).transform(new CircleTransform()).into(((ImageView)kk.findViewById(R.id.imageView)));
+                    ((TextView)kk.findViewById(R.id.userId)).setText(userReceive);
+                    ((TextView)kk.findViewById(R.id.chatbubble)).setText(txtReceive);
+                    ((TextView)kk.findViewById(R.id.time)).setText(timeTv);
                 }
-                lblReceive.setLayoutParams(paramparam);
+
                 LinearLayout layout = (LinearLayout) findViewById(R.id.centerLayout);
                 layout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -523,10 +431,8 @@ public class ChatMainActivity extends Activity {
                         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                     }
                 });
-
-                lblReceive.setText(txtReceive);
-                profileLay.setId(Integer.parseInt(noReceive.toString())+9999);
-                layout.addView(profileLay, 1);
+                kk.setId(Integer.parseInt(noReceive.toString())+9999);
+                layout.addView(kk, 1);
             }
             if(firstCall==true) {
                 scrollView.post(new Runnable() {

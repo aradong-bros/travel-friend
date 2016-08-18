@@ -17,7 +17,7 @@ import java.net.URL;
  * ex) http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot?schedule_no={schedule_no 값}
  *
  */
-public class HttpSendschNoConnThread extends AsyncTask<String, Void, String> {
+public class HttpSendSchNoConnThread extends AsyncTask<String, Void, String> {
     private static String LOG_TAG = "HttpParamConnThread";
     @Override
     protected String doInBackground(String... path){
