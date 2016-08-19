@@ -48,6 +48,8 @@ import java.util.List;
  * Created by yeonji on 2016-07-29.
  * 해당 지역 선택 시 관련 MARKER 전부 보여주기
  *
+ * 08-19
+ * 조회순으로 100위까지만 보여주기
  */
 public class MapViewActivity extends AppCompatActivity implements MapView.POIItemEventListener{
     private static final String LOG_TAG = "MapViewActivity";
@@ -327,7 +329,9 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         try {
             JSONObject jsonObj = new JSONObject(myJSON);
             datas = jsonObj.getJSONArray(TAG_RESULTS);
+            Log.e("datas_length", datas.length()+"");
 
+//            for(int i = 0; i<100; i++){     // 1위 ~ 100위
             for(int i = 0; i< datas.length(); i++){
                 JSONObject object = datas.getJSONObject(i);
 

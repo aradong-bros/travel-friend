@@ -35,7 +35,7 @@ public class MySettingActivity extends AppCompatActivity {
     private static String publicURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schModifyIsPublic";      // isPublic 수정
     private static String finishURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schModifyIsfinished";    // isFinished 수정
     private static String schSelURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelect";             // 스케쥴 1개 조회
-    private boolean isPublic = false;
+    private boolean isPublic = true;
 
     ToggleButton tg_isPublic;
     private static final String TAG_RESULTS="schVo";

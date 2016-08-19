@@ -127,17 +127,14 @@ public class LookAroundActivity extends Activity {
 
             String str = result.substring(2,4);     // sc or fa
             if( str.equals("fa") ){
-
                if( parsePinFavorData(result) ) {
                    Preference pf = new Preference(getApplicationContext());
                    new HttpParamConnThread().execute(othAllSrchURL, pf.getUserNo());
                }
 
             }else if( str.equals("sc") ){
-
                 if( parsePinData(result) )
                     showResult();
-
             }
 
         }
@@ -155,7 +152,7 @@ public class LookAroundActivity extends Activity {
                 JSONObject object = datas.getJSONObject(i);
 
                 Travel t = new Travel();
-                int no = object.getInt("no");
+                int no = object.getInt("no");       // schedule_no
 
                 for(int k=0; k<favorSchNo.size(); k++){         // 내가 좋아요 한 글은 ♥뜨게
                     if( no == favorSchNo.get(k) )
@@ -166,7 +163,6 @@ public class LookAroundActivity extends Activity {
                 t.setTitle(object.getString(TAG_TITLE));
 
                 if( object.getInt("isPublic") == 0 ){       // 0 : 비공개
-                    Log.e("들어옴","ㄴㅇㄴㅇ");
                     continue;
                 }
 
@@ -194,7 +190,9 @@ public class LookAroundActivity extends Activity {
                 int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
                 t.setPlanTime((day-1)+"박"+day+"일");
 
-                t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
+                // user_no로 배경 이미지 random하게 뿌림
+                settingBackground(t, no);
+
                 tr.add(t);
             }
 
@@ -203,6 +201,49 @@ public class LookAroundActivity extends Activity {
         }
         return true;
     }   // End_parsePinData
+
+    public void settingBackground(Travel t, int no) {       // user_no로 배경 이미지 random으로 뿌림
+        int divideNum = no%12;
+
+        switch ( divideNum ){
+            case 0 :
+                t.setBackground(R.drawable.seoul);
+                break;
+            case 1:
+                t.setBackground(R.drawable.gapyeong);
+                break;
+            case 2 :
+                t.setBackground(R.drawable.gangrueng);
+                break;
+            case 3:
+                t.setBackground(R.drawable.andong);
+                break;
+            case 4 :
+                t.setBackground(R.drawable.jeonju);
+                break;
+            case 5:
+                t.setBackground(R.drawable.gyeongju);
+                break;
+            case 6 :
+                t.setBackground(R.drawable.busan);
+                break;
+            case 7:
+                t.setBackground(R.drawable.hadong);
+                break;
+            case 8 :
+                t.setBackground(R.drawable.tongyeong);
+                break;
+            case 9:
+                t.setBackground(R.drawable.sooncheon);
+                break;
+            case 10 :
+                t.setBackground(R.drawable.boseong);
+                break;
+            case 11:
+                t.setBackground(R.drawable.yeosoo);
+                break;
+        }
+    }
 
     private void showResult() {
 

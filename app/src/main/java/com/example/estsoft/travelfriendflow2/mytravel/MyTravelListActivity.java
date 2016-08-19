@@ -161,7 +161,7 @@ public class MyTravelListActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            if(result==null) {
+            if(result.equals("")) {
                 //  로딩바 띄우기
                 Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
                 return;
@@ -176,7 +176,6 @@ public class MyTravelListActivity extends Activity {
     }   // End_HttpParamConnThread
 
     protected boolean parsePinData(String myJSON){
-
         try {
             JSONObject jsonObj = new JSONObject(myJSON);
             JSONArray datas = jsonObj.getJSONArray(TAG_RESULTS);
@@ -185,7 +184,9 @@ public class MyTravelListActivity extends Activity {
                 JSONObject object = datas.getJSONObject(i);
 
                 Travel t = new Travel();
-                t.setSchNo(object.getInt("no"));
+                int no = object.getInt("no");       // schedule_no
+
+                t.setSchNo(no);
                 t.setTitle(object.getString(TAG_TITLE));
 
                 String sdate = object.getString(TAG_SDATE);
@@ -211,7 +212,9 @@ public class MyTravelListActivity extends Activity {
 
                 int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
                 t.setPlanTime((day-1)+"박"+day+"일");
-                t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
+
+                // user_no로 배경 이미지 random하게 뿌림
+                settingBackground(t, no);
 
                 t.setSetting(true);
                 tr.add(t);
@@ -227,6 +230,48 @@ public class MyTravelListActivity extends Activity {
         adapter.notifyDataSetChanged();
     }
 
+    public void settingBackground(Travel t, int no) {       // user_no로 배경 이미지 random으로 뿌림
+        int divideNum = no%12;
+
+        switch ( divideNum ){
+            case 0 :
+                t.setBackground(R.drawable.seoul);
+                break;
+            case 1:
+                t.setBackground(R.drawable.gapyeong);
+                break;
+            case 2 :
+                t.setBackground(R.drawable.gangrueng);
+                break;
+            case 3:
+                t.setBackground(R.drawable.andong);
+                break;
+            case 4 :
+                t.setBackground(R.drawable.jeonju);
+                break;
+            case 5:
+                t.setBackground(R.drawable.gyeongju);
+                break;
+            case 6 :
+                t.setBackground(R.drawable.busan);
+                break;
+            case 7:
+                t.setBackground(R.drawable.hadong);
+                break;
+            case 8 :
+                t.setBackground(R.drawable.tongyeong);
+                break;
+            case 9:
+                t.setBackground(R.drawable.sooncheon);
+                break;
+            case 10 :
+                t.setBackground(R.drawable.boseong);
+                break;
+            case 11:
+                t.setBackground(R.drawable.yeosoo);
+                break;
+        }
+    }
 }
 
 

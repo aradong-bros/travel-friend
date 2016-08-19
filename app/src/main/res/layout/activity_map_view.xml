@@ -32,4 +32,13 @@
         android:background="@drawable/rounded_edittext"
         />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_rank"
+        android:text="▲"
+        android:background="@drawable/rounded_edittext"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
+
 </RelativeLayout>
