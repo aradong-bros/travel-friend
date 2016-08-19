@@ -157,13 +157,18 @@ public class LookAroundActivity extends Activity {
                 Travel t = new Travel();
                 int no = object.getInt("no");
 
-                for(int k=0; k<favorSchNo.size(); k++){
+                for(int k=0; k<favorSchNo.size(); k++){         // 내가 좋아요 한 글은 ♥뜨게
                     if( no == favorSchNo.get(k) )
                         t.setHeart(true);
                 }
 
                 t.setSchNo(no);
                 t.setTitle(object.getString(TAG_TITLE));
+
+                if( object.getInt("isPublic") == 0 ){       // 0 : 비공개
+                    Log.e("들어옴","ㄴㅇㄴㅇ");
+                    continue;
+                }
 
                 String sdate = object.getString(TAG_SDATE);
                 String edate = object.getString(TAG_EDATE);

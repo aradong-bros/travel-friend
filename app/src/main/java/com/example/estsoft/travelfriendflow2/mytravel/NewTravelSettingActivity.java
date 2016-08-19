@@ -181,10 +181,10 @@ public class NewTravelSettingActivity extends AppCompatActivity {
                     String endDate = edate.getText().toString()+ " " + etime.getText().toString();
 
                     sObject.put("title", title.getText().toString());
-                    sObject.put("isPublic",  "0");               // 0:비공개, 1:공개
+                    sObject.put("isPublic",  "1");               // 0:비공개, 1:공개
                     sObject.put("startDate",  startDate);
                     sObject.put("endDate",  endDate);
-                    sObject.put("isfinished",  "ongoing");        // 0:미완, 1:완성
+                    sObject.put("isfinished",  "ongoing");        // ongoing:미완, finished:완성
                     sObject.put("firstStation", stStation.getText().toString());
                     sObject.put("lastStation", endStation.getText().toString());
                     Log.e(LOG_TAG, sObject.toString());
