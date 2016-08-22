@@ -40,9 +40,6 @@ public class OthersPlanActivity extends TabActivity {
         TextView t = (TextView)findViewById(R.id.title);
 
         int group = intent.getIntExtra("group", -1);    // 1:selectedA ,2: LookAroundA
-        Log.e(LOG_TAG, group+"");
-
-
         Intent mapIntent = new Intent(getApplicationContext(),OthersPlanMapActivity.class);
 
 

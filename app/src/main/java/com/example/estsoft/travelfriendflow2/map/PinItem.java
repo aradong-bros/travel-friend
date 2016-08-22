@@ -12,8 +12,9 @@ public class PinItem {
     public String info;
     public String category;
     public String address;
-    public Integer order;
     public String status;
+    public Integer order;
+    public Integer city_pkno;
 
     public Integer getOrder() {        return order;    }
     public void setOrder(Integer order) {        this.order = order;    }
@@ -27,4 +28,6 @@ public class PinItem {
     public void setNo(String no) {        this.no = no;    }
     public String getStatus() {        return status;    }
     public void setStatus(String status) {        this.status = status;    }
+    public Integer getCity_pkno() {        return city_pkno;    }
+    public void setCity_pkno(Integer city_pkno) {        this.city_pkno = city_pkno;    }
 }

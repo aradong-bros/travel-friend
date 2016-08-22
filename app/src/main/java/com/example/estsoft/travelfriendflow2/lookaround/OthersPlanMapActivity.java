@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.estsoft.travelfriendflow2.R;
 import com.example.estsoft.travelfriendflow2.map.MapApiConst;
 import com.example.estsoft.travelfriendflow2.map.PinItem;
+import com.example.estsoft.travelfriendflow2.map.PostItem;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
 
 import net.daum.mf.map.api.CameraUpdateFactory;
@@ -35,13 +36,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OthersPlanMapActivity extends AppCompatActivity {
+public class OthersPlanMapActivity extends AppCompatActivity implements MapView.POIItemEventListener{
     private static final String LOG_TAG = "OthersPlanMapActivity";
     private static String SCHEDULE_CITY_URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/selectCityListBySchedule";   // 해당 스케쥴의 도시 순서 출력
+    private static String SCHEDULE_POST_URL = "http://222.239.250.207:8080/TravelFriendAndroid/android/selectPostListBySchedule";   // 해당 스케쥴의 관광지 순서 출력
     private static String SCHEDULE_NO = "";
 
-    private static final String TAG_RESULTS="cityListBySchedule";
-    private static final String TAG_NO="no";    // city_no
+    private static final String CITY_TAG_RESULTS="cityListBySchedule";
+    private static final String POST_TAG_RESULTS="postListBySchedule";
+    private static final String ATTR_TAG_RESULTS="atrListByPost";
+    private static final String TAG_NO="no";    // city_no, post_no
     private static final String TAG_SCHNO="schedule_no";
     private static final String TAG_CITYNO="cityList_no";
     private static final String TAG_STATUS="status";
@@ -54,12 +58,11 @@ public class OthersPlanMapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
 
-
         mapView = (MapView)findViewById(R.id.map_view);
         mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
         mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
+        mapView.setPOIItemEventListener(this);
 //        mapView.setMapViewEventListener(this);
-//        mapView.setPOIItemEventListener(this);
 //        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
 
         // selectedcity activity에서 넘어온 경우만 밑의 과정 처리
@@ -85,7 +88,6 @@ public class OthersPlanMapActivity extends AppCompatActivity {
         }
 
         if( !("{}").equals(SCHEDULE_NO) ){
-            Log.e("000", "진입");
             new HttpParamConnThread().execute(SCHEDULE_CITY_URL, SCHEDULE_NO);
         }else {
             Log.e("XXX", "진입못함");
@@ -104,7 +106,6 @@ public class OthersPlanMapActivity extends AppCompatActivity {
             String VALUE = path[1];
             HttpURLConnection conn = null;
             try {
-
                 url = new URL(CONNURL+"/"+VALUE);
                 Log.e(LOG_TAG, CONNURL+"/"+VALUE);
                 conn = (HttpURLConnection) url.openConnection();
@@ -112,7 +113,6 @@ public class OthersPlanMapActivity extends AppCompatActivity {
                 conn.setConnectTimeout(2000);
                 conn.setReadTimeout(2000);
                 conn.setDoInput(true);
-
 
                 int responseCode = conn.getResponseCode();
                 Log.e("http response code", responseCode+"");
@@ -155,41 +155,100 @@ public class OthersPlanMapActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            if(result.equals("")) {
-                //  로딩바 띄우기
+            if( ("").equals(result) || TextUtils.isEmpty(result) ) { //  로딩바 띄우기
                 Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            List<PinItem> itemList = parsePinData(result);
+            String str = result.substring(2,4);     // ci or po
+            if( ("ci").equals(str) ){
+                List<PinItem> itemList = parsePinData(result);
 
-            if( itemList != null ){
-                makePOIItem(itemList);
-            }else{
-                Toast.makeText(getApplicationContext(), "itemList == null", Toast.LENGTH_SHORT).show();
+                if( itemList != null )
+                    makePOIItem(itemList);
+                else
+                    Toast.makeText(getApplicationContext(), "itemList == null", Toast.LENGTH_SHORT).show();
+            }else if( ("at").equals(str) ){
+                List<PostItem> itemList =  parsePostPinData(result);
+
+                if( itemList != null)
+                    makePostPOIItem(itemList);
+                else
+                    Toast.makeText(getApplicationContext(), "postitemList == null", Toast.LENGTH_SHORT).show();
             }
+
 
         }
 
     }   // End_HttpParamConnThread
+
+    protected List<PostItem> parsePostPinData(String myJSON){
+        List<PostItem> itemList = new ArrayList<PostItem>();
+
+        try {
+            JSONObject jsonObj = new JSONObject(myJSON);
+            JSONArray postDatas = jsonObj.getJSONArray(POST_TAG_RESULTS);
+            Log.e("postDatas", postDatas.toString());
+
+            JSONArray attrDatas = jsonObj.getJSONArray(ATTR_TAG_RESULTS);
+            Log.e("attrDatas", attrDatas.toString());
+
+            for(int i = 0; i< postDatas.length(); i++){
+                JSONObject postObject = postDatas.getJSONObject(i);
+                JSONObject attrObject = attrDatas.getJSONObject(i);
+
+                PostItem item = new PostItem();
+                item.no = postObject.getString("no");      // post_table_no(pk)
+                item.city_no = postObject.getString("city_no");
+                item.postOrder = postObject.getString("postOrder");
+
+                if( !postObject.getString("postList_no").equals(attrObject.getString("no")) ){
+                    return null;
+                }
+                item.postList_no = postObject.getString("postList_no");
+                item.title = attrObject.getString("name");
+
+                String location = attrObject.getString("location");
+                String[] arr = location.split(",");
+
+                item.latitude = ( !("").equals(arr[0]) ? Double.parseDouble(arr[0]) : null );
+                item.longitude = ( !("").equals(arr[1]) ? Double.parseDouble(arr[1]) : null );
+
+                item.picture = attrObject.getString("picture");
+                item.info = attrObject.getString("info");
+                item.category = attrObject.getString("category");
+                item.address = attrObject.getString("address");
+
+                itemList.add(item);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return itemList;
+    }// End_parsePostPinData
+
 
     protected List<PinItem> parsePinData(String myJSON){
         List<PinItem> itemList = new ArrayList<PinItem>();
 
         try {
             JSONObject jsonObj = new JSONObject(myJSON);
-            JSONArray datas = jsonObj.getJSONArray(TAG_RESULTS);
+            JSONArray datas = jsonObj.getJSONArray(CITY_TAG_RESULTS);
 
             for(int i = 0; i< datas.length(); i++){
                 JSONObject object = datas.getJSONObject(i);
 
 
                 PinItem item = new PinItem();
+                item.city_pkno = object.getInt(TAG_NO);             // city_table_no (pk)
                 item.no = object.getString(TAG_CITYNO);
                 item.order =  object.getInt(TAG_CITYORDER);       // 1 ~ datas.length()
                 item.status = object.getString(TAG_STATUS);
 
-                itemList.add(settingInfo(item));            // title, position setting
+                itemList.add(settingInfo(item));                  // title, position setting
             }
 
         } catch (JSONException e) {
@@ -202,7 +261,7 @@ public class OthersPlanMapActivity extends AppCompatActivity {
 
 
 
-    private void makePOIItem(List<PinItem> itemList) {
+    private void makePOIItem(List<PinItem> itemList) {          // city POIItem
         MapPointBounds mapPointBounds = new MapPointBounds();
 
         for(int i=0; i<itemList.size(); i++){
@@ -211,6 +270,7 @@ public class OthersPlanMapActivity extends AppCompatActivity {
             MapPOIItem poiItem = new MapPOIItem();
             poiItem.setItemName(item.title);
             poiItem.setTag(i);
+            poiItem.setUserObject(item.getCity_pkno());
 
             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
             poiItem.setMapPoint(mapPoint);
@@ -251,6 +311,55 @@ public class OthersPlanMapActivity extends AppCompatActivity {
 
     }
 
+    private void makePostPOIItem(List<PostItem> itemList) {     //  관광지 POIItem
+        MapPointBounds mapPointBounds = new MapPointBounds();
+
+        for(int i=0; i<itemList.size(); i++){
+            PostItem item = itemList.get(i);
+
+            MapPOIItem poiItem = new MapPOIItem();
+            poiItem.setItemName(item.title);
+            poiItem.setTag(i);
+//            poiItem.setUserObject(item.getPostList_no());
+
+            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
+            poiItem.setMapPoint(mapPoint);
+            mapPointBounds.add(mapPoint);
+
+            poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+            if( item.getPostOrder().equals("1") ){
+                poiItem.setCustomImageResourceId(R.drawable.pin_start);
+            }else if( item.getPostOrder().equals(itemList.size()+"") ){
+                poiItem.setCustomImageResourceId(R.drawable.pin_end);
+            }else{
+                poiItem.setCustomImageResourceId(R.drawable.pin_none);
+            }
+            poiItem.setCustomImageAutoscale(false);               // 마커 크기 큰 상태!
+            poiItem.setCustomImageAnchor(0.5f, 1.0f);
+
+            mapView.addPOIItem(poiItem);
+//            mTagItemMap.put(poiItem.getTag(), item);
+
+            // ------- polyline 연결하기
+            if( i== 0 ){
+                continue;
+            }
+            MapPolyline polyline = new MapPolyline();
+            polyline.setTag(i);
+            polyline.setLineColor(Color.argb(255, 0, 0, 255)); // Polyline 컬러 지정
+
+            // Polyline 좌표 지정.
+            polyline.addPoint(MapPoint.mapPointWithGeoCoord( itemList.get(i-1).getLatitude() , itemList.get(i-1).getLongitude() ));  // i-1 item
+            polyline.addPoint(MapPoint.mapPointWithGeoCoord( itemList.get(i).getLatitude() , itemList.get(i).getLongitude() ));      // i item
+
+            // Polyline 지도에 올리기.
+            mapView.addPolyline(polyline);
+
+        }
+        showAll(mapPointBounds);
+
+    }
+
     private void showAll(MapPointBounds mapPointBounds) {
         int padding = 250;
         float minZoomLevel = 5;
@@ -261,6 +370,33 @@ public class OthersPlanMapActivity extends AppCompatActivity {
 //        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
 //        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
     }
+
+
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+        Log.e("getUserObject", mapPOIItem.getUserObject()+"");
+
+        if( ("").equals(mapPOIItem.getUserObject()) || ("null").equals(mapPOIItem.getUserObject()) || mapPOIItem.getUserObject() == null ){
+            return;
+        }
+        new HttpParamConnThread().execute(SCHEDULE_POST_URL, mapPOIItem.getUserObject()+"");
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+
+    }
+
+    @Override
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
+
+    }
+
 
     private PinItem settingInfo(PinItem item){
         int cityNo = Integer.parseInt(item.getNo());

@@ -141,11 +141,11 @@ public class NewTravelSettingActivity extends AppCompatActivity {
                         return;
                     }
 
-                    if( sdate.getText().toString().trim().equals("") || stime.getText().toString().trim().equals("") ){
+                    if( sdate.getText().toString().trim().equals("") ){
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast toast = Toast.makeText(getApplicationContext(), "출발 날짜 및 시간을 입력해주세요!^^", Toast.LENGTH_SHORT);
+                                Toast toast = Toast.makeText(getApplicationContext(), "출발 날짜를 입력해주세요!^^", Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
                                 toast.show();
                             }
@@ -153,11 +153,11 @@ public class NewTravelSettingActivity extends AppCompatActivity {
                         return;
                     }
 
-                    if( edate.getText().toString().trim().equals("") || etime.getText().toString().trim().equals("") ){
+                    if( edate.getText().toString().trim().equals("") ){
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast toast = Toast.makeText(getApplicationContext(), "도착 날짜 및 시간을 입력해주세요!^^", Toast.LENGTH_SHORT);
+                                Toast toast = Toast.makeText(getApplicationContext(), "도착 날짜를 입력해주세요!^^", Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
                                 toast.show();
                             }
@@ -177,8 +177,20 @@ public class NewTravelSettingActivity extends AppCompatActivity {
                         return;
                     }
 
-                    String startDate = sdate.getText().toString() + " " + stime.getText().toString();
-                    String endDate = edate.getText().toString()+ " " + etime.getText().toString();
+                    String s = stime.getText().toString();
+                    String e = etime.getText().toString();
+                    // 사용자가 입력 안하면 그냥 00:00로 받게 함
+                    if(  ("").equals(stime.getText().toString().trim()) &&  ("").equals(etime.getText().toString().trim()) ){
+                        s = "00:00";
+                        e = "00:00";
+                    }else if( ("").equals(stime.getText().toString().trim()) ){
+                        s = "00:00";
+                    }else if( ("").equals(etime.getText().toString().trim()) ){
+                        e = "00:00";
+                    }
+
+                    String startDate = sdate.getText().toString() + " " + s;
+                    String endDate = edate.getText().toString()+ " " + e;
 
                     sObject.put("title", title.getText().toString());
                     sObject.put("isPublic",  "1");               // 0:비공개, 1:공개
