@@ -88,7 +88,7 @@ public class HttpConnectionThread extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         // UI 업데이트가 구현될 부분
 
-        if( result != null ) {
+        if( !result.equals("{}")) {
             Preference pref = new Preference(mContext);
             pref.put("prefSchNo", result);
         }

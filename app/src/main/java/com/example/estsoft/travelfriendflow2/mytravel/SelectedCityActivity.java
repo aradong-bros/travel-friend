@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.lookaround.OthersPlanActivity;
+import com.example.estsoft.travelfriendflow2.lookaround.OthersPlanMapActivity;
 import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
 import com.example.estsoft.travelfriendflow2.thread.HttpSendSchNoConnThread;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
@@ -54,8 +56,8 @@ public class SelectedCityActivity extends Activity {
     private ArrayList<City> city = new ArrayList<City>();
     private ListView lv;
 
-    private static String cityInsertURL = " http://222.239.250.207:8080/TravelFriendAndroid/city/cityInsert";
-    private static final String travelRootURL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";
+    private static String cityInsertURL = " http://222.239.250.207:8080/TravelFriendAndroid/city/cityInsert";       //  input : schedule_no, cityList_no, status, cityOrder
+    private static final String travelRootURL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";    // ?schedule_no={schedule_no 값}
 
     private static HashMap<String, Integer> postMap = new HashMap<String, Integer>(); // KEY: city title -> cityList_no, VALUE:city_no(pk)
     /** 원래 구조상 K,V값이 반대로 들어가야 하지만 city table에 schedule_no로 list_no가 다 mapping되어 있으므로 이렇게 구현.*/
@@ -286,7 +288,7 @@ public class SelectedCityActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
 
-            if(result==null)
+            if(result.equals(""))
                 return;
 
             try {
@@ -324,5 +326,84 @@ public class SelectedCityActivity extends Activity {
 
     }   // End_HttpPostConnThread
 
+
+    public class HttpSendSchNoConnThread extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... path){
+            // URL 연결이 구현될 부분
+            URL url;
+            String response = "";
+            String CONNURL = path[0];
+            String VALUE = "?schedule_no="+path[1];
+            HttpURLConnection conn = null;
+            try {
+
+                url = new URL(CONNURL+VALUE);
+                Log.e(LOG_TAG, CONNURL+VALUE);
+                conn = (HttpURLConnection) url.openConnection();
+
+                conn.setConnectTimeout(3000);
+
+                conn.setDoInput(true);
+
+                Log.e("http response code", conn.getResponseCode()+"");
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) { // 연결에 성공한 경우
+                    Log.e(LOG_TAG, "연결 성공");
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream())); // 서버의 응답을 읽기 위한 입력 스트림
+
+                    while ((line = br.readLine()) != null) {// 서버의 응답을 읽어옴
+                        response += line;
+                    }
+
+                    br.close();
+                    conn.disconnect();
+                    Log.e("RESPONSE", "The response is: " + response);
+                }
+
+            }catch (IOException e) {
+                e.printStackTrace();
+            }finally{
+                conn.disconnect();
+            }
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // UI 업데이트가 구현될 부분
+            if(result.equals(""))
+                return;
+
+            if( parsePinData(result) ){
+                showResult();
+            }
+
+        }
+
+    }   // End_HttpSendschNoConnThread
+
+    protected boolean parsePinData(String myJSON){
+        try {
+            JSONObject jsonObj = new JSONObject(myJSON);
+            String result = jsonObj.getString("result");
+
+            if( !result.equals("success") ){
+                // fail 처리
+                Log.e(LOG_TAG,"result fail");
+                return false;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }// End_parsePinData
+
+    private void showResult() {
+        Intent i = new Intent(getApplicationContext(), OthersPlanActivity.class);
+        i.putExtra("group", 1);
+        startActivity(i);
+    }
 
 }

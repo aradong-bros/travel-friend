@@ -78,6 +78,13 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
         btn_complete = (TextView)findViewById(R.id.btn_selComplete);
 
+        mapView = (MapView)findViewById(R.id.map_view);
+        mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
+        mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
+        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());   //구현한 CalloutBalloonAdapter 등록
+        mapView.setPOIItemEventListener(this);
+
+
         Intent intent = getIntent();
         final int cityList_no = intent.getIntExtra("cityList_no", -1);
         final int city_no = intent.getIntExtra("city_no", -1);
@@ -88,11 +95,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             return;
         }
 
-        mapView = (MapView)findViewById(R.id.map_view);
-        mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
-        mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
-        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());   //구현한 CalloutBalloonAdapter 등록
-        mapView.setPOIItemEventListener(this);
        // fetchData(URL+pos);
 
         btn_complete.setOnClickListener(new View.OnClickListener() {
