@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,8 +82,15 @@ public class AttractionActivity extends Activity {
 
         // ---
         intent = getIntent();
-        final String no = intent.getStringExtra("no");
+        String usage = intent.getStringExtra("usage");
 
+        if( ("result").equals(usage) ){
+            Log.e("usage","null");
+            btn_like.setVisibility(View.GONE);
+        }
+
+        final String no = intent.getStringExtra("no");
+        Log.e("no",no);
         if(no == null){
             Log.e(LOG_TAG,"Incorrect Input : no");
         }
@@ -99,7 +107,6 @@ public class AttractionActivity extends Activity {
                 }else{
                     intent.putExtra("no", no);
                     intent.putExtra("location", sendLocation);
-
                 }
                 Log.e("선택된 값",no+"_"+sendLocation);
 

@@ -59,9 +59,8 @@ public class SelectedCityActivity extends Activity {
     private static String cityInsertURL = " http://222.239.250.207:8080/TravelFriendAndroid/city/cityInsert";       //  input : schedule_no, cityList_no, status, cityOrder
     private static final String travelRootURL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";    // ?schedule_no={schedule_no 값}
 
-    private static HashMap<String, Integer> postMap = new HashMap<String, Integer>(); // KEY: city title -> cityList_no, VALUE:city_no(pk)
-    /** 원래 구조상 K,V값이 반대로 들어가야 하지만 city table에 schedule_no로 list_no가 다 mapping되어 있으므로 이렇게 구현.*/
-    private static final String TAG_RESULTS= "noList";
+    private static HashMap<String, Integer> postMap = new HashMap<String, Integer>(); // KEY: cityList_no, VALUE:city_no(pk)
+
     CityAdapter cityAdapter;
     private static String SCHEDULE_NO = null;
 
@@ -96,7 +95,6 @@ public class SelectedCityActivity extends Activity {
             for(int i=0; i<city.size(); i++) {
                 JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
                 int cityNo = cityMap.get(city.get(i).title);
-                postMap.put( city.get(i).title , -1 );
 
                 sObject.put("schedule_no", SCHEDULE_NO);
                 sObject.put("cityList_no", cityNo+"");    //cityList_no
@@ -133,17 +131,14 @@ public class SelectedCityActivity extends Activity {
 
                 City city = (City) cityAdapter.getItem(position);
                 Log.e(LOG_TAG, city.title);
-                int cityList_No = -1;
 
-                for(int i=0; i<cityMap.size(); i++)
-                    cityList_No = cityMap.get(city.title);
+                int cityList_No = cityMap.get(city.title);
+                String ctrNo = Integer.toString(cityList_No);
 
-                if( cityList_No != -1) {
-                    intent.putExtra("cityList_no", cityList_No);
+                intent.putExtra("cityList_no", cityList_No);
+                intent.putExtra("city_no", postMap.get(ctrNo));
+                Log.e("cityList_no"+cityList_No, "city_no "+postMap.get(ctrNo));
 
-                    String ctrNo = Integer.toString(cityList_No);
-                    intent.putExtra("city_no", postMap.get(ctrNo));
-                }
                 startActivity(intent);
             }
         });
@@ -288,35 +283,23 @@ public class SelectedCityActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
 
-            if(result.equals(""))
+            if( ("").equals(result) )
                 return;
 
             try {
+                // cityVoList
                 // The response is: {"noList":[{"no":3},{"no":4},{"no":5}]}
                 JSONObject jsonObject = new JSONObject(result);
-                JSONArray datas = jsonObject.getJSONArray("noList");
-                int[] cityNoArr = new int[datas.length()];
+                JSONArray datas = jsonObject.getJSONArray("cityVoList");
 
                 for(int i=0; i<datas.length(); i++){
                     JSONObject obj = datas.getJSONObject(i);
-                    cityNoArr[i] = obj.getInt("no");
+
+                    int no = obj.getInt("no");
+                    String cityList_no = obj.getString("cityList_no");
+
+                    postMap.put(cityList_no, no);
                 }
-
-                int idx = 0;
-                Iterator iterator = ((HashMap<String, Integer>)postMap.clone()).keySet().iterator();
-                while (iterator.hasNext()) {
-                    String key = (String) iterator.next();
-                    Log.e("key-----", key); // 도시 이름
-                    postMap.put( cityMap.get(key)+"", cityNoArr[idx++] );       // <cityList_no, city_no>  ADD
-                    postMap.remove(key);                                        // ORIGINAL VALUE < city_title, defaultValue> DELETE
-                }
-
-//                Iterator<String> i = postMap.keySet().iterator();
-//                while (i.hasNext()) {
-//                    String key = (String) i.next();
-//                    Log.e("key:"+key, "value:"+postMap.get(key));
-//                }
-
                 cityAdapter.notifyDataSetChanged();
 
             }catch (JSONException je){

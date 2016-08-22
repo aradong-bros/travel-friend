@@ -8,14 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.estsoft.travelfriendflow2.AttractionActivity;
 import com.example.estsoft.travelfriendflow2.R;
 import com.example.estsoft.travelfriendflow2.map.MapApiConst;
 import com.example.estsoft.travelfriendflow2.map.PinItem;
 import com.example.estsoft.travelfriendflow2.map.PostItem;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
 
+import net.daum.mf.map.api.CalloutBalloonAdapter;
 import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
@@ -52,6 +56,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
     private static final String TAG_CITYORDER="cityOrder";
 
     private MapView mapView;
+    public static final int REQUEST_CODE = 2002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +68,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
         mapView.setPOIItemEventListener(this);
 //        mapView.setMapViewEventListener(this);
-//        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
+        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
 
         // selectedcity activity에서 넘어온 경우만 밑의 과정 처리
         Intent intent = getIntent();
@@ -95,6 +100,30 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
 
     }
+
+    class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
+        private final View mCalloutBalloon;
+
+        public CustomCalloutBalloonAdapter() {
+            mCalloutBalloon = getLayoutInflater().inflate(R.layout.title_callout_balloon, null);
+        }
+
+        @Override
+        public View getCalloutBalloon(MapPOIItem poiItem) {
+            if (poiItem == null) return null;
+
+            ((TextView) mCalloutBalloon.findViewById(R.id.title)).setText(poiItem.getItemName());
+//            mCalloutBalloon.setX(100.0f);
+//            mCalloutBalloon.setY(50.0f);
+            return mCalloutBalloon;
+        }
+
+        @Override
+        public View getPressedCalloutBalloon(MapPOIItem poiItem) {
+            return null;
+        }
+    }
+
 
     public class HttpParamConnThread extends AsyncTask<String, Void, String> {
         @Override
@@ -188,10 +217,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         try {
             JSONObject jsonObj = new JSONObject(myJSON);
             JSONArray postDatas = jsonObj.getJSONArray(POST_TAG_RESULTS);
-            Log.e("postDatas", postDatas.toString());
-
             JSONArray attrDatas = jsonObj.getJSONArray(ATTR_TAG_RESULTS);
-            Log.e("attrDatas", attrDatas.toString());
 
             for(int i = 0; i< postDatas.length(); i++){
                 JSONObject postObject = postDatas.getJSONObject(i);
@@ -241,7 +267,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             for(int i = 0; i< datas.length(); i++){
                 JSONObject object = datas.getJSONObject(i);
 
-
                 PinItem item = new PinItem();
                 item.city_pkno = object.getInt(TAG_NO);             // city_table_no (pk)
                 item.no = object.getString(TAG_CITYNO);
@@ -280,6 +305,9 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             if( item.getStatus().equals("start") ){
                 poiItem.setCustomImageResourceId(R.drawable.pin_start);
             }else if( item.getStatus().equals("end") ){
+                if( item.getOrder().equals("1") )
+                    poiItem.setCustomImageResourceId(R.drawable.pin_none);
+
                 poiItem.setCustomImageResourceId(R.drawable.pin_end);
             }else{
                 poiItem.setCustomImageResourceId(R.drawable.pin_none);
@@ -320,7 +348,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             MapPOIItem poiItem = new MapPOIItem();
             poiItem.setItemName(item.title);
             poiItem.setTag(i);
-//            poiItem.setUserObject(item.getPostList_no());
+            poiItem.setUserObject(item.getPostList_no());
 
             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
             poiItem.setMapPoint(mapPoint);
@@ -346,7 +374,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             }
             MapPolyline polyline = new MapPolyline();
             polyline.setTag(i);
-            polyline.setLineColor(Color.argb(255, 0, 0, 255)); // Polyline 컬러 지정
+            polyline.setLineColor(Color.argb(255, 1, 0, 255)); // Polyline 컬러 지정
 
             // Polyline 좌표 지정.
             polyline.addPoint(MapPoint.mapPointWithGeoCoord( itemList.get(i-1).getLatitude() , itemList.get(i-1).getLongitude() ));  // i-1 item
@@ -375,11 +403,24 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
         Log.e("getUserObject", mapPOIItem.getUserObject()+"");
+        String userObj = mapPOIItem.getUserObject()+"";
 
-        if( ("").equals(mapPOIItem.getUserObject()) || ("null").equals(mapPOIItem.getUserObject()) || mapPOIItem.getUserObject() == null ){
+        if( ("").equals(userObj) || ("null").equals(userObj) || userObj == null ){
             return;
         }
-        new HttpParamConnThread().execute(SCHEDULE_POST_URL, mapPOIItem.getUserObject()+"");
+
+//        mapView.removeAllPOIItems(); // 기존 검색 결과 삭제
+//        mapView.removeAllPolylines();
+
+        if ( Integer.parseInt(userObj) >= 1000 ){   // <<< 우선은 1000이상인 경우로 했는데 내일 처리하기!!!!
+            Intent attrIntent = new Intent(getApplicationContext(), AttractionActivity.class);
+            attrIntent.putExtra("no",userObj);          // postList_no(pk) 넘기기
+            attrIntent.putExtra("usage","result");
+            startActivity(attrIntent);
+        }else{
+            new HttpParamConnThread().execute(SCHEDULE_POST_URL, userObj+"");
+        }
+
     }
 
     @Override
