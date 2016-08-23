@@ -76,9 +76,6 @@ public class SelectedCityActivity extends Activity {
         btn_wholeComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), OthersPlanActivity.class);
-                startActivity(intent);
 
                 if( SCHEDULE_NO != null) {
                     new HttpSendSchNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection
@@ -357,7 +354,7 @@ public class SelectedCityActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             // UI 업데이트가 구현될 부분
-            if(result.equals(""))
+            if( ("").equals(result) )
                 return;
 
             if( parsePinData(result) ){

@@ -14,8 +14,6 @@ import android.widget.Toast;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TabHost;
-import android.widget.TabWidget;
 
 import com.example.estsoft.travelfriendflow2.AttractionActivity;
 import com.example.estsoft.travelfriendflow2.R;
@@ -61,7 +59,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
     private static final String TAG_CITYORDER="cityOrder";
 
     private MapView mapView;
-    public static final int REQUEST_CODE = 2002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +74,8 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
         RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.header);
         relativeLayout.setVisibility(View.INVISIBLE);
-
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.bottom_sheet);
         linearLayout.setVisibility(View.INVISIBLE);
-
         FloatingActionButton button = (FloatingActionButton)findViewById(R.id.fab);
         button.setVisibility(View.INVISIBLE);
 
@@ -302,6 +297,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
     private void makePOIItem(List<PinItem> itemList) {          // city POIItem
         MapPointBounds mapPointBounds = new MapPointBounds();
+//        MapPOIItem[] mapPOIItems = new MapPOIItem[itemList.size()];
 
         for(int i=0; i<itemList.size(); i++){
             PinItem item = itemList.get(i);
@@ -316,7 +312,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             mapPointBounds.add(mapPoint);
 
             poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-            if( item.getStatus().equals("start") ){
+            if( item.getStatus().equals("start") || item.getOrder() == 1 ){
                 poiItem.setCustomImageResourceId(R.drawable.pin_start);
             }else if( item.getStatus().equals("end") ){
                 if( item.getOrder().equals("1") )
@@ -349,7 +345,49 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             mapView.addPolyline(polyline);
 
         }
-        showAll(mapPointBounds);
+//        mapPOIItems = mapView.getPOIItems();
+        MapPolyline[] mapPolylines = mapView.getPolylines();
+
+//        showAll(mapPointBounds);
+        showTrackingAll(mapPointBounds, mapPolylines);
+
+    }
+
+    private void showTrackingAll(final MapPointBounds mapPointBounds, final MapPolyline[] mapPolylines) {
+        int padding = 250;
+        float minZoomLevel = 5;
+        float maxZoomLevel = 12;
+
+        mapView.removeAllPolylines();
+
+        for(int i = 0; i<mapPolylines.length; i++){
+            mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
+
+            Log.e("mapPolylines[i]", mapPolylines[i].getTag()+"");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        Thread.sleep(1000);
+                        Log.e(LOG_TAG, "들어옴");
+//                        mapView.removeAllPolylines();
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }); // runOnUiThread_end
+
+            mapView.addPolyline(mapPolylines[i]);
+
+        }
+
+
+
+
+        // 지도뷰의 중심좌표와 줌레벨을 해당 point가 모두 나오도록 조정
+//        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
+//        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
 
     }
 
