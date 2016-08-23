@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
 import com.example.estsoft.travelfriendflow2.lookaround.OthersPlanActivity;
-import com.example.estsoft.travelfriendflow2.lookaround.OthersPlanMapActivity;
 import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
 import com.example.estsoft.travelfriendflow2.thread.HttpSendSchNoConnThread;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
@@ -77,7 +76,9 @@ public class SelectedCityActivity extends Activity {
         btn_wholeComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), OthersPlanActivity.class);
+                startActivity(intent);
 
                 if( SCHEDULE_NO != null) {
                     new HttpSendSchNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection

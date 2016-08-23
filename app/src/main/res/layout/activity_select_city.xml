@@ -1,26 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".basic.MainActivity">
 
-    <ListView
-        android:id="@+id/listview"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-    </ListView>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="관광지 담으러 가기"
+            android:background="#FFF"
+            android:textColor="@color/orange"
+            android:id="@+id/letsgo" />
+    </LinearLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="관광지 담으러 가기"
-        android:background="#FFF"
-        android:textColor="@color/orange"
-        android:id="@+id/letsgo" />
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:id="@+id/cover"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="원하는 도시 터치 후\n관광지 담으러 가기를 눌러보세요!"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFF"/>
+    </RelativeLayout>
 
-
-</LinearLayout>
+</RelativeLayout>

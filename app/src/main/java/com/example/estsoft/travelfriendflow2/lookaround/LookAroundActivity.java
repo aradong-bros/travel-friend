@@ -182,13 +182,13 @@ public class LookAroundActivity extends Activity {
                 int sMonth = Integer.parseInt(sdateArr[1]);    // month
 
                 if( sMonth >= 5 && sMonth <= 9 ){
-                    t.setPlanSeason("여름");
+                    t.setPlanSeason("#여름");
                 }else if( sMonth >= 10 & sMonth <= 3 ){
-                    t.setPlanSeason("겨울");
+                    t.setPlanSeason("#겨울");
                 }
 
                 int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
-                t.setPlanTime((day-1)+"박"+day+"일");
+                t.setPlanTime("#"+(day-1)+"박"+day+"일");
 
                 // user_no로 배경 이미지 random하게 뿌림
                 settingBackground(t, no);

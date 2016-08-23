@@ -1,29 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="3dp"
+        android:layout_height="100dp"
+        android:background="@color/orange">
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="100dp"
         android:layout_height="100dp"
         android:gravity="center"
         android:id="@+id/row_layout"
         android:background="@drawable/hadong"
         android:orientation="vertical">
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp">
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/lookAroundTextBox"
-                android:text="아라동 오남매 여행"
-                android:textSize="23sp"
-                android:textColor="#fff"
-                android:textStyle="bold"
-                android:gravity="center_vertical"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lookAroundTextBox"
+            android:text="아라동 오남매 여행"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000"
+            android:layout_marginTop="10dp"
+
             />
 
         <TextView
@@ -32,59 +44,71 @@
             android:id="@+id/txt_creationDate"
             android:text="2016/04/21"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="#fff"
+            android:layout_below="@+id/lookAroundTextBox"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="6박7일"
+            android:textColor="#FFF"
+            android:background="#CCeb9b00"
+            android:id="@+id/plan_time"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="5dp"/>
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="여름"
+            android:textColor="#FFF"
+            android:background="#CCeb9b00"
+            android:id="@+id/plan_season"
+            android:layout_marginLeft="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignTop="@+id/plan_time"
+            android:layout_toRightOf="@+id/plan_time"
+            android:layout_toEndOf="@+id/plan_time" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="6박7일"
-        android:textColor="#FFF"
-        android:background="#CCeb9b00"
-        android:layout_marginTop="3dp"
-        android:layout_marginLeft="3dp"
-        android:id="@+id/plan_time"
-        android:layout_gravity="center_horizontal" />
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="23dp"
+            android:id="@+id/heart"
+            android:background="@drawable/heart_selector"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="70dp"
+            android:layout_marginRight="5dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="여름"
-        android:textColor="#FFF"
-        android:background="#CCeb9b00"
-        android:id="@+id/plan_season"
-        android:layout_marginLeft="3dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignTop="@+id/plan_time"
-        android:layout_toRightOf="@+id/plan_time"
-        android:layout_toEndOf="@+id/plan_time" />
-
-    <ImageView
-        android:layout_width="25dp"
-        android:layout_height="23dp"
-        android:id="@+id/heart"
-        android:background="@drawable/heart_selector"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="70dp"
-        android:layout_marginRight="5dp"/>
-
-    <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:id="@+id/btn_setting"
-        android:background="@drawable/setting"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="70dp"
-        android:focusable="false" />
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/btn_setting"
+            android:background="@drawable/setting"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="70dp"
+            android:focusable="false" />
+    </RelativeLayout>
 
 
 
-</RelativeLayout>
+
+
+
+
+
+
+
+
+
+</LinearLayout>

@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TabHost;
+import android.widget.TabWidget;
 
 import com.example.estsoft.travelfriendflow2.AttractionActivity;
 import com.example.estsoft.travelfriendflow2.R;
@@ -69,6 +74,15 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         mapView.setPOIItemEventListener(this);
 //        mapView.setMapViewEventListener(this);
         mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
+
+        RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.header);
+        relativeLayout.setVisibility(View.INVISIBLE);
+
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.bottom_sheet);
+        linearLayout.setVisibility(View.INVISIBLE);
+
+        FloatingActionButton button = (FloatingActionButton)findViewById(R.id.fab);
+        button.setVisibility(View.INVISIBLE);
 
         // selectedcity activity에서 넘어온 경우만 밑의 과정 처리
         Intent intent = getIntent();
@@ -505,6 +519,8 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 break;
         }
         return item;
+
+
     }
 
 }

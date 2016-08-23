@@ -1,77 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:gravity="center_horizontal"
+    android:paddingRight="8dp"
+    android:paddingLeft="8dp"
+    android:orientation="horizontal">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="10dp"
-        android:gravity="center_horizontal">
+        android:gravity="center">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="출발역"
-            android:textSize="15dp"
-            android:id="@+id/station_start"/>
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="출발역"
+                android:id="@+id/station_start"/>
 
-        <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="출발시간"
+                android:layout_alignParentTop="true"
+                android:id="@+id/time_start" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="도착역"
-            android:textSize="15dp"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/station_start"
-            android:layout_toEndOf="@+id/station_start"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/station_end" />
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:gravity="center">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="출발시간"
-            android:textSize="15dp"
-            android:layout_alignParentTop="true"
-            android:id="@+id/time_start"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/station_end"
-            android:layout_toEndOf="@+id/station_end" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="도착역"
+                android:id="@+id/station_end" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="도착시간"
-            android:layout_marginLeft="10dp"
-            android:textSize="15dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/time_end" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="도착시간"
+                android:id="@+id/time_end" />
+
+        </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="열차 종류"
-            android:layout_marginLeft="10dp"
-            android:textSize="15dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:id="@+id/train_type" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="열차 번호"
-            android:layout_marginLeft="10dp"
-            android:textSize="15dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:id="@+id/train_num" />
 
     </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>
