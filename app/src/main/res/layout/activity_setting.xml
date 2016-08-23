@@ -48,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="Name"
+            android:textStyle="italic|bold"
             android:textSize="18dp"
             android:id="@+id/Text6"
             />
@@ -61,40 +62,24 @@
 
     </LinearLayout>
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="이메일"
-        android:id="@+id/textView12"
-        android:background="@drawable/rounded_edittext"
-        android:padding="8dp"
-        android:layout_below="@+id/editText6"
-        android:layout_alignLeft="@+id/editText6"
-        android:layout_alignStart="@+id/editText6"
-        android:layout_marginTop="27dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="pwjddl1126@estsoft.com"
-        android:textStyle="italic"
-        android:id="@+id/textView13"
-        android:layout_below="@+id/textView12"
-        android:layout_alignLeft="@+id/textView12"
-        android:layout_alignStart="@+id/textView12"
-        android:layout_alignRight="@+id/editText6"
-        android:layout_alignEnd="@+id/editText6"
-        android:textSize="18dp" />
-
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="로그아웃"
         android:background="#FFF"
         android:id="@+id/logoutButton"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/chagePasswordButton"
+        android:layout_alignLeft="@+id/chagePasswordButton"
+        android:layout_alignStart="@+id/chagePasswordButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="탈퇴"
+        android:background="#FFF"
+        android:id="@+id/WithdrawalButton"
+        android:layout_marginTop="20dp"
         android:layout_below="@+id/chagePasswordButton"
         android:layout_alignLeft="@+id/chagePasswordButton"
         android:layout_alignStart="@+id/chagePasswordButton" />

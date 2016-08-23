@@ -28,9 +28,9 @@ public class MainActivity extends TabActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //Log.e("isKakaoLoggedIn",isKakaoLoggedIn()+"");
         if (!isFBLoggedIn() && !isKakaoLoggedIn()) {
             startActivity(new Intent(MainActivity.this, JoinActivity.class));
+            finish();
         }
     }
 
@@ -44,16 +44,11 @@ public class MainActivity extends TabActivity {
         int firstviewshow = pref.getInt("First", 0);
 
 
+
         if (!isFBLoggedIn() && !isKakaoLoggedIn()) {
             startActivity(new Intent(MainActivity.this, JoinActivity.class));
+            finish();
         }
-
-
-        if (firstviewshow != 1) {
-            Intent showIntent = new Intent(MainActivity.this, FirstStartActivity.class);
-            startActivity(showIntent);
-        }
-
 
         String userinfo = pref.getString("userData","");
         Log.e("userData is:--------",userinfo);
@@ -79,7 +74,6 @@ public class MainActivity extends TabActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),SettingActivity.class);
                 startActivity(intent);
-
             }
         });
 

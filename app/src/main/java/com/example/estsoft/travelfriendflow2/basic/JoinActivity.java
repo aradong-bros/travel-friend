@@ -31,6 +31,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
@@ -75,8 +76,16 @@ public class JoinActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_join);
+
+        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        int firstviewshow = pref.getInt("First", 0);
+
+        if (firstviewshow != 1) {
+            Intent showIntent = new Intent(JoinActivity.this, FirstStartActivity.class);
+            startActivity(showIntent);
+        }
 
 
         int infoFirst = 1;
@@ -120,12 +129,12 @@ public class JoinActivity extends AppCompatActivity {
 
         if(isFBLoggedIn()){
             //Toast.makeText(getApplicationContext(),"FB로그인 되어 있음",Toast.LENGTH_LONG).show();
-            //startActivity(new Intent(JoinActivity.this,MainActivity.class));
+            startActivity(new Intent(JoinActivity.this,MainActivity.class));
             finish();
         }
         if(isKakaoLoggedIn()){
             //Toast.makeText(getApplicationContext(),"Kakao already logged in",Toast.LENGTH_LONG).show();
-            //startActivity(new Intent(JoinActivity.this,MainActivity.class));
+            startActivity(new Intent(JoinActivity.this,MainActivity.class));
             finish();
         }
 
@@ -203,8 +212,8 @@ public class JoinActivity extends AppCompatActivity {
 
 
                 //Toast.makeText(getApplicationContext(), "페이스북으로 접속합니다", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
                 finish();
             }
 
@@ -279,8 +288,8 @@ public class JoinActivity extends AppCompatActivity {
                 insertToDatabase(name, userId, picture, platform);
                 Log.e("kakao login info----", userProfile.toString());
                 //Toast.makeText(getApplicationContext(), "카카오톡으로 접속합니다", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
                 finish();
             }
 

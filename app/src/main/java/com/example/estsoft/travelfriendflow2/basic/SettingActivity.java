@@ -1,28 +1,21 @@
 package com.example.estsoft.travelfriendflow2.basic;
 
-
-import android.app.ActionBar;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
 
+import android.content.SharedPreferences;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,37 +28,46 @@ import com.example.estsoft.travelfriendflow2.R;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.kakao.auth.Session;
+import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.kakao.util.helper.log.Logger;
 import com.squareup.picasso.Picasso;
 
-
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
-
 public class SettingActivity extends AppCompatActivity {
 
-
+    final int REQ_CODE_SELECT_IMAGE = 100;
     public String selectedImagePath;
     public ImageView imageView;
     String no;
     String name;
     String picture;
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        finish();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +85,8 @@ public class SettingActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         TextView nameTv = (TextView)findViewById(R.id.Text6);
         nameTv.setText(name);
-
-
-
 
         //프로필 사진 바꾸기
         imageView = (ImageView)findViewById(R.id.profile);
@@ -97,10 +95,10 @@ public class SettingActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Picture"),1);
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
             }
 
         });
@@ -111,7 +109,7 @@ public class SettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(SettingActivity.this);
                 alert.setTitle("아이디 변경");
-                alert.setTitle("아이디를 변경해 주세요");
+                alert.setMessage("1 글자 이상 입력해주세요");
 
                 final EditText input = new EditText(SettingActivity.this);
                 input.setText(name);
@@ -132,7 +130,6 @@ public class SettingActivity extends AppCompatActivity {
                         return;
                     }
                 });
-
                 alert.show();
             }
         });
@@ -147,7 +144,6 @@ public class SettingActivity extends AppCompatActivity {
                 if(isFBLoggedIn()){
                     LoginManager.getInstance().logOut();
                     Toast.makeText(getApplicationContext(),"로그아웃 되었습니다.[Facebook]",Toast.LENGTH_SHORT).show();
-
                 }
                 if(isKakaoLoggedIn()){
                     UserManagement.requestLogout(new LogoutResponseCallback() {
@@ -175,35 +171,83 @@ public class SettingActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = a.edit();
                 editor.putString("userData", null);
                 editor.commit();
-                //String loggedoutinfo = a.getString("userData","없음");
-                //Log.e("logout success-----",loggedoutinfo);
-                //startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                startActivity(new Intent(getApplicationContext(),JoinActivity.class));
+                finish();
             }
         });
 
+        if(isFBLoggedIn()){
+            findViewById(R.id.WithdrawalButton).setVisibility(View.GONE);
+        }
 
+        ((Button)findViewById(R.id.WithdrawalButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isKakaoLoggedIn()) {
+                    final String appendMessage = getString(R.string.com_kakao_confirm_unlink);
+                    AlertDialog.Builder alert = new AlertDialog.Builder(SettingActivity.this);
+                    alert.setMessage(appendMessage);
+                    alert.setPositiveButton(getString(R.string.com_kakao_ok_button), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            UserManagement.requestUnlink(new UnLinkResponseCallback() {
+                                @Override
+                                public void onFailure(ErrorResult errorResult) {
+                                    Logger.e(errorResult.toString());
+                                }
 
+                                @Override
+                                public void onSessionClosed(ErrorResult errorResult) {
+                                    Toast.makeText(getApplicationContext(), "탈퇴에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onNotSignedUp() {
+                                    Toast.makeText(getApplicationContext(), "가입되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+
+                                @Override
+                                public void onSuccess(Long userId) {
+                                    Toast.makeText(getApplicationContext(), "탈퇴하였습니다.", Toast.LENGTH_SHORT).show();
+                                    deleteUser(no);
+                                    finish();
+                                }
+                            });
+                            //dialog.dismiss();
+                        }
+                    });
+                    alert.setNegativeButton(getString(R.string.com_kakao_cancel_button), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //dialog.dismiss();
+                        }
+                    });
+                    alert.show();
+                }
+            }
+        });
     }
 
-    public void onActivityResult(int requestCode,int resultCode, Intent data){
-        if(resultCode == RESULT_OK){
-            if(requestCode == 1){
-                Uri selectedImageUri = data.getData();
-                selectedImagePath = getPath(selectedImageUri);
-                Log.d("-->selectedImagePath : ",selectedImagePath+"");
-
-                File f = new File(selectedImagePath);
-                Picasso.with(getApplicationContext()).load(f).transform(new CircleTransform()).into(imageView);
+    public void onActivityResult(int requestCode,int resultCode, Intent data) {
+        if(requestCode == REQ_CODE_SELECT_IMAGE)
+        {
+            if(resultCode==Activity.RESULT_OK)
+            {
+                try {
+                    //Uri에서 이미지 이름을 얻어온다.
+                    selectedImagePath = getPath(data.getData());
+                    File f = new File(selectedImagePath);
+                    updatePicture(f);
+                }
+                catch (Exception e)		         {             e.printStackTrace();			}
             }
         }
     }
+
 
     public String getPath(Uri uri){
         if(uri == null){
             return null;
         }
-
         String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         if(cursor != null){
@@ -214,7 +258,6 @@ public class SettingActivity extends AppCompatActivity {
         }
         return uri.getPath();
     }
-
 
     public boolean isFBLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -313,5 +356,108 @@ public class SettingActivity extends AppCompatActivity {
         task.execute(name,picture, no);
     }
 
+    private void updatePicture(File f){
+
+        class InsertData2 extends AsyncTask<File, Void, String> {
+            //ProgressDialog loading;
+
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                //loading = ProgressDialog.show(getApplicationContext(), "Please Wait", null, true, true);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Picasso.with(getApplicationContext()).load(picture).transform(new CircleTransform()).into(imageView);
+            }
+
+            @Override
+            protected String doInBackground(File... params) {
+
+                try{
+                    File f = params[0];
+                    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+                    builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+                    builder.addPart("picture",new FileBody(f));
+                    InputStream inputStream = null;
+                    HttpClient httpClient = AndroidHttpClient.newInstance("Android");
+                    HttpPost httpPost = new HttpPost("http://222.239.250.207:8080/TravelFriendAndroid/user/profileUpload");
+                    httpPost.setEntity(builder.build());
+                    HttpResponse httpResponse  = httpClient.execute(httpPost);
+                    HttpEntity httpEntity = httpResponse.getEntity();
+                    inputStream = httpEntity.getContent();
+
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line = null;
+                    while((line=bufferedReader.readLine())!=null){
+                        stringBuilder.append(line+"\n");
+                    }
+                    inputStream.close();
+                    picture = stringBuilder.toString();
+                    Log.e("picturePath",picture);
+                    insertToDatabase(name,picture,no);
+
+                    return picture;
+                }
+                catch(Exception e){
+                    return new String("Exception: " + e.getMessage());
+                }
+
+            }
+        }
+
+        InsertData2 task = new InsertData2();
+        task.execute(f);
+    }
+
+    private void deleteUser(String no){
+
+        class InsertData2 extends AsyncTask<String, Void, String> {
+            //ProgressDialog loading;
+
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                //loading = ProgressDialog.show(getApplicationContext(), "Please Wait", null, true, true);
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try{
+                    String no = params[0];
+
+                    String link="http://222.239.250.207:8080/TravelFriendAndroid/user/deleteUser";
+                    String data  = URLEncoder.encode("no", "UTF-8") + "=" + URLEncoder.encode(no, "UTF-8");
+
+                    URL url = new URL(link);
+                    URLConnection conn = url.openConnection();
+
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+
+                    wr.write( data );
+                    wr.flush();
+
+                    SharedPreferences a = getSharedPreferences("pref", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = a.edit();
+                    editor.putString("userData", "");
+                    editor.commit();
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                return "bye";
+            }
+        }
+
+        InsertData2 task = new InsertData2();
+        task.execute(no);
+    }
 
 }
