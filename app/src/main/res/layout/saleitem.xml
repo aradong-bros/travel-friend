@@ -16,6 +16,7 @@
     <ImageView
         android:layout_height="80dp"
         android:layout_width="80dp"
+        android:scaleType="centerCrop"
         android:id="@+id/SaleImage">
     </ImageView>
 
@@ -23,8 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:id="@+id/SaleTextBox"
-        android:textColor="#000"
-        android:textSize="15dp"
+        android:textColor="#555"
         android:layout_marginLeft="10dp"
         android:text="테스트다 랄랄라"
         android:gravity="center"

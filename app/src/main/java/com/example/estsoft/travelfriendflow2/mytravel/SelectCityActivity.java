@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,14 @@ public class SelectCityActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_city);
+
+        RelativeLayout layout = (RelativeLayout)findViewById(R.id.cover);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.INVISIBLE);
+            }
+        });
 
         City Seoul = new City(R.drawable.seoul,"서울");
         City Gapyoeng = new City(R.drawable.gapyeong,"가평");

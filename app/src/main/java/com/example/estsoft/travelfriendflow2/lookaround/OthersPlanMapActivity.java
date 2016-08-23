@@ -3,7 +3,11 @@ package com.example.estsoft.travelfriendflow2.lookaround;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 
@@ -28,6 +32,15 @@ public class OthersPlanMapActivity extends AppCompatActivity {
         mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
 //        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());   //구현한 CalloutBalloonAdapter 등록
 //        mapView.setPOIItemEventListener(this);
+
+        RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.header);
+        relativeLayout.setVisibility(View.INVISIBLE);
+
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.bottom_sheet);
+        linearLayout.setVisibility(View.INVISIBLE);
+
+        FloatingActionButton button = (FloatingActionButton)findViewById(R.id.fab);
+        button.setVisibility(View.INVISIBLE);
 
     }
 

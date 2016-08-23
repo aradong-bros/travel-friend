@@ -1,22 +1,29 @@
 package com.example.estsoft.travelfriendflow2.map;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.AttractionActivity;
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.sale.SaleItemActivity;
 import com.example.estsoft.travelfriendflow2.thread.HttpConnectionThread;
 
 import net.daum.mf.map.api.CalloutBalloonAdapter;
@@ -68,6 +75,9 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     private HashMap<String, String> likeMap = new HashMap<String, String>();        //<postList_no, location>
     public static final int REQUEST_CODE = 1001;
     private static Intent attrIntent;
+
+    ArrayList<Attraction> attractions = new ArrayList<Attraction>();
+    ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,8 +138,8 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.e(LOG_TAG,position+""+parent.getItemAtPosition(position));
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("eb9b00"));
 
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                 mapView.removeAllPOIItems(); /* 기존 검색 결과 삭제 */
 
                 String path = URL + cityList_no;
@@ -151,6 +161,40 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        attractions.add(new Attraction("관광지1", ContextCompat.getDrawable(this,R.drawable.andong)));
+        attractions.add(new Attraction("관광지2", ContextCompat.getDrawable(this,R.drawable.hadong)));
+        attractions.add(new Attraction("관광지댜야야야", ContextCompat.getDrawable(this,R.drawable.busan)));
+
+        final AttractionAdapter attractionAdapter = new AttractionAdapter(getApplicationContext(),R.layout.saleitem,attractions);
+        lv = (ListView)findViewById(R.id.listview);
+        lv.setAdapter(attractionAdapter);
+
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final AttractionAdapter attractionAdapter = new AttractionAdapter(getApplicationContext(),R.layout.saleitem,attractions);
+        lv = (ListView)findViewById(R.id.salelist);
+        lv.setAdapter(attractionAdapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String title = attractions.get(position).getTitle();
+                Intent intent = new Intent(getApplicationContext(),SaleItemActivity.class);
+                intent.putExtra("title",title);
+                startActivity(intent);
+            }
+        });
+
+
+
     }
 
 
@@ -376,3 +420,88 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
 
 }
+
+
+
+
+
+
+//리스트뷰
+class AttractionAdapter extends BaseAdapter {
+    Context context;
+    int layout;
+    ArrayList<Attraction> attractions;
+    LayoutInflater inf;
+
+    private ViewHolder viewHolder = null;
+
+    public AttractionAdapter(Context context, int layout, ArrayList<Attraction> attractions){
+        this.context = context;
+        this.layout = layout;
+        this.attractions = attractions;
+        this.inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getCount(){
+        return attractions.size();
+    }
+
+    @Override
+    public Object getItem(int position){
+        return attractions.get(position);
+    }
+    @Override
+    public long getItemId(int position){
+        return position;
+    }
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent){
+
+        ViewHolder viewHolder;
+
+        if(convertView == null){
+            convertView = inf.inflate(R.layout.saleitem, parent, false);
+//            convertView = inf.inflate(layout, null);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        TextView title = (TextView)convertView.findViewById(R.id.SaleTextBox);
+        ImageView image = (ImageView)convertView.findViewById(R.id.SaleImage);
+
+        Attraction t = attractions.get(position);
+        title.setText(t.title);
+        image.setImageDrawable(t.image);
+        return convertView;
+    }
+
+    class ViewHolder {
+        ImageView image;
+        TextView title;
+
+        public ViewHolder(View view) {
+            image = (ImageView)view.findViewById(R.id.SaleImage);
+            title = (TextView)view.findViewById(R.id.SaleTextBox);
+        }
+    }
+}
+
+
+class Attraction{
+    String title = "";
+    Drawable image;
+    public Attraction(String title, Drawable image){
+        this.title = title;
+        this.image = image;
+    }
+
+    public Attraction(){}
+
+    public String getTitle() {
+        return title;
+    }
+}
+

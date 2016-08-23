@@ -204,13 +204,13 @@ public class MyTravelListActivity extends Activity {
                 int sMonth = Integer.parseInt(sdateArr[1]);
 
                 if( sMonth >= 5 && sMonth <= 9 ){
-                    t.setPlanSeason("여름");
+                    t.setPlanSeason("#여름");
                 }else if( sMonth >= 10 & sMonth <= 3 ){
-                    t.setPlanSeason("겨울");
+                    t.setPlanSeason("#겨울");
                 }
 
                 int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
-                t.setPlanTime((day-1)+"박"+day+"일");
+                t.setPlanTime("#"+(day-1)+"박"+day+"일");
                 t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
 
                 tr.add(t);
