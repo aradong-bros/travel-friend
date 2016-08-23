@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.lookaround.OthersPlanActivity;
 import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
 import com.example.estsoft.travelfriendflow2.thread.HttpSendSchNoConnThread;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
@@ -54,12 +55,11 @@ public class SelectedCityActivity extends Activity {
     private ArrayList<City> city = new ArrayList<City>();
     private ListView lv;
 
-    private static String cityInsertURL = " http://222.239.250.207:8080/TravelFriendAndroid/city/cityInsert";
-    private static final String travelRootURL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";
+    private static String cityInsertURL = " http://222.239.250.207:8080/TravelFriendAndroid/city/cityInsert";       //  input : schedule_no, cityList_no, status, cityOrder
+    private static final String travelRootURL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";    // ?schedule_no={schedule_no 값}
 
-    private static HashMap<String, Integer> postMap = new HashMap<String, Integer>(); // KEY: city title -> cityList_no, VALUE:city_no(pk)
-    /** 원래 구조상 K,V값이 반대로 들어가야 하지만 city table에 schedule_no로 list_no가 다 mapping되어 있으므로 이렇게 구현.*/
-    private static final String TAG_RESULTS= "noList";
+    private static HashMap<String, Integer> postMap = new HashMap<String, Integer>(); // KEY: cityList_no, VALUE:city_no(pk)
+
     CityAdapter cityAdapter;
     private static String SCHEDULE_NO = null;
 
@@ -76,7 +76,9 @@ public class SelectedCityActivity extends Activity {
         btn_wholeComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), OthersPlanActivity.class);
+                startActivity(intent);
 
                 if( SCHEDULE_NO != null) {
                     new HttpSendSchNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection
@@ -94,7 +96,6 @@ public class SelectedCityActivity extends Activity {
             for(int i=0; i<city.size(); i++) {
                 JSONObject sObject = new JSONObject();//배열 내에 들어갈 json
                 int cityNo = cityMap.get(city.get(i).title);
-                postMap.put( city.get(i).title , -1 );
 
                 sObject.put("schedule_no", SCHEDULE_NO);
                 sObject.put("cityList_no", cityNo+"");    //cityList_no
@@ -131,17 +132,14 @@ public class SelectedCityActivity extends Activity {
 
                 City city = (City) cityAdapter.getItem(position);
                 Log.e(LOG_TAG, city.title);
-                int cityList_No = -1;
 
-                for(int i=0; i<cityMap.size(); i++)
-                    cityList_No = cityMap.get(city.title);
+                int cityList_No = cityMap.get(city.title);
+                String ctrNo = Integer.toString(cityList_No);
 
-                if( cityList_No != -1) {
-                    intent.putExtra("cityList_no", cityList_No);
+                intent.putExtra("cityList_no", cityList_No);
+                intent.putExtra("city_no", postMap.get(ctrNo));
+                Log.e("cityList_no"+cityList_No, "city_no "+postMap.get(ctrNo));
 
-                    String ctrNo = Integer.toString(cityList_No);
-                    intent.putExtra("city_no", postMap.get(ctrNo));
-                }
                 startActivity(intent);
             }
         });
@@ -286,35 +284,23 @@ public class SelectedCityActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
 
-            if(result==null)
+            if( ("").equals(result) )
                 return;
 
             try {
+                // cityVoList
                 // The response is: {"noList":[{"no":3},{"no":4},{"no":5}]}
                 JSONObject jsonObject = new JSONObject(result);
-                JSONArray datas = jsonObject.getJSONArray("noList");
-                int[] cityNoArr = new int[datas.length()];
+                JSONArray datas = jsonObject.getJSONArray("cityVoList");
 
                 for(int i=0; i<datas.length(); i++){
                     JSONObject obj = datas.getJSONObject(i);
-                    cityNoArr[i] = obj.getInt("no");
+
+                    int no = obj.getInt("no");
+                    String cityList_no = obj.getString("cityList_no");
+
+                    postMap.put(cityList_no, no);
                 }
-
-                int idx = 0;
-                Iterator iterator = ((HashMap<String, Integer>)postMap.clone()).keySet().iterator();
-                while (iterator.hasNext()) {
-                    String key = (String) iterator.next();
-                    Log.e("key-----", key); // 도시 이름
-                    postMap.put( cityMap.get(key)+"", cityNoArr[idx++] );       // <cityList_no, city_no>  ADD
-                    postMap.remove(key);                                        // ORIGINAL VALUE < city_title, defaultValue> DELETE
-                }
-
-//                Iterator<String> i = postMap.keySet().iterator();
-//                while (i.hasNext()) {
-//                    String key = (String) i.next();
-//                    Log.e("key:"+key, "value:"+postMap.get(key));
-//                }
-
                 cityAdapter.notifyDataSetChanged();
 
             }catch (JSONException je){
@@ -324,5 +310,84 @@ public class SelectedCityActivity extends Activity {
 
     }   // End_HttpPostConnThread
 
+
+    public class HttpSendSchNoConnThread extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... path){
+            // URL 연결이 구현될 부분
+            URL url;
+            String response = "";
+            String CONNURL = path[0];
+            String VALUE = "?schedule_no="+path[1];
+            HttpURLConnection conn = null;
+            try {
+
+                url = new URL(CONNURL+VALUE);
+                Log.e(LOG_TAG, CONNURL+VALUE);
+                conn = (HttpURLConnection) url.openConnection();
+
+                conn.setConnectTimeout(3000);
+
+                conn.setDoInput(true);
+
+                Log.e("http response code", conn.getResponseCode()+"");
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) { // 연결에 성공한 경우
+                    Log.e(LOG_TAG, "연결 성공");
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream())); // 서버의 응답을 읽기 위한 입력 스트림
+
+                    while ((line = br.readLine()) != null) {// 서버의 응답을 읽어옴
+                        response += line;
+                    }
+
+                    br.close();
+                    conn.disconnect();
+                    Log.e("RESPONSE", "The response is: " + response);
+                }
+
+            }catch (IOException e) {
+                e.printStackTrace();
+            }finally{
+                conn.disconnect();
+            }
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // UI 업데이트가 구현될 부분
+            if(result.equals(""))
+                return;
+
+            if( parsePinData(result) ){
+                showResult();
+            }
+
+        }
+
+    }   // End_HttpSendschNoConnThread
+
+    protected boolean parsePinData(String myJSON){
+        try {
+            JSONObject jsonObj = new JSONObject(myJSON);
+            String result = jsonObj.getString("result");
+
+            if( !result.equals("success") ){
+                // fail 처리
+                Log.e(LOG_TAG,"result fail");
+                return false;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }// End_parsePinData
+
+    private void showResult() {
+        Intent i = new Intent(getApplicationContext(), OthersPlanActivity.class);
+        i.putExtra("group", 1);
+        startActivity(i);
+    }
 
 }

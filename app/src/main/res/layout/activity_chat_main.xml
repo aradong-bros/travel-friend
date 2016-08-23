@@ -8,6 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="8dp"
     android:id="@+id/main_background"
+    android:background="#FFF"
     tools:context=".chat.ChatMainActivity">
 
     <LinearLayout
@@ -50,8 +51,7 @@
                 android:id="@+id/btn_callmore"
                 android:background="#FFF"
                 android:layout_gravity="center"
-                android:text="대화내용 더 불러오기"
-                android:textSize="10sp"/>
+                android:text="대화내용 더 불러오기" />
         </LinearLayout>
     </ScrollView>
 

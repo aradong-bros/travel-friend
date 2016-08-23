@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -49,7 +50,7 @@ public class MyTravelListActivity extends Activity {
     private static final String LOG_TAG = "MyTravelListActivity";
     private static String oneSrchURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelect";    // 글 1개 조회
     private static String schAllSrchURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schSelectByUser";    // 사용자 글 전체 조회
-    private static String deleteURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schDelete";    // isDelete 수정
+    private static String deleteURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schDelete";    // 스케쥴 1개 삭제
 
     private static final String TAG_RESULTS="schList";
     private static final String TAG_TITLE="title";
@@ -161,7 +162,7 @@ public class MyTravelListActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            if(result==null) {
+            if( ("").equals(result) || TextUtils.isEmpty(result) ) {
                 //  로딩바 띄우기
                 Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
                 return;
@@ -176,7 +177,6 @@ public class MyTravelListActivity extends Activity {
     }   // End_HttpParamConnThread
 
     protected boolean parsePinData(String myJSON){
-
         try {
             JSONObject jsonObj = new JSONObject(myJSON);
             JSONArray datas = jsonObj.getJSONArray(TAG_RESULTS);
@@ -185,7 +185,9 @@ public class MyTravelListActivity extends Activity {
                 JSONObject object = datas.getJSONObject(i);
 
                 Travel t = new Travel();
-                t.setSchNo(object.getInt("no"));
+                int no = object.getInt("no");       // schedule_no
+
+                t.setSchNo(no);
                 t.setTitle(object.getString(TAG_TITLE));
 
                 String sdate = object.getString(TAG_SDATE);
@@ -204,15 +206,20 @@ public class MyTravelListActivity extends Activity {
                 int sMonth = Integer.parseInt(sdateArr[1]);
 
                 if( sMonth >= 5 && sMonth <= 9 ){
-                    t.setPlanSeason("여름");
+                    t.setPlanSeason("#여름");
                 }else if( sMonth >= 10 & sMonth <= 3 ){
-                    t.setPlanSeason("겨울");
+                    t.setPlanSeason("#겨울");
                 }
 
                 int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
-                t.setPlanTime((day-1)+"박"+day+"일");
+
+                t.setPlanTime("#"+(day-1)+"박"+day+"일");
                 t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
 
+                // user_no로 배경 이미지 random하게 뿌림
+                settingBackground(t, no);
+
+                t.setSetting(true);
                 tr.add(t);
             }
 
@@ -226,6 +233,48 @@ public class MyTravelListActivity extends Activity {
         adapter.notifyDataSetChanged();
     }
 
+    public void settingBackground(Travel t, int no) {       // user_no로 배경 이미지 random으로 뿌림
+        int divideNum = no%12;
+
+        switch ( divideNum ){
+            case 0 :
+                t.setBackground(R.drawable.seoul);
+                break;
+            case 1:
+                t.setBackground(R.drawable.gapyeong);
+                break;
+            case 2 :
+                t.setBackground(R.drawable.gangrueng);
+                break;
+            case 3:
+                t.setBackground(R.drawable.andong);
+                break;
+            case 4 :
+                t.setBackground(R.drawable.jeonju);
+                break;
+            case 5:
+                t.setBackground(R.drawable.gyeongju);
+                break;
+            case 6 :
+                t.setBackground(R.drawable.busan);
+                break;
+            case 7:
+                t.setBackground(R.drawable.hadong);
+                break;
+            case 8 :
+                t.setBackground(R.drawable.tongyeong);
+                break;
+            case 9:
+                t.setBackground(R.drawable.sooncheon);
+                break;
+            case 10 :
+                t.setBackground(R.drawable.boseong);
+                break;
+            case 11:
+                t.setBackground(R.drawable.yeosoo);
+                break;
+        }
+    }
 }
 
 
@@ -270,7 +319,6 @@ class MyAdapter extends BaseAdapter {
         ImageView heart = (ImageView)convertView.findViewById(R.id.heart);
         ImageView btn_setting = (ImageView)convertView.findViewById(R.id.btn_setting);
 
-
         heart.setVisibility(View.INVISIBLE);
         btn_setting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -288,8 +336,12 @@ class MyAdapter extends BaseAdapter {
         plan_time.setText(t.getPlanTime());
         plan_season.setText(t.getPlanSeason());
         background.setBackgroundResource(t.getBackground());
-
         heart.setVisibility(View.INVISIBLE);
+
+        if( t.isSetting() )
+            btn_setting.setVisibility(View.VISIBLE);
+        else
+            btn_setting.setVisibility(View.INVISIBLE);
 
         return convertView;
     }

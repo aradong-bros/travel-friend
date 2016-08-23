@@ -47,7 +47,7 @@ public class SaleActivity extends Activity {
         Spinner spin2 = (Spinner)findViewById(R.id.spinner2);
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.spinner_item,option2);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin2.setAdapter(adapter2);
 
         saleItems.add(new SaleItem("asdfasdfasdfasdfasdfasdfasdfasdfasdf", ContextCompat.getDrawable(this,R.drawable.attraction)));

@@ -55,7 +55,8 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".lookaround.LookAroundActivity" />
         <activity android:name=".sale.SaleActivity" />
-        <activity android:name=".korail.KorailActivity" />
+        <activity android:name=".korail.KorailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".chat.ChatActivity" />
         <activity android:name=".mytravel.MyTravelActivity" />
         <activity
@@ -93,8 +94,10 @@
         <activity android:name=".mytravel.MySettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name=".korail.DirectPathActivity"></activity>
-        <activity android:name=".korail.TransferPathActivity"></activity>
+        <activity android:name=".korail.DirectPathActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".korail.TransferPathActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity android:name=".sale.SaleItemActivity"></activity>
 
 

@@ -1,22 +1,29 @@
 package com.example.estsoft.travelfriendflow2.map;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.AttractionActivity;
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.sale.SaleItemActivity;
 import com.example.estsoft.travelfriendflow2.thread.HttpConnectionThread;
 
 import net.daum.mf.map.api.CalloutBalloonAdapter;
@@ -48,6 +55,8 @@ import java.util.List;
  * Created by yeonji on 2016-07-29.
  * 해당 지역 선택 시 관련 MARKER 전부 보여주기
  *
+ * 08-19
+ * 조회순으로 100위까지만 보여주기
  */
 public class MapViewActivity extends AppCompatActivity implements MapView.POIItemEventListener{
     private static final String LOG_TAG = "MapViewActivity";
@@ -69,12 +78,22 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     public static final int REQUEST_CODE = 1001;
     private static Intent attrIntent;
 
+    ArrayList<Attraction> attractions = new ArrayList<Attraction>();
+    ListView lv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
 
         btn_complete = (TextView)findViewById(R.id.btn_selComplete);
+
+        mapView = (MapView)findViewById(R.id.map_view);
+        mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
+        mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
+        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());   //구현한 CalloutBalloonAdapter 등록
+        mapView.setPOIItemEventListener(this);
+
 
         Intent intent = getIntent();
         final int cityList_no = intent.getIntExtra("cityList_no", -1);
@@ -86,11 +105,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             return;
         }
 
-        mapView = (MapView)findViewById(R.id.map_view);
-        mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
-        mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
-        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());   //구현한 CalloutBalloonAdapter 등록
-        mapView.setPOIItemEventListener(this);
        // fetchData(URL+pos);
 
         btn_complete.setOnClickListener(new View.OnClickListener() {
@@ -128,8 +142,8 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.e(LOG_TAG,position+""+parent.getItemAtPosition(position));
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("eb9b00"));
 
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                 mapView.removeAllPOIItems(); /* 기존 검색 결과 삭제 */
 
                 String path = URL + cityList_no;
@@ -151,6 +165,40 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        attractions.add(new Attraction("관광지1", ContextCompat.getDrawable(this,R.drawable.andong)));
+        attractions.add(new Attraction("관광지2", ContextCompat.getDrawable(this,R.drawable.hadong)));
+        attractions.add(new Attraction("관광지댜야야야", ContextCompat.getDrawable(this,R.drawable.busan)));
+
+        final AttractionAdapter attractionAdapter = new AttractionAdapter(getApplicationContext(),R.layout.saleitem,attractions);
+        lv = (ListView)findViewById(R.id.listview);
+        lv.setAdapter(attractionAdapter);
+
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final AttractionAdapter attractionAdapter = new AttractionAdapter(getApplicationContext(),R.layout.saleitem,attractions);
+        lv = (ListView)findViewById(R.id.salelist);
+        lv.setAdapter(attractionAdapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String title = attractions.get(position).getTitle();
+                Intent intent = new Intent(getApplicationContext(),SaleItemActivity.class);
+                intent.putExtra("title",title);
+                startActivity(intent);
+            }
+        });
+
+
+
     }
 
 
@@ -327,7 +375,9 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         try {
             JSONObject jsonObj = new JSONObject(myJSON);
             datas = jsonObj.getJSONArray(TAG_RESULTS);
+            Log.e("datas_length", datas.length()+"");
 
+//            for(int i = 0; i<100; i++){     // 1위 ~ 100위
             for(int i = 0; i< datas.length(); i++){
                 JSONObject object = datas.getJSONObject(i);
 
@@ -339,8 +389,8 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                 String location = object.getString(TAG_LOCATION);
                 String[] arr = location.split(",");
 
-                pinItem.latitude = (arr[0] != null ? Double.parseDouble(arr[0]) : null );
-                pinItem.longitude = (arr[1] != null ? Double.parseDouble(arr[1]) : null );
+                pinItem.latitude = ( !("").equals(arr[0]) ? Double.parseDouble(arr[0]) : null );
+                pinItem.longitude = ( !("").equals(arr[1]) ? Double.parseDouble(arr[1]) : null );
 
                 pinItem.category = object.getString(TAG_CATEGORY);
 
@@ -376,3 +426,88 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
 
 }
+
+
+
+
+
+
+//리스트뷰
+class AttractionAdapter extends BaseAdapter {
+    Context context;
+    int layout;
+    ArrayList<Attraction> attractions;
+    LayoutInflater inf;
+
+    private ViewHolder viewHolder = null;
+
+    public AttractionAdapter(Context context, int layout, ArrayList<Attraction> attractions){
+        this.context = context;
+        this.layout = layout;
+        this.attractions = attractions;
+        this.inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getCount(){
+        return attractions.size();
+    }
+
+    @Override
+    public Object getItem(int position){
+        return attractions.get(position);
+    }
+    @Override
+    public long getItemId(int position){
+        return position;
+    }
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent){
+
+        ViewHolder viewHolder;
+
+        if(convertView == null){
+            convertView = inf.inflate(R.layout.saleitem, parent, false);
+//            convertView = inf.inflate(layout, null);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        TextView title = (TextView)convertView.findViewById(R.id.SaleTextBox);
+        ImageView image = (ImageView)convertView.findViewById(R.id.SaleImage);
+
+        Attraction t = attractions.get(position);
+        title.setText(t.title);
+        image.setImageDrawable(t.image);
+        return convertView;
+    }
+
+    class ViewHolder {
+        ImageView image;
+        TextView title;
+
+        public ViewHolder(View view) {
+            image = (ImageView)view.findViewById(R.id.SaleImage);
+            title = (TextView)view.findViewById(R.id.SaleTextBox);
+        }
+    }
+}
+
+
+class Attraction{
+    String title = "";
+    Drawable image;
+    public Attraction(String title, Drawable image){
+        this.title = title;
+        this.image = image;
+    }
+
+    public Attraction(){}
+
+    public String getTitle() {
+        return title;
+    }
+}
+

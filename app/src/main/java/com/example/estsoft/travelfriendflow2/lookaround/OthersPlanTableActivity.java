@@ -48,12 +48,7 @@ public class OthersPlanTableActivity extends AppCompatActivity {
 
         LinearLayout topLL = (LinearLayout)findViewById(R.id.layout);
         LinearLayout parent = (LinearLayout)findViewById(R.id.parent);
-//        dayTitle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        dayTitle.setText("day1");
-//        dayTitle.setTextColor(Color.parseColor("#000000"));
-//        dayTitle.setTextSize(20);
-//        dayTitle.setBackgroundColor(Color.parseColor("#555555"));
-//        topLL.addView(dayTitle);
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
         int maxIndex = 0;
         for(int i=0; i<plan.size(); i++){
@@ -71,17 +66,15 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                 }
             }
             dayTitle = new TextView(OthersPlanTableActivity.this);
-//            dayTitle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
 
-            dayTitle.setText("day"+num);
+
+            dayTitle.setText("DAY "+num);
             dayTitle.setGravity(Gravity.CENTER);
             dayTitle.setTextColor(Color.parseColor("#FFFFFF"));
             dayTitle.setTextSize(20);
             dayTitle.setPadding(1,1,1,1);
-            dayTitle.setHeight(count * 150);
-//            dayTitle.getPaint().setColor(Color.RED);
-//            dayTitle.getPaint().setStrokeWidth(10f);
+            dayTitle.setHeight(count * 151);
             if(num%2==0) {
                 dayTitle.setBackgroundColor(Color.parseColor("#eb9b00"));
             }else{

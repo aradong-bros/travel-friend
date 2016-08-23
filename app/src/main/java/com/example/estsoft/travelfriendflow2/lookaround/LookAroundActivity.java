@@ -127,17 +127,14 @@ public class LookAroundActivity extends Activity {
 
             String str = result.substring(2,4);     // sc or fa
             if( str.equals("fa") ){
-
                if( parsePinFavorData(result) ) {
                    Preference pf = new Preference(getApplicationContext());
                    new HttpParamConnThread().execute(othAllSrchURL, pf.getUserNo());
                }
 
             }else if( str.equals("sc") ){
-
                 if( parsePinData(result) )
                     showResult();
-
             }
 
         }
@@ -155,15 +152,19 @@ public class LookAroundActivity extends Activity {
                 JSONObject object = datas.getJSONObject(i);
 
                 Travel t = new Travel();
-                int no = object.getInt("no");
+                int no = object.getInt("no");       // schedule_no
 
-                for(int k=0; k<favorSchNo.size(); k++){
+                for(int k=0; k<favorSchNo.size(); k++){         // 내가 좋아요 한 글은 ♥뜨게
                     if( no == favorSchNo.get(k) )
                         t.setHeart(true);
                 }
 
                 t.setSchNo(no);
                 t.setTitle(object.getString(TAG_TITLE));
+
+                if( object.getInt("isPublic") == 0 ){       // 0 : 비공개
+                    continue;
+                }
 
                 String sdate = object.getString(TAG_SDATE);
                 String edate = object.getString(TAG_EDATE);
@@ -181,15 +182,17 @@ public class LookAroundActivity extends Activity {
                 int sMonth = Integer.parseInt(sdateArr[1]);    // month
 
                 if( sMonth >= 5 && sMonth <= 9 ){
-                    t.setPlanSeason("여름");
+                    t.setPlanSeason("#여름");
                 }else if( sMonth >= 10 & sMonth <= 3 ){
-                    t.setPlanSeason("겨울");
+                    t.setPlanSeason("#겨울");
                 }
 
                 int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
-                t.setPlanTime((day-1)+"박"+day+"일");
+                t.setPlanTime("#"+(day-1)+"박"+day+"일");
 
-                t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
+                // user_no로 배경 이미지 random하게 뿌림
+                settingBackground(t, no);
+
                 tr.add(t);
             }
 
@@ -198,6 +201,49 @@ public class LookAroundActivity extends Activity {
         }
         return true;
     }   // End_parsePinData
+
+    public void settingBackground(Travel t, int no) {       // user_no로 배경 이미지 random으로 뿌림
+        int divideNum = no%12;
+
+        switch ( divideNum ){
+            case 0 :
+                t.setBackground(R.drawable.seoul);
+                break;
+            case 1:
+                t.setBackground(R.drawable.gapyeong);
+                break;
+            case 2 :
+                t.setBackground(R.drawable.gangrueng);
+                break;
+            case 3:
+                t.setBackground(R.drawable.andong);
+                break;
+            case 4 :
+                t.setBackground(R.drawable.jeonju);
+                break;
+            case 5:
+                t.setBackground(R.drawable.gyeongju);
+                break;
+            case 6 :
+                t.setBackground(R.drawable.busan);
+                break;
+            case 7:
+                t.setBackground(R.drawable.hadong);
+                break;
+            case 8 :
+                t.setBackground(R.drawable.tongyeong);
+                break;
+            case 9:
+                t.setBackground(R.drawable.sooncheon);
+                break;
+            case 10 :
+                t.setBackground(R.drawable.boseong);
+                break;
+            case 11:
+                t.setBackground(R.drawable.yeosoo);
+                break;
+        }
+    }
 
     private void showResult() {
 
@@ -211,6 +257,7 @@ public class LookAroundActivity extends Activity {
                     String title = tr.get(i).getTitle();
                     Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
                     intent.putExtra("title",title);
+                    intent.putExtra("group", 2);
                     startActivity(intent);
                 }
             });
