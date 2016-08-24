@@ -362,7 +362,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         for(int i = 0; i<mapPolylines.length; i++){
             mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
 
-            Log.e("mapPolylines[i]", mapPolylines[i].getTag()+"");
+//            Log.e("mapPolylines[i]", mapPolylines[i].getTag()+"");
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -397,7 +397,20 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             mapPointBounds.add(mapPoint);
 
             poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-            if( item.getPostOrder().equals("1") ){
+            if( itemList.size() == 1 ){         // item이 1개인 경우
+                Log.e("itemList_size", "1");
+                switch ( item.getCategory() ){
+                    case "tour":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_play);
+                        break;
+                    case "inn":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_stay);
+                        break;
+                    case "food":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_eat);
+                        break;
+                }
+            }else if( item.getPostOrder().equals("1") ){    // item이 2개 이상이며, postOrder 값이 1인 경우
                 switch ( item.getCategory() ){
                     case "tour":
                         poiItem.setCustomImageResourceId(R.drawable.pin_play_start);
@@ -409,7 +422,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                         poiItem.setCustomImageResourceId(R.drawable.pin_eat_start);
                         break;
                 }
-            }else if( item.getPostOrder().equals(itemList.size()+"") ){
+            }else if( item.getPostOrder().equals(itemList.size()+"") ){// item이 2개 이상이며, postOrder 값이 끝인 경우
                 switch ( item.getCategory() ){
                     case "tour":
                         poiItem.setCustomImageResourceId(R.drawable.pin_play_end);
@@ -422,7 +435,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                         break;
                 }
             }else{
-                switch ( item.getCategory() ){
+                switch ( item.getCategory() ){  // item이 2개 이상이며, 그 외의 경우
                     case "tour":
                         poiItem.setCustomImageResourceId(R.drawable.pin_play);
                         break;
@@ -470,11 +483,11 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         float maxZoomLevel = 12;
 
         mapView.removeAllPolylines();
-        Log.e("mapPolylines_length: ",""+mapPolylines.length);
+//        Log.e("mapPolylines_length: ",""+mapPolylines.length);
         for(int i = 0; i<mapPolylines.length; i++){
             mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
 
-            Log.e("mapPolylines_post[i]", mapPolylines[i].getTag()+"");
+//            Log.e("mapPolylines_post[i]", mapPolylines[i].getTag()+"");
             if ( mapPolylines[i].getTag() < 100){
                 mapView.addPolyline(mapPolylines[i]);
                 continue;
