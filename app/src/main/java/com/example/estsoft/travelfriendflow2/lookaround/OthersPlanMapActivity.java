@@ -86,7 +86,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         if ( group == 1 ){
             Preference pref = new Preference(this);
             SCHEDULE_NO = pref.getValue("prefSchNo","null");
-            Log.e(LOG_TAG,SCHEDULE_NO);
+            Log.e(LOG_TAG,"schNo"+SCHEDULE_NO);
         }else if ( group == 2 ){
             Log.e(LOG_TAG, " group == 2 ");
         }else{

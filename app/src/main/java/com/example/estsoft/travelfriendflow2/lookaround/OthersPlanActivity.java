@@ -66,7 +66,7 @@ public class OthersPlanActivity extends TabActivity {
             public void onClick(View v) {
 //                Intent i = new Intent(getApplicationContext(), MainActivity.class);
 //                startActivity(i);
-                Log.e("aaa","bbb");
+                finish();
             }
         });
 

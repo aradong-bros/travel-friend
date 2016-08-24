@@ -141,6 +141,7 @@ public class SelectedCityActivity extends Activity {
                 Log.e("cityList_no"+cityList_No, "city_no "+postMap.get(ctrNo));
 
                 startActivity(intent);
+//                finish();     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             }
         });
     }
@@ -388,6 +389,7 @@ public class SelectedCityActivity extends Activity {
         Intent i = new Intent(getApplicationContext(), OthersPlanActivity.class);
         i.putExtra("group", 1);
         startActivity(i);
+        finish();
     }
 
 }

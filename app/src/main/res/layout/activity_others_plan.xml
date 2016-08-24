@@ -8,11 +8,23 @@
     android:paddingRight="8dp"
     android:orientation="vertical">
 
+
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFF"
         android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_finish"
+            android:text="완료"
+            android:gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:textColor="#eb9b00" />
 
         <TextView
             android:layout_width="match_parent"
@@ -22,20 +34,11 @@
             android:gravity="center"
             android:id="@+id/title"
             android:textColor="#000"
-            android:textSize="20sp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_finish"
-            android:text="완료"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_alignParentRight="true"
-            android:padding="5dp"
-            android:textColor="#eb9b00" />
+            android:textSize="20sp"
+            android:layout_toLeftOf="@id/btn_finish"/>
 
     </RelativeLayout>
+
 
     <TabHost
         xmlns:android="http://schemas.android.com/apk/res/android"
