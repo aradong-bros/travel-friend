@@ -162,7 +162,8 @@ public class LookAroundActivity extends Activity {
                 t.setSchNo(no);
                 t.setTitle(object.getString(TAG_TITLE));
 
-                if( object.getInt("isPublic") == 0 ){       // 0 : 비공개
+                //  완성된 글 + 공개된 글만 보여주기!!
+                if( object.getInt("isPublic") == 0 || ("ongoing").equals(object.getString("isfinished")) ){       // 0 : 비공개
                     continue;
                 }
 
