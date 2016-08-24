@@ -82,19 +82,25 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         // selectedcity activity에서 넘어온 경우만 밑의 과정 처리
         Intent intent = getIntent();
         int group = intent.getIntExtra("group", -1);
+        int otherSchNo = intent.getIntExtra("otherSchNo",-1);
 
+        /** 1:selectedA ,2: LookAroundA,BookmarkListA, 3: MyTravelListA */
         if ( group == 1 ){
             Preference pref = new Preference(this);
             SCHEDULE_NO = pref.getValue("prefSchNo","null");
             Log.e(LOG_TAG,"schNo"+SCHEDULE_NO);
-        }else if ( group == 2 ){
-            Log.e(LOG_TAG, " group == 2 ");
+        }else if ( group == 2 || group == 3 ) {
+            SCHEDULE_NO = otherSchNo != -1 ? otherSchNo + "" : null;
+            Log.e(LOG_TAG,"schNo"+SCHEDULE_NO);
         }else{
+            SCHEDULE_NO = null;
             Log.e(LOG_TAG, " group == -1 ");
         }
         // -----------------------------------------------------
 
         if( TextUtils.isEmpty(SCHEDULE_NO) ){
+            Log.e("여기 ","22222");
+
             Toast toast = Toast.makeText(getApplicationContext(), "값을 불러오는 과정에서 문제가 생겼습니다.\n 다시 시도해 주세요.", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
             toast.show();
@@ -368,7 +374,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 public void run() {
                     try{
                         Thread.sleep(1000);
-                        Log.e(LOG_TAG, "들어옴");
                     } catch (Exception e){
                         e.printStackTrace();
                     }

@@ -259,6 +259,7 @@ public class LookAroundActivity extends Activity {
                     Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
                     intent.putExtra("title",title);
                     intent.putExtra("group", 2);
+                    intent.putExtra("otherSchNo", tr.get(i).getSchNo());
                     startActivity(intent);
                 }
             });
