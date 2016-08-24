@@ -8,15 +8,34 @@
     android:paddingRight="8dp"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:paddingTop="5dp"
-        android:text="title"
-        android:gravity="center"
-        android:id="@+id/title"
-        android:textColor="#000"
-        android:textSize="20dp"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:paddingTop="5dp"
+            android:text="title"
+            android:gravity="center"
+            android:id="@+id/title"
+            android:textColor="#000"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_finish"
+            android:text="완료"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:textColor="#eb9b00" />
+
+    </RelativeLayout>
 
     <TabHost
         xmlns:android="http://schemas.android.com/apk/res/android"

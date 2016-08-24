@@ -7,13 +7,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.basic.MainActivity;
 import com.example.estsoft.travelfriendflow2.mytravel.BookmarkListActivity;
+import com.example.estsoft.travelfriendflow2.mytravel.MyTravelActivity;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
 
 /**
@@ -56,6 +59,16 @@ public class OthersPlanActivity extends TabActivity {
 
         mTab.addTab(mTab.newTabSpec("tab1").setIndicator("지도로 보기",getResources().getDrawable(R.drawable.lookaround)).setContent(mapIntent));
         mTab.addTab(mTab.newTabSpec("tab2").setIndicator("계획표로 보기",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,OthersPlanTableActivity.class)));
+
+        TextView btn_finish = (TextView)findViewById(R.id.btn_finish);
+        btn_finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(i);
+                Log.e("aaa","bbb");
+            }
+        });
 
     }
 

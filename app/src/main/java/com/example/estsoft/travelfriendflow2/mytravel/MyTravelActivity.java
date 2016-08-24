@@ -28,20 +28,6 @@ public class MyTravelActivity extends TabActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mytravel);
-        String name="";
-        String picture="";
-        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-        try {
-            JSONObject userData = new JSONObject(pref.getString("userData", ""));
-            name = userData.getString("name");
-            picture = userData.getString("picture");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        ImageView imageView = (ImageView)findViewById(R.id.profile);
-        Picasso.with(getApplicationContext()).load(picture).transform(new CircleTransform()).into(imageView);
-        ((TextView)findViewById(R.id.userId)).setText(name);
 
         //프레그먼트 탭
         TabHost mTab = getTabHost();
@@ -75,4 +61,23 @@ public class MyTravelActivity extends TabActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String name="";
+        String picture="";
+        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        try {
+            JSONObject userData = new JSONObject(pref.getString("userData", ""));
+            name = userData.getString("name");
+            picture = userData.getString("picture");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ImageView imageView = (ImageView)findViewById(R.id.profile);
+        Picasso.with(getApplicationContext()).load(picture).transform(new CircleTransform()).into(imageView);
+        ((TextView)findViewById(R.id.userId)).setText(name);
+    }
 }

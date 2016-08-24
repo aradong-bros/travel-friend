@@ -209,7 +209,7 @@ public class NewTravelSettingActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(),SelectCityActivity.class);
                 startActivity(intent);
-
+                finish();
             }
         });
     }
