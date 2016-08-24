@@ -304,7 +304,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
             MapPOIItem poiItem = new MapPOIItem();
             poiItem.setItemName(item.title);
-            poiItem.setTag(i);
+            poiItem.setTag(item.city_pkno);
             poiItem.setUserObject(item.getCity_pkno());
 
             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
@@ -334,7 +334,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 continue;
             }
             MapPolyline polyline = new MapPolyline();
-            polyline.setTag(i);
+            polyline.setTag(i);             // 도시 polyline은 1 ~ 99로 tag
             polyline.setLineColor(Color.argb(255, 255, 0, 0)); // Polyline 컬러 지정
 
             // Polyline 좌표 지정.
@@ -359,7 +359,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         float maxZoomLevel = 12;
 
         mapView.removeAllPolylines();
-
         for(int i = 0; i<mapPolylines.length; i++){
             mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
 
@@ -370,8 +369,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                     try{
                         Thread.sleep(1000);
                         Log.e(LOG_TAG, "들어옴");
-//                        mapView.removeAllPolylines();
-
                     } catch (Exception e){
                         e.printStackTrace();
                     }
@@ -381,13 +378,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             mapView.addPolyline(mapPolylines[i]);
 
         }
-
-
-
-
-        // 지도뷰의 중심좌표와 줌레벨을 해당 point가 모두 나오도록 조정
-//        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
-//        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
 
     }
 
@@ -399,7 +389,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
             MapPOIItem poiItem = new MapPOIItem();
             poiItem.setItemName(item.title);
-            poiItem.setTag(i);
+            poiItem.setTag(Integer.parseInt(item.no));
             poiItem.setUserObject(item.getPostList_no());
 
             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
@@ -408,11 +398,41 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
             poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
             if( item.getPostOrder().equals("1") ){
-                poiItem.setCustomImageResourceId(R.drawable.pin_start);
+                switch ( item.getCategory() ){
+                    case "tour":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_play_start);
+                        break;
+                    case "inn":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_stay_start);
+                        break;
+                    case "food":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_eat_start);
+                        break;
+                }
             }else if( item.getPostOrder().equals(itemList.size()+"") ){
-                poiItem.setCustomImageResourceId(R.drawable.pin_end);
+                switch ( item.getCategory() ){
+                    case "tour":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_play_end);
+                        break;
+                    case "inn":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_stay_end);
+                        break;
+                    case "food":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_eat_end);
+                        break;
+                }
             }else{
-                poiItem.setCustomImageResourceId(R.drawable.pin_none);
+                switch ( item.getCategory() ){
+                    case "tour":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_play);
+                        break;
+                    case "inn":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_stay);
+                        break;
+                    case "food":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_eat);
+                        break;
+                }
             }
             poiItem.setCustomImageAutoscale(false);               // 마커 크기 큰 상태!
             poiItem.setCustomImageAnchor(0.5f, 1.0f);
@@ -425,7 +445,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 continue;
             }
             MapPolyline polyline = new MapPolyline();
-            polyline.setTag(i);
+            polyline.setTag(100+i);                 // 관광지 polyline은 101 ~ 으로 tag
             polyline.setLineColor(Color.argb(255, 1, 0, 255)); // Polyline 컬러 지정
 
             // Polyline 좌표 지정.
@@ -434,13 +454,51 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
             // Polyline 지도에 올리기.
             mapView.addPolyline(polyline);
-
         }
-        showAll(mapPointBounds);
+
+        MapPolyline[] mapPolylines = mapView.getPolylines();
+        showTrackingPostAll(mapPointBounds, mapPolylines);
+
+
+//        showAll(mapPointBounds);
 
     }
 
-    private void showAll(MapPointBounds mapPointBounds) {
+    private void showTrackingPostAll(final MapPointBounds mapPointBounds, final MapPolyline[] mapPolylines) {
+        int padding = 250;
+        float minZoomLevel = 5;
+        float maxZoomLevel = 12;
+
+        mapView.removeAllPolylines();
+        Log.e("mapPolylines_length: ",""+mapPolylines.length);
+        for(int i = 0; i<mapPolylines.length; i++){
+            mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
+
+            Log.e("mapPolylines_post[i]", mapPolylines[i].getTag()+"");
+            if ( mapPolylines[i].getTag() < 100){
+                mapView.addPolyline(mapPolylines[i]);
+                continue;
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        Thread.sleep(1000);
+                        Log.e(LOG_TAG, "들어옴");
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }); // runOnUiThread_end
+
+            mapView.addPolyline(mapPolylines[i]);
+
+        }
+
+    }
+
+/*    private void showAll(MapPointBounds mapPointBounds) {
         int padding = 250;
         float minZoomLevel = 5;
         float maxZoomLevel = 12;
@@ -449,7 +507,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
 //        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
 //        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
-    }
+    }*/
 
 
     @Override
