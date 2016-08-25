@@ -79,6 +79,7 @@ public class SelectedCityActivity extends Activity {
             @Override
             public void onClick(View v) {
 
+
                 if( SCHEDULE_NO != null) {
                     new HttpSendSchNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection
                     new HttpMySetConnThread().execute(finishURL, SCHEDULE_NO+"&isfinished=finished"); // 완성으로 스케쥴 바꾸기

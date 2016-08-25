@@ -18,6 +18,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -117,14 +119,61 @@ public class AttractionActivity extends Activity {
 
 
 
-//        reply.add(new Reply("아이디1","덧글내용1"));
-//        reply.add(new Reply("아이디2","덧글내용2"));
-//        reply.add(new Reply("아이디3","덧글내용3"));
-//        reply.add(new Reply("아이디4","덧글내용4"));
+        reply.add(new Reply("아이디1","덧글내용1"));
+        reply.add(new Reply("아이디2","덧글내용2"));
+        reply.add(new Reply("아이디3","덧글내용3"));
+        reply.add(new Reply("아이디4","덧글내용4"));
+        reply.add(new Reply("아이디1","덧글내용1"));
+        reply.add(new Reply("아이디2","덧글내용2"));
+        reply.add(new Reply("아이디3","덧글내용3"));
+        reply.add(new Reply("아이디4","덧글내용4"));
+        reply.add(new Reply("아이디1","덧글내용1"));
+        reply.add(new Reply("아이디2","덧글내용2"));
+        reply.add(new Reply("아이디3","덧글내용3"));
+        reply.add(new Reply("아이디4","덧글내용4"));
+        reply.add(new Reply("아이디1","덧글내용1"));
+        reply.add(new Reply("아이디2","덧글내용2"));
+        reply.add(new Reply("아이디3","덧글내용3"));
+        reply.add(new Reply("아이디4","덧글내용4"));
+        reply.add(new Reply("아이디1","덧글내용1"));
+        reply.add(new Reply("아이디2","덧글내용2"));
+        reply.add(new Reply("아이디3","덧글내용3"));
+        reply.add(new Reply("아이디4","덧글내용4"));
+        reply.add(new Reply("아이디1","덧글내용1"));
+        reply.add(new Reply("아이디2","덧글내용2"));
+        reply.add(new Reply("아이디3","덧글내용3"));
+        reply.add(new Reply("아이디4","덧글내용4"));
+
+
+
 //
-//        MyAdapter2 adapter = new MyAdapter2(getApplicationContext(),R.layout.reply,reply);
-//        ListView lv = (ListView)findViewById(R.id.listview);
-//        lv.setAdapter(adapter);
+        MyAdapter2 adapter = new MyAdapter2(getApplicationContext(),R.layout.reply,reply);
+        ListView lv = (ListView)findViewById(R.id.listview);
+        lv.setAdapter(adapter);
+
+        setListViewHeightBasedOnChildren(lv);
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
+
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     public void fetchData(String url){
@@ -250,6 +299,8 @@ class MyAdapter2 extends BaseAdapter {
     ArrayList<Reply> reply;
     LayoutInflater inf;
 
+    public MyAdapter2(){};
+
     public MyAdapter2(Context context, int layout, ArrayList<Reply> reply){
         this.context = context;
         this.layout = layout;
@@ -278,6 +329,9 @@ class MyAdapter2 extends BaseAdapter {
 
         TextView id = (TextView)convertView.findViewById(R.id.idBox);
         TextView context = (TextView)convertView.findViewById(R.id.contextBox);
+        ListView listView = (ListView)convertView.findViewById(R.id.listview);
+        LinearLayout linearLayout = (LinearLayout)convertView.findViewById(R.id.linear);
+//        listView.setMinimumHeight(linearLayout.getHeight()*4);
 
         Reply t = reply.get(position);
         id.setText(t.id);

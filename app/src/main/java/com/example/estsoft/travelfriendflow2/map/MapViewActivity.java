@@ -142,7 +142,8 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.e(LOG_TAG,position+""+parent.getItemAtPosition(position));
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#eb9b00"));
+
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
 
                 mapView.removeAllPOIItems(); /* 기존 검색 결과 삭제 */
 
