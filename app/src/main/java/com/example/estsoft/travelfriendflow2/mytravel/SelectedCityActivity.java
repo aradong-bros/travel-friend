@@ -77,8 +77,6 @@ public class SelectedCityActivity extends Activity {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), OthersPlanActivity.class);
-                startActivity(intent);
 
                 if( SCHEDULE_NO != null) {
                     new HttpSendSchNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection
