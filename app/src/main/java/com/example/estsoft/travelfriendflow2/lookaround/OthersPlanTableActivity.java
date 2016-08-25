@@ -13,9 +13,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
 import com.example.estsoft.travelfriendflow2.mytravel.*;
@@ -26,129 +30,162 @@ import java.util.ArrayList;
 
 public class OthersPlanTableActivity extends AppCompatActivity {
 
-    ArrayList<Plan> plan = new ArrayList<Plan>();
+    private ArrayList<String> mGroupList = null;
+    private ArrayList<ArrayList<String>> mChildList = null;
+    private ArrayList<String> mChildListContent1 = null;
+    private ArrayList<String> mChildListContent2 = null;
+    private ArrayList<String> mChildListContent3 = null;
+    private ExpandableListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_others_plan_table);
 
-        plan.add(new Plan(1,"plan 1-1"));
-        plan.add(new Plan(1,"plan 1-2"));
-        plan.add(new Plan(1,"plan 1-3"));
-        plan.add(new Plan(2,"plan 2-1"));
-        plan.add(new Plan(2,"plan 2-2"));
-        plan.add(new Plan(3,"plan 3-1"));
-        plan.add(new Plan(4,"plan 4-1"));
-        plan.add(new Plan(4,"plan 4-2"));
-        plan.add(new Plan(4,"plan 4-3"));
-        plan.add(new Plan(4,"plan 4-4"));
+        setLayout();
 
-        TextView dayTitle;
+        mGroupList = new ArrayList<String>();
+        mChildList = new ArrayList<ArrayList<String>>();
+        mChildListContent1 = new ArrayList<String>();
+        mChildListContent2 = new ArrayList<String>();
+        mChildListContent3 = new ArrayList<String>();
 
-        LinearLayout topLL = (LinearLayout)findViewById(R.id.layout);
-        LinearLayout parent = (LinearLayout)findViewById(R.id.parent);
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        mGroupList.add("2016.08.23");
+        mGroupList.add("서울");
+        mGroupList.add("2016.08.24");
+        mGroupList.add("서울");
+        mGroupList.add("가평");
 
-        int maxIndex = 0;
-        for(int i=0; i<plan.size(); i++){
-            Plan temp = plan.get(i);
-            if(maxIndex < temp.getDay()){
-                maxIndex = temp.getDay();
-            }
-        }
+        mChildListContent1.add("1");
+        mChildListContent1.add("2");
+        mChildListContent1.add("3");
 
-        for(int num=1; num<=maxIndex; num++){
-            int count = 0;
-            for(int j=0; j<plan.size(); j++){
-                if(plan.get(j).getDay() == num){
-                    count ++;
-                }
-            }
-            dayTitle = new TextView(OthersPlanTableActivity.this);
+        mChildListContent2.add("4");
+        mChildListContent2.add("5");
+        mChildListContent2.add("6");
 
+        mChildListContent3.add("7");
+        mChildListContent3.add("8");
+        mChildListContent3.add("9");
 
+        mChildList.add(null);
+        mChildList.add(mChildListContent1);
+        mChildList.add(null);
+        mChildList.add(mChildListContent2);
+        mChildList.add(mChildListContent3);
 
-            dayTitle.setText("DAY "+num);
-            dayTitle.setGravity(Gravity.CENTER);
-            dayTitle.setTextColor(Color.parseColor("#FFFFFF"));
-            dayTitle.setTextSize(20);
-            dayTitle.setPadding(1,1,1,1);
-            dayTitle.setHeight(count * 151);
-            if(num%2==0) {
-                dayTitle.setBackgroundColor(Color.parseColor("#eb9b00"));
-            }else{
-                dayTitle.setBackgroundColor(Color.parseColor("#eb6900"));
-            }
-            topLL.addView(dayTitle);
-        }
+        mListView.setAdapter(new BaseExpandableAdapter(this, mGroupList, mChildList));
 
-        PlanAdapter adapter = new PlanAdapter(getApplicationContext(),R.layout.plan,plan);
-        ListView lv = (ListView)findViewById(R.id.planlist);
-//        lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_DISABLED);
-        lv.setAdapter(adapter);
+    }
 
-        lv.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
+    private void setLayout(){
+        mListView = (ExpandableListView)findViewById(R.id.elv_list);
     }
 
 }
 
+class BaseExpandableAdapter extends BaseExpandableListAdapter {
 
-class PlanAdapter extends BaseAdapter {
-    Context context;
-    int layout;
-    ArrayList<Plan> plan;
-    LayoutInflater inf;
+    private ArrayList<String> groupList = null;
+    private ArrayList<ArrayList<String>> childList = null;
+    private LayoutInflater inflater = null;
+    private ViewHolder viewHolder = null;
 
-    public PlanAdapter(Context context, int layout, ArrayList<Plan> plan){
-        this.context = context;
-        this.layout = layout;
-        this.plan = plan;
-        this.inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
+    public BaseExpandableAdapter(Context c, ArrayList<String> groupList, ArrayList<ArrayList<String>> childList){
 
-
-
-    @Override
-    public int getCount(){
-        return plan.size();
+        super();
+        this.inflater = LayoutInflater.from(c);
+        this.groupList = groupList;
+        this.childList = childList;
     }
 
     @Override
-    public Object getItem(int position){
-        return plan.get(position);
+    public String getGroup(int groupPosition){
+        return groupList.get(groupPosition);
     }
+
     @Override
-    public long getItemId(int position){
-        return position;
+    public int getGroupCount(){
+        return groupList.size();
     }
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
-        if(convertView == null){
-            convertView = inf.inflate(layout, null);
+    public long getGroupId(int groupPosition){
+        return groupPosition;
+    }
+
+    @Override
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent){
+        View v = convertView;
+
+        if(v == null){
+            viewHolder = new ViewHolder();
+            v = inflater.inflate(R.layout.test, parent, false);
+            viewHolder.tv_groupName = (TextView)v.findViewById(R.id.tv_group);
+//            viewHolder.iv_image = (ImageView)v.findViewById(R.id.iv_image);
+            v.setTag(viewHolder);
+        }else{
+            viewHolder = (ViewHolder)v.getTag();
         }
 
-        TextView title = (TextView)convertView.findViewById(R.id.plantitle);
-        Plan p = plan.get(position);
-        title.setText(p.title);
+//        if(isExpanded){
+//            viewHolder.iv_image.setBackgroundColor(Color.GREEN);
+//        }else{
+//            viewHolder.iv_image.setBackgroundColor(Color.WHITE);
+//        }
 
-        return convertView;
+        viewHolder.tv_groupName.setText(getGroup(groupPosition));
+
+        return v;
     }
-}
 
-class Plan{
-    String title = "";
-    int day ;
+    @Override
+    public String getChild(int groupPosition, int childPosition){
+        return childList.get(groupPosition).get(childPosition);
+    }
 
-    public Plan(int day,String title){ this.day = day; this.title = title; }
-    public Plan(){}
+    @Override
+    public int getChildrenCount(int groupPosition){
+        if(childList.get(groupPosition)==null){
+            return 0;
+        }
+        return childList.get(groupPosition).size();
+    }
 
-    public int getDay() {
-        return day;
+    @Override
+    public long getChildId(int groupPosition, int childPosition){
+        return childPosition;
+    }
+
+    @Override
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent){
+        View v = convertView;
+
+        if(v == null){
+            viewHolder = new ViewHolder();
+            v = inflater.inflate(R.layout.test, null);
+            viewHolder.tv_childName = (TextView) v.findViewById(R.id.tv_child);
+            v.setTag(viewHolder);
+        }else{
+            viewHolder = (ViewHolder)v.getTag();
+        }
+
+        viewHolder.tv_childName.setText(getChild(groupPosition, childPosition));
+
+        return v;
+    }
+
+    @Override
+    public boolean hasStableIds(){return true;}
+
+    @Override
+    public boolean isChildSelectable(int groupPostion, int childPosition){return true;}
+
+
+
+    class ViewHolder{
+        public ImageView iv_image;
+        public TextView tv_groupName;
+        public TextView tv_childName;
     }
 }

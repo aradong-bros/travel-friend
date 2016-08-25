@@ -35,17 +35,19 @@
     </RelativeLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:text="새 여행 제목"
         android:id="@+id/textView17"
+        android:textAlignment="center"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
         android:background="@drawable/rounded_edittext"
         android:padding="10dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:gravity="center"/>
     ​
     <EditText
         android:layout_width="match_parent"
@@ -59,12 +61,17 @@
         android:lines="1"
         android:nextFocusDown="@id/selected_sdate_textview"/>
     ​
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:gravity="center"
         android:id="@+id/layout1">
 
 
@@ -72,14 +79,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="출발 날짜"
-            android:textColor="#000"
-            android:textSize="20sp"
-            android:layout_gravity="left"/>
+            android:textColor="#555"
+            android:textSize="15sp"
+            android:layout_gravity="left"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="25sp"
             android:id="@+id/selected_sdate_textview"
             android:hint="0000/00/00"
             android:textColor="#000"
@@ -106,16 +116,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="출발 시간"
-            android:textColor="#000"
+            android:textColor="#555"
 
-            />
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
         ​
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="25sp"
             android:id="@+id/selected_stime_textview"
             android:hint="00:00"
             android:textColor="#000"
@@ -141,14 +153,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="도착 날짜"
-            android:textColor="#000"
-            android:textSize="20sp"
-            android:layout_gravity="left"/>
+            android:textColor="#555"
+            android:textSize="15sp"
+            android:layout_gravity="left"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="25sp"
             android:id="@+id/selected_edate_textview"
             android:hint="0000/00/00"
             android:textColor="#000"
@@ -174,16 +189,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="도착 시간"
-            android:textColor="#000"
+            android:textColor="#555"
 
-            />
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
         ​
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="25sp"
             android:id="@+id/selected_etime_textview"
             android:hint="00:00"
             android:textColor="#000"
@@ -222,8 +239,8 @@
             android:text="출발역"
             android:id="@+id/startStationEditText"
             android:layout_alignBaseline="@id/edt_stStation"
-            android:textSize="20sp"
-            android:textColor="#000"
+            android:textSize="15sp"
+            android:textColor="#555"
             />
 
         <TextView
@@ -262,8 +279,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
-            android:textSize="20sp"
+            android:textColor="#555"
+            android:textSize="15sp"
             android:id="@+id/endStationEditText"
             android:text="도착역"
             android:layout_alignBaseline="@id/edt_endStation"/>
@@ -282,6 +299,7 @@
 
     </RelativeLayout>
 
+    </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"

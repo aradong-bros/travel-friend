@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.estsoft.travelfriendflow2.R;
 import com.example.estsoft.travelfriendflow2.lookaround.OthersPlanActivity;
 import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
+import com.example.estsoft.travelfriendflow2.thread.HttpMySetConnThread;
 import com.example.estsoft.travelfriendflow2.thread.HttpSendSchNoConnThread;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
 
@@ -57,6 +58,7 @@ public class SelectedCityActivity extends Activity {
 
     private static String cityInsertURL = " http://222.239.250.207:8080/TravelFriendAndroid/city/cityInsert";       //  input : schedule_no, cityList_no, status, cityOrder
     private static final String travelRootURL = "http://222.239.250.207:8080/TravelFriendAndroid/android/getTravelRoot";    // ?schedule_no={schedule_no 값}
+    private static String finishURL = "http://222.239.250.207:8080/TravelFriendAndroid/schedule/schModifyIsfinished";    // isFinished 수정
 
     private static HashMap<String, Integer> postMap = new HashMap<String, Integer>(); // KEY: cityList_no, VALUE:city_no(pk)
 
@@ -76,12 +78,11 @@ public class SelectedCityActivity extends Activity {
         btn_wholeComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(getApplicationContext(), "루트짜줘어어어", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), OthersPlanActivity.class);
-                startActivity(intent);
+
 
                 if( SCHEDULE_NO != null) {
                     new HttpSendSchNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection
+                    new HttpMySetConnThread().execute(finishURL, SCHEDULE_NO+"&isfinished=finished"); // 완성으로 스케쥴 바꾸기
                 }else {
                     Toast.makeText(getApplicationContext(), "SCHEDULE NO ERROR", Toast.LENGTH_LONG).show();
                     Log.e(LOG_TAG, SCHEDULE_NO);
@@ -141,6 +142,7 @@ public class SelectedCityActivity extends Activity {
                 Log.e("cityList_no"+cityList_No, "city_no "+postMap.get(ctrNo));
 
                 startActivity(intent);
+//                finish();     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             }
         });
     }
@@ -357,7 +359,7 @@ public class SelectedCityActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             // UI 업데이트가 구현될 부분
-            if(result.equals(""))
+            if( ("").equals(result) )
                 return;
 
             if( parsePinData(result) ){
@@ -388,6 +390,7 @@ public class SelectedCityActivity extends Activity {
         Intent i = new Intent(getApplicationContext(), OthersPlanActivity.class);
         i.putExtra("group", 1);
         startActivity(i);
+        finish();
     }
 
 }

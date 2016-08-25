@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/txt_creationDate"
             android:text="2016/04/21"
+            android:textColor="#555"
             android:textSize="15sp"
             android:layout_below="@+id/lookAroundTextBox"
             android:layout_alignParentLeft="true"

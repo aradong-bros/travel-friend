@@ -162,7 +162,8 @@ public class LookAroundActivity extends Activity {
                 t.setSchNo(no);
                 t.setTitle(object.getString(TAG_TITLE));
 
-                if( object.getInt("isPublic") == 0 ){       // 0 : 비공개
+                //  완성된 글 + 공개된 글만 보여주기!!
+                if( object.getInt("isPublic") == 0 || ("ongoing").equals(object.getString("isfinished")) ){       // 0 : 비공개
                     continue;
                 }
 
@@ -258,6 +259,7 @@ public class LookAroundActivity extends Activity {
                     Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
                     intent.putExtra("title",title);
                     intent.putExtra("group", 2);
+                    intent.putExtra("otherSchNo", tr.get(i).getSchNo());
                     startActivity(intent);
                 }
             });

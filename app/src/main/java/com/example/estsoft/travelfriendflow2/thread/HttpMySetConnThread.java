@@ -14,6 +14,7 @@ import java.net.URL;
  * HttpMySetConnThread
  * get방식으로 parameter로 넘길 경우
  * MySettingActivity의 isPublic, isfinished 수정작업에 사용!!
+ * SelectedCityActivity에서 경로 완료로 바꾸는 곳에 사용!
  * ex)   - url : http://222.239.250.207:8080/TravelFriendAndroid/schedule/schModifyIsPublic?no={schedule_no}&isPublic={isPublic 값}
  *
  */

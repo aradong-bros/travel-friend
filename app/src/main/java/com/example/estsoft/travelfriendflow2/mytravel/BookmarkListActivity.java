@@ -67,6 +67,8 @@ public class BookmarkListActivity extends Activity {
                 String title = tr.get(i).getTitle();
                 Intent intent = new Intent(getApplicationContext(),OthersPlanActivity.class);
                 intent.putExtra("title",title);
+                intent.putExtra("group", 3);
+                intent.putExtra("otherSchNo", tr.get(i).getSchNo());
                 startActivity(intent);
             }
         });

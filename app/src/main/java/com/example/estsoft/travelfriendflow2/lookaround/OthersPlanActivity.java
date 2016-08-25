@@ -7,13 +7,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.basic.MainActivity;
 import com.example.estsoft.travelfriendflow2.mytravel.BookmarkListActivity;
+import com.example.estsoft.travelfriendflow2.mytravel.MyTravelActivity;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
 
 /**
@@ -38,17 +41,27 @@ public class OthersPlanActivity extends TabActivity {
         intent = getIntent();
         String title = intent.getStringExtra("title");
         TextView t = (TextView)findViewById(R.id.title);
+        TextView btn_finish = (TextView)findViewById(R.id.btn_finish);
 
-        int group = intent.getIntExtra("group", -1);    // 1:selectedA ,2: LookAroundA
+        int group = intent.getIntExtra("group", -1);    // 1:selectedA ,2: LookAroundA, 3:BookmarkListA, MyTravelListA
+        int otherSchNo = intent.getIntExtra("otherSchNo", -1); // other user_sch no
+        String otherTitle = intent.getStringExtra("title");
+
         Intent mapIntent = new Intent(getApplicationContext(),OthersPlanMapActivity.class);
-
 
         if( ("").equals(title) || group == 1 ){
             t.setVisibility(View.GONE);
             mapIntent.putExtra("group", 1);
         }else if( group == 2 ){
             t.setText(title);
+            btn_finish.setVisibility(View.GONE);
             mapIntent.putExtra("group", 2);
+            mapIntent.putExtra("otherSchNo",otherSchNo);
+        }else if( group == 3 ){
+            t.setText(otherTitle);
+            btn_finish.setVisibility(View.GONE);
+            mapIntent.putExtra("group", 3);
+            mapIntent.putExtra("otherSchNo",otherSchNo);
         }else{
             Toast.makeText(getApplicationContext(), "group no error", Toast.LENGTH_SHORT).show();
         }
@@ -56,6 +69,15 @@ public class OthersPlanActivity extends TabActivity {
 
         mTab.addTab(mTab.newTabSpec("tab1").setIndicator("지도로 보기",getResources().getDrawable(R.drawable.lookaround)).setContent(mapIntent));
         mTab.addTab(mTab.newTabSpec("tab2").setIndicator("계획표로 보기",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,OthersPlanTableActivity.class)));
+
+        btn_finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(i);
+                finish();
+            }
+        });
 
     }
 

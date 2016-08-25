@@ -14,8 +14,6 @@ import android.widget.Toast;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TabHost;
-import android.widget.TabWidget;
 
 import com.example.estsoft.travelfriendflow2.AttractionActivity;
 import com.example.estsoft.travelfriendflow2.R;
@@ -61,7 +59,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
     private static final String TAG_CITYORDER="cityOrder";
 
     private MapView mapView;
-    public static final int REQUEST_CODE = 2002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,24 +74,26 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
         RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.header);
         relativeLayout.setVisibility(View.INVISIBLE);
-
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.bottom_sheet);
         linearLayout.setVisibility(View.INVISIBLE);
-
         FloatingActionButton button = (FloatingActionButton)findViewById(R.id.fab);
         button.setVisibility(View.INVISIBLE);
 
         // selectedcity activity에서 넘어온 경우만 밑의 과정 처리
         Intent intent = getIntent();
         int group = intent.getIntExtra("group", -1);
+        int otherSchNo = intent.getIntExtra("otherSchNo",-1);
 
+        /** 1:selectedA ,2: LookAroundA,BookmarkListA, 3: MyTravelListA */
         if ( group == 1 ){
             Preference pref = new Preference(this);
             SCHEDULE_NO = pref.getValue("prefSchNo","null");
-            Log.e(LOG_TAG,SCHEDULE_NO);
-        }else if ( group == 2 ){
-            Log.e(LOG_TAG, " group == 2 ");
+            Log.e(LOG_TAG,"schNo"+SCHEDULE_NO);
+        }else if ( group == 2 || group == 3 ) {
+            SCHEDULE_NO = otherSchNo != -1 ? otherSchNo + "" : null;
+            Log.e(LOG_TAG,"schNo"+SCHEDULE_NO);
         }else{
+            SCHEDULE_NO = null;
             Log.e(LOG_TAG, " group == -1 ");
         }
         // -----------------------------------------------------
@@ -110,6 +109,8 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             new HttpParamConnThread().execute(SCHEDULE_CITY_URL, SCHEDULE_NO);
         }else {
             Log.e("XXX", "진입못함");
+
+
         }
 
 
@@ -302,13 +303,14 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
     private void makePOIItem(List<PinItem> itemList) {          // city POIItem
         MapPointBounds mapPointBounds = new MapPointBounds();
+//        MapPOIItem[] mapPOIItems = new MapPOIItem[itemList.size()];
 
         for(int i=0; i<itemList.size(); i++){
             PinItem item = itemList.get(i);
 
             MapPOIItem poiItem = new MapPOIItem();
             poiItem.setItemName(item.title);
-            poiItem.setTag(i);
+            poiItem.setTag(item.city_pkno);
             poiItem.setUserObject(item.getCity_pkno());
 
             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
@@ -316,7 +318,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             mapPointBounds.add(mapPoint);
 
             poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-            if( item.getStatus().equals("start") ){
+            if( item.getStatus().equals("start") || item.getOrder() == 1 ){
                 poiItem.setCustomImageResourceId(R.drawable.pin_start);
             }else if( item.getStatus().equals("end") ){
                 if( item.getOrder().equals("1") )
@@ -338,7 +340,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 continue;
             }
             MapPolyline polyline = new MapPolyline();
-            polyline.setTag(i);
+            polyline.setTag(i);             // 도시 polyline은 1 ~ 99로 tag
             polyline.setLineColor(Color.argb(255, 255, 0, 0)); // Polyline 컬러 지정
 
             // Polyline 좌표 지정.
@@ -349,7 +351,38 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             mapView.addPolyline(polyline);
 
         }
-        showAll(mapPointBounds);
+//        mapPOIItems = mapView.getPOIItems();
+        MapPolyline[] mapPolylines = mapView.getPolylines();
+
+//        showAll(mapPointBounds);
+        showTrackingAll(mapPointBounds, mapPolylines);
+
+    }
+
+    private void showTrackingAll(final MapPointBounds mapPointBounds, final MapPolyline[] mapPolylines) {
+        int padding = 250;
+        float minZoomLevel = 5;
+        float maxZoomLevel = 12;
+
+        mapView.removeAllPolylines();
+        for(int i = 0; i<mapPolylines.length; i++){
+            mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
+
+//            Log.e("mapPolylines[i]", mapPolylines[i].getTag()+"");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        Thread.sleep(1000);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }); // runOnUiThread_end
+
+            mapView.addPolyline(mapPolylines[i]);
+
+        }
 
     }
 
@@ -361,7 +394,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
             MapPOIItem poiItem = new MapPOIItem();
             poiItem.setItemName(item.title);
-            poiItem.setTag(i);
+            poiItem.setTag(Integer.parseInt(item.no));
             poiItem.setUserObject(item.getPostList_no());
 
             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
@@ -369,12 +402,55 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             mapPointBounds.add(mapPoint);
 
             poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-            if( item.getPostOrder().equals("1") ){
-                poiItem.setCustomImageResourceId(R.drawable.pin_start);
-            }else if( item.getPostOrder().equals(itemList.size()+"") ){
-                poiItem.setCustomImageResourceId(R.drawable.pin_end);
+            if( itemList.size() == 1 ){         // item이 1개인 경우
+                Log.e("itemList_size", "1");
+                switch ( item.getCategory() ){
+                    case "tour":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_play);
+                        break;
+                    case "inn":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_stay);
+                        break;
+                    case "food":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_eat);
+                        break;
+                }
+            }else if( item.getPostOrder().equals("1") ){    // item이 2개 이상이며, postOrder 값이 1인 경우
+                switch ( item.getCategory() ){
+                    case "tour":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_play_start);
+                        break;
+                    case "inn":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_stay_start);
+                        break;
+                    case "food":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_eat_start);
+                        break;
+                }
+            }else if( item.getPostOrder().equals(itemList.size()+"") ){// item이 2개 이상이며, postOrder 값이 끝인 경우
+                switch ( item.getCategory() ){
+                    case "tour":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_play_end);
+                        break;
+                    case "inn":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_stay_end);
+                        break;
+                    case "food":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_eat_end);
+                        break;
+                }
             }else{
-                poiItem.setCustomImageResourceId(R.drawable.pin_none);
+                switch ( item.getCategory() ){  // item이 2개 이상이며, 그 외의 경우
+                    case "tour":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_play);
+                        break;
+                    case "inn":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_stay);
+                        break;
+                    case "food":
+                        poiItem.setCustomImageResourceId(R.drawable.pin_eat);
+                        break;
+                }
             }
             poiItem.setCustomImageAutoscale(false);               // 마커 크기 큰 상태!
             poiItem.setCustomImageAnchor(0.5f, 1.0f);
@@ -387,7 +463,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 continue;
             }
             MapPolyline polyline = new MapPolyline();
-            polyline.setTag(i);
+            polyline.setTag(100+i);                 // 관광지 polyline은 101 ~ 으로 tag
             polyline.setLineColor(Color.argb(255, 1, 0, 255)); // Polyline 컬러 지정
 
             // Polyline 좌표 지정.
@@ -396,13 +472,51 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
             // Polyline 지도에 올리기.
             mapView.addPolyline(polyline);
-
         }
-        showAll(mapPointBounds);
+
+        MapPolyline[] mapPolylines = mapView.getPolylines();
+        showTrackingPostAll(mapPointBounds, mapPolylines);
+
+
+//        showAll(mapPointBounds);
 
     }
 
-    private void showAll(MapPointBounds mapPointBounds) {
+    private void showTrackingPostAll(final MapPointBounds mapPointBounds, final MapPolyline[] mapPolylines) {
+        int padding = 250;
+        float minZoomLevel = 5;
+        float maxZoomLevel = 12;
+
+        mapView.removeAllPolylines();
+//        Log.e("mapPolylines_length: ",""+mapPolylines.length);
+        for(int i = 0; i<mapPolylines.length; i++){
+            mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
+
+//            Log.e("mapPolylines_post[i]", mapPolylines[i].getTag()+"");
+            if ( mapPolylines[i].getTag() < 100){
+                mapView.addPolyline(mapPolylines[i]);
+                continue;
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        Thread.sleep(1000);
+                        Log.e(LOG_TAG, "들어옴");
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }); // runOnUiThread_end
+
+            mapView.addPolyline(mapPolylines[i]);
+
+        }
+
+    }
+
+/*    private void showAll(MapPointBounds mapPointBounds) {
         int padding = 250;
         float minZoomLevel = 5;
         float maxZoomLevel = 12;
@@ -411,7 +525,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
 //        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
 //        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
-    }
+    }*/
 
 
     @Override

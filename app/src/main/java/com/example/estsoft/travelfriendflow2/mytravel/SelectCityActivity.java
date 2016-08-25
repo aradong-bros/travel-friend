@@ -111,7 +111,7 @@ public class SelectCityActivity extends Activity {
                 }
                 intent.putStringArrayListExtra("selCity",selCity);
                 startActivity(intent);
-
+                finish();
             }
         });
 

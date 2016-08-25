@@ -18,6 +18,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -144,7 +146,6 @@ public class AttractionActivity extends Activity {
         lv.setAdapter(adapter);
         getList(no);
 
-
         btn_reply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,6 +155,30 @@ public class AttractionActivity extends Activity {
                 edt_reply.setText("");
             }
         });
+
+        setListViewHeightBasedOnChildren(lv);
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
+
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     public void fetchData(String url){
@@ -458,7 +483,10 @@ class MyAdapter2 extends BaseAdapter {
     String myNo;
     MyAdapter2 adapterSelf;
 
-    public MyAdapter2(Context context, int layout, ArrayList<Reply> reply, String myNo){
+
+    public MyAdapter2(){};
+
+    public MyAdapter2(Context context, int layout, ArrayList<Reply> reply,String myNo){
         this.context = context;
         this.layout = layout;
         this.reply = reply;
@@ -487,7 +515,7 @@ class MyAdapter2 extends BaseAdapter {
         if(convertView == null){
             convertView = inf.inflate(layout, null);
         }
-
+        
         ImageView picture = (ImageView)convertView.findViewById(R.id.imageView);
         TextView id = (TextView)convertView.findViewById(R.id.userId);
         TextView content = (TextView)convertView.findViewById(R.id.content);
@@ -508,6 +536,7 @@ class MyAdapter2 extends BaseAdapter {
                 deleteComment(t.no, adapterSelf, reply, pp);
             }
         });
+
 
         if(!t.picture.equals("")) {
             Picasso.with(context).load(t.picture).resize(100, 100).transform(new CircleTransform()).into(picture);

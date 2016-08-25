@@ -15,14 +15,14 @@
         android:singleLine="true"
         android:text="Custom Marker"
         android:textColor="#ff000000"
-        android:textSize="15sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:layout_margin="5dp"/>
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/ic_keyboard_arrow_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_keyboard_arrow_right_red"
         android:layout_gravity="center"/>
 
 

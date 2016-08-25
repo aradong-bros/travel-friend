@@ -52,6 +52,8 @@ public class DirectPathActivity extends AppCompatActivity {
         String startStation = intent.getStringExtra("startStation");
         String endStation = intent.getStringExtra("endStation");
 
+        Log.d("intent Extra ---->", "goDate : " + goDate + ", goTime : " + goTime + ", startStation : " + startStation + ", endStation : " + endStation);
+
         getData("http://222.239.250.207:8080/TravelFriendAndroid/train/getDirectPath?" +
                 "goDate=" + goDate + "&" +
                 "goTime=" + goTime + "&" +
@@ -71,7 +73,9 @@ public class DirectPathActivity extends AppCompatActivity {
     }
 
     public void setTr(JSONObject requestJson) throws JSONException{
+        Log.d("setTr requestJson---->", String.valueOf(requestJson));
         JSONArray trainOperationList = requestJson.getJSONArray("trainTimeList");
+        Log.d("setTr----------->", String.valueOf(trainOperationList));
 
         for(int i=0; i<trainOperationList.length(); i++){
             JSONObject trainOperation = trainOperationList.getJSONObject(i);
@@ -117,6 +121,8 @@ public class DirectPathActivity extends AppCompatActivity {
                     while ((json = bufferedReader.readLine()) != null){
                         sb.append(json+"\n");
                     }
+
+                    Log.d("Asynctask result---->", sb.toString());
 
                     return sb.toString().trim();
                 }catch (Exception e){

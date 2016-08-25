@@ -142,7 +142,8 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.e(LOG_TAG,position+""+parent.getItemAtPosition(position));
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#eb9b00"));
+
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
 
                 mapView.removeAllPOIItems(); /* 기존 검색 결과 삭제 */
 
@@ -174,13 +175,11 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
         final AttractionAdapter attractionAdapter = new AttractionAdapter(getApplicationContext(),R.layout.saleitem,attractions);
         lv = (ListView)findViewById(R.id.listview);
-
         lv.setAdapter(attractionAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 String title = attractions.get(position).getTitle();
                 Intent intent = new Intent(getApplicationContext(),SaleItemActivity.class);
                 intent.putExtra("title",title);
@@ -417,11 +416,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
 
 
 }
-
-
-
-
-
 
 //리스트뷰
 class AttractionAdapter extends BaseAdapter {
