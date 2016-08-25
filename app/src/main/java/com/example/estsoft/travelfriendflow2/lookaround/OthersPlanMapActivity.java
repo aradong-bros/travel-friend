@@ -99,8 +99,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         // -----------------------------------------------------
 
         if( TextUtils.isEmpty(SCHEDULE_NO) ){
-            Log.e("여기 ","22222");
-
             Toast toast = Toast.makeText(getApplicationContext(), "값을 불러오는 과정에서 문제가 생겼습니다.\n 다시 시도해 주세요.", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
             toast.show();
@@ -111,6 +109,8 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             new HttpParamConnThread().execute(SCHEDULE_CITY_URL, SCHEDULE_NO);
         }else {
             Log.e("XXX", "진입못함");
+
+
         }
 
 
