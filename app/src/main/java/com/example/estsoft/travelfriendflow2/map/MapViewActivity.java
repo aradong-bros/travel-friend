@@ -142,7 +142,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.e(LOG_TAG,position+""+parent.getItemAtPosition(position));
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("eb9b00"));
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#eb9b00"));
 
                 mapView.removeAllPOIItems(); /* 기존 검색 결과 삭제 */
 
@@ -166,16 +166,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             }
         });
 
-        attractions.add(new Attraction("관광지1", ContextCompat.getDrawable(this,R.drawable.andong)));
-        attractions.add(new Attraction("관광지2", ContextCompat.getDrawable(this,R.drawable.hadong)));
-        attractions.add(new Attraction("관광지댜야야야", ContextCompat.getDrawable(this,R.drawable.busan)));
-
-        final AttractionAdapter attractionAdapter = new AttractionAdapter(getApplicationContext(),R.layout.saleitem,attractions);
-        lv = (ListView)findViewById(R.id.listview);
-        lv.setAdapter(attractionAdapter);
-
-
-
     }
 
     @Override
@@ -183,7 +173,8 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         super.onResume();
 
         final AttractionAdapter attractionAdapter = new AttractionAdapter(getApplicationContext(),R.layout.saleitem,attractions);
-        lv = (ListView)findViewById(R.id.salelist);
+        lv = (ListView)findViewById(R.id.listview);
+
         lv.setAdapter(attractionAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

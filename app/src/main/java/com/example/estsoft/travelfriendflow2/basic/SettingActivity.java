@@ -398,7 +398,6 @@ public class SettingActivity extends AppCompatActivity {
                     }
                     inputStream.close();
                     picture = stringBuilder.toString();
-                    Log.e("picturePath",picture);
                     insertToDatabase(name,picture,no);
 
                     return picture;

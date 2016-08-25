@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.estsoft.travelfriendflow2.CircleTransform;
 import com.example.estsoft.travelfriendflow2.R;
@@ -81,13 +82,27 @@ public class ChatMainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         try {
             if (ois != null) ois.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            if (oos != null) oos.close();
+            if (oos != null) {
+
+                ChatData d = new ChatData();
+                d.setUserNum(userNo);
+                d.setId(loginID);
+                d.setRegionNum(regionNum);
+                d.setTxt("/quit");
+                d.setImage(userImage);
+
+                oos.writeObject(d);
+                oos.flush();
+
+                oos.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -192,6 +207,7 @@ public class ChatMainActivity extends Activity {
         try {
             socket = new Socket(ip, port);
             Log.i("수신 소켓시작됨------------->", socket.toString());
+
             if (socket != null) {
                 ois = new ObjectInputStream(socket.getInputStream());
                 oos = new ObjectOutputStream(socket.getOutputStream());
@@ -206,7 +222,7 @@ public class ChatMainActivity extends Activity {
                 oos.flush();
 
 
-                ChatData dd = new ChatData();
+                ChatData dd ;
                 while (socket != null && socket.isConnected()) {
 
                     if ((dd = (ChatData) ois.readObject()) == null) continue;
@@ -320,24 +336,30 @@ public class ChatMainActivity extends Activity {
     }
 
 
-    public void sendClicked(View v) throws Exception {
+    public void sendClicked(View v) {
         if (editText.getText().toString().length() != 0 && !editText.getText().toString().equals(" ")) {
-            ChatData d = new ChatData();
-            d.setUserNum(userNo);
-            d.setRegionNum(regionNum);
-            d.setId(loginID);
-            d.setTxt(editText.getText().toString());
-            d.setImage(userImage);
-            oos.writeObject(d);
-            oos.flush();
-            editText.setText("");
+            if(oos!=null) {
+                try {
+                    ChatData d = new ChatData();
+                    d.setUserNum(userNo);
+                    d.setRegionNum(regionNum);
+                    d.setId(loginID);
+                    d.setTxt(editText.getText().toString());
+                    d.setImage(userImage);
+                    oos.writeObject(d);
+                    oos.flush();
+                    editText.setText("");
+                } catch (Exception e) {
+                    Toast.makeText(ChatMainActivity.this,"전송에 실패하였습니다.(사내망 와이파이 연결 필요)",Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(ChatMainActivity.this,"서버에 연결되지 않았습니다.",Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     class GetListTask extends AsyncTask<String, Void, JSONArray> {
         JSONArray jarray;
-        ProgressDialog loading;
-
 
         public JSONArray getJarray() {
             return jarray;
@@ -346,7 +368,6 @@ public class ChatMainActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //loading = ProgressDialog.show(JoinActivity.this, "Please Wait", null, true, true);
         }
 
         @Override
@@ -491,6 +512,5 @@ public class ChatMainActivity extends Activity {
             return jarray;
         }
     }
-
 
 }
