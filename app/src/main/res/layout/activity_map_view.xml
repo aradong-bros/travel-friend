@@ -86,6 +86,75 @@
         app:layout_anchor="@+id/bottom_sheet"
         app:layout_anchorGravity="top|right" />
 
+    <RelativeLayout
+        android:id="@+id/layout_route"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        app:behavior_peekHeight="72dp"
+        app:behavior_hideable="false"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        android:visibility="gone">
+
+        <Button
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_routeLeft"
+            android:text="◀"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:id="@+id/txt_routeStart"
+            android:textSize="12dp"
+            android:gravity="center"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/btn_routeLeft"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:id="@+id/txt_routeEnd"
+            android:textSize="12dp"
+            android:gravity="center"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/btn_routeLeft"
+            android:visibility="gone"/>
+
+
+        <Button
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_routeRight"
+            android:text="▶"
+            android:layout_alignBottom="@id/btn_routeLeft"
+            android:layout_toRightOf="@id/btn_routeLeft"
+            android:layout_marginLeft="10dp"
+            android:visibility="gone"  />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_routeTracking"
+            android:text="길찾기"
+            android:layout_alignBottom="@id/btn_routeLeft"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"/>
+
+
+
+    </RelativeLayout>
+
 
 
 </android.support.design.widget.CoordinatorLayout>
