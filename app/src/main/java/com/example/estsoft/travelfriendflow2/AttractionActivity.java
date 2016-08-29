@@ -515,7 +515,7 @@ class MyAdapter2 extends BaseAdapter {
         if(convertView == null){
             convertView = inf.inflate(layout, null);
         }
-        
+
         ImageView picture = (ImageView)convertView.findViewById(R.id.imageView);
         TextView id = (TextView)convertView.findViewById(R.id.userId);
         TextView content = (TextView)convertView.findViewById(R.id.content);
