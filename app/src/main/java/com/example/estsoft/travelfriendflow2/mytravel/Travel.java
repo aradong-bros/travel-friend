@@ -15,6 +15,7 @@ public class Travel{
 
     boolean heart;
     boolean setting;
+    boolean tag = false;
 
     public Travel(String title, String txt_creationDate, String planTime, String planSeason,int background){
         this.title = title;
@@ -42,4 +43,6 @@ public class Travel{
     public void setHeart(boolean heart) {      this.heart = heart;   }
     public boolean isSetting() {        return setting;    }
     public void setSetting(boolean setting) {        this.setting = setting;    }
+    public boolean isTag() {        return tag;           }
+    public void setTag(boolean tag) {        this.tag = tag;    }
 }

@@ -327,7 +327,7 @@ class MyAdapter extends BaseAdapter{
         LinearLayout background = (LinearLayout)convertView.findViewById(R.id.row_layout);
         ImageView heart = (ImageView)convertView.findViewById(R.id.heart);
         ImageView btn_setting = (ImageView)convertView.findViewById(R.id.btn_setting);
-
+        ImageView tag = (ImageView)convertView.findViewById(R.id.tag);
 
         heart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -354,7 +354,7 @@ class MyAdapter extends BaseAdapter{
 
         btn_setting.setVisibility(View.INVISIBLE);
         heart.setSelected(t.isHeart());
-
+        tag.setVisibility(View.INVISIBLE);
 
         return convertView;
     }
