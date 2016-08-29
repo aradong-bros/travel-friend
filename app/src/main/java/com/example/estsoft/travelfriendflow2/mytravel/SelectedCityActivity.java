@@ -64,6 +64,8 @@ public class SelectedCityActivity extends Activity {
 
     CityAdapter cityAdapter;
     private static String SCHEDULE_NO = null;
+    public static final int REQUEST_CODE = 1001;
+    private static int currPos = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +80,6 @@ public class SelectedCityActivity extends Activity {
         btn_wholeComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 if( SCHEDULE_NO != null) {
                     new HttpSendSchNoConnThread().execute(travelRootURL, SCHEDULE_NO);     // Thread for Http connection
@@ -121,7 +122,7 @@ public class SelectedCityActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
+        cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city, true);
         lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(cityAdapter);
 
@@ -131,6 +132,7 @@ public class SelectedCityActivity extends Activity {
 
                 Intent intent = new Intent(getApplicationContext(),MapViewActivity.class);
 
+                currPos = position;
                 City city = (City) cityAdapter.getItem(position);
                 Log.e(LOG_TAG, city.title);
 
@@ -141,10 +143,30 @@ public class SelectedCityActivity extends Activity {
                 intent.putExtra("city_no", postMap.get(ctrNo));
                 Log.e("cityList_no"+cityList_No, "city_no "+postMap.get(ctrNo));
 
-                startActivity(intent);
-//                finish();     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE);
+
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_CODE) {   // 액티비티가 정상적으로 종료되었을 경우
+            if(resultCode == RESULT_OK) {   // requestCode==1 로 호출한 경우에만 처리
+                boolean tag = data.getBooleanExtra("tag", false);
+                // 태그_완성 이미지로 바꾸는 부분
+                if( tag ){
+                    City c = (City)cityAdapter.getItem(currPos);
+                    c.tag = true;
+                    cityAdapter.notifyDataSetChanged();
+                }
+
+            }
+        }
+
     }
 
     @Override
