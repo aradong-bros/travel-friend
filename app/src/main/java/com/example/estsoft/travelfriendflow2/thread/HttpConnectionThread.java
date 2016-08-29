@@ -73,6 +73,8 @@ public class HttpConnectionThread extends AsyncTask<String, Void, String> {
                 br.close();
                 conn.disconnect();
                 Log.e("RESPONSE", "The response is: " + response);
+            }else{
+                response = "failed";
             }
 
         }catch (IOException e) {
@@ -88,9 +90,12 @@ public class HttpConnectionThread extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         // UI 업데이트가 구현될 부분
 
-        if( !result.equals("{}")) {
+        if( result.equals("failed")){
+            Log.e("연결","실패");
+        }else if( !result.equals("{}")) {
             Preference pref = new Preference(mContext);
             pref.put("prefSchNo", result);
+            Log.e("!{}","진입");
         }
 
 

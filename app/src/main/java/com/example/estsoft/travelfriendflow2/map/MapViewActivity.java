@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by yeonji on 2016-07-29.
@@ -124,10 +125,22 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                         jArray.put(sObject);
                     }
                     Log.e(LOG_TAG, jArray.toString());
-                    new HttpConnectionThread(getApplicationContext()).execute(POSTINSERTURL, jArray.toString());     // Thread for Http connection   // POST TABLE_INSERT
+//                    new HttpConnectionThread(getApplicationContext()).execute(POSTINSERTURL, jArray.toString());     // Thread for Http connection   // POST TABLE_INSERT
 
-                    finish();
-                }catch (JSONException je){
+
+                    String result = new HttpConnectionThread(getApplicationContext()).execute(POSTINSERTURL, jArray.toString()).get();     // Thread for Http connection   // POST TABLE_INSERT
+                    Log.e("result:::",result);
+
+                    if( ("failed").equals(result) ){
+
+                    }else if( ("{}").equals(result) ){
+                        finish();
+                    }
+
+
+
+
+                }catch (Exception je){
                     je.printStackTrace();
                 }
 
