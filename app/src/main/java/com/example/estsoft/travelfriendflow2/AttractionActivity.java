@@ -133,6 +133,7 @@ public class AttractionActivity extends Activity {
                 }else{
                     intent.putExtra("no", no);
                     intent.putExtra("location", sendLocation);
+                    intent.putExtra("attrTitle",txt_title.getText().toString());
                 }
                 Log.e("선택된 값",no+"_"+sendLocation);
 

@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="spinnerArray1">
-        <item>경기권</item>
-        <item>경남</item>
+        <item>서울</item>
+        <item>가평</item>
+        <item>강릉</item>
+        <item>안동</item>
+        <item>경주</item>
+        <item>부산</item>
+        <item>통영</item>
+        <item>하동</item>
+        <item>전주</item>
+        <item>보성</item>
+        <item>순천</item>
+        <item>여수</item>
     </string-array>
-    <string-array name="spinnerArray2">
-        <item>자세하다</item>
-        <item>자세해</item>
-    </string-array>
+
     <string-array name="category">
         <item>All</item>
         <item >Eat</item>

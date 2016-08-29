@@ -1,13 +1,16 @@
 package com.example.estsoft.travelfriendflow2.map;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,6 +85,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     private static Intent selectedIntent;
     ArrayList<Attraction> attractions = new ArrayList<Attraction>();
     ListView lv;
+    private static AttractionAdapter attractionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +99,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         mapView.setHDMapTileEnabled(true);      // 고해상도 지도 타일 사용
         mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());   //구현한 CalloutBalloonAdapter 등록
         mapView.setPOIItemEventListener(this);
-
 
         selectedIntent = getIntent();
         final int cityList_no = selectedIntent.getIntExtra("cityList_no", -1);
@@ -126,7 +130,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                     }
                     Log.e(LOG_TAG, jArray.toString());
 //                    new HttpConnectionThread(getApplicationContext()).execute(POSTINSERTURL, jArray.toString());     // Thread for Http connection   // POST TABLE_INSERT
-
 
                     String result = new HttpConnectionThread(getApplicationContext()).execute(POSTINSERTURL, jArray.toString()).get();     // Thread for Http connection   // POST TABLE_INSERT
                     Log.e("result:::",result);
@@ -187,17 +190,19 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     protected void onResume() {
         super.onResume();
 
-        final AttractionAdapter attractionAdapter = new AttractionAdapter(getApplicationContext(),R.layout.saleitem,attractions);
+        attractionAdapter = new AttractionAdapter(getApplicationContext(),R.layout.saleitem,attractions);
         lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(attractionAdapter);
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 String title = attractions.get(position).getTitle();
-                Intent intent = new Intent(getApplicationContext(),SaleItemActivity.class);
-                intent.putExtra("title",title);
-                startActivity(intent);
+
+                AlertDialog alert = askDeleteAttractionAlert(title, position);
+                alert.show();
+
+                return false;
             }
         });
 
@@ -228,9 +233,19 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             if(resultCode == RESULT_OK) {   // requestCode==1 로 호출한 경우에만 처리
                 String getNo = data.getStringExtra("no");
                 String getLoc = data.getStringExtra("location");
+                String attrTitle = data.getStringExtra("attrTitle");
 
                 if( getNo != null && getLoc != null ){
                     likeMap.put(getNo, getLoc);
+                }
+
+                // 여기서 작업
+                if( TextUtils.isEmpty(attrTitle) ){
+                    // 관광지의 타이틀이 null인 경우
+                    Toast.makeText(getApplicationContext(),"해당 관광지가 존재하지 않습니다.",Toast.LENGTH_SHORT).show();
+                }else{
+                    // 관광지가 제대로 들어온 경우, 가고싶은 관광지 목록에 추가
+                    attractions.add(new Attraction(attrTitle));
                 }
 
             }
@@ -428,6 +443,35 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         return content;
     }
 
+    public AlertDialog askDeleteAttractionAlert(String title, final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(title);
+        builder.setMessage("관광지를 삭제하시겠습니까?");
+        builder.setCancelable(true);
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.e("=======postion : ", position+"");
+                Log.e("=======attractions : ", attractions.get(position)+"");
+                attractions.remove(position);
+                attractionAdapter.notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+
+        return alertDialog;
+    }
+
 
 }
 
@@ -479,7 +523,8 @@ class AttractionAdapter extends BaseAdapter {
 
         Attraction t = attractions.get(position);
         title.setText(t.title);
-        image.setImageDrawable(t.image);
+        image.setVisibility(View.GONE);
+
         return convertView;
     }
 
@@ -488,7 +533,6 @@ class AttractionAdapter extends BaseAdapter {
         TextView title;
 
         public ViewHolder(View view) {
-            image = (ImageView)view.findViewById(R.id.SaleImage);
             title = (TextView)view.findViewById(R.id.SaleTextBox);
         }
     }
@@ -497,10 +541,8 @@ class AttractionAdapter extends BaseAdapter {
 
 class Attraction{
     String title = "";
-    Drawable image;
-    public Attraction(String title, Drawable image){
+    public Attraction(String title){
         this.title = title;
-        this.image = image;
     }
 
     public Attraction(){}
