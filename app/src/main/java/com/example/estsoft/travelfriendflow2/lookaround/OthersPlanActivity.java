@@ -66,9 +66,12 @@ public class OthersPlanActivity extends TabActivity {
             Toast.makeText(getApplicationContext(), "group no error", Toast.LENGTH_SHORT).show();
         }
 
+        Intent tableIntent = new Intent(this,OthersPlanTableActivity.class);
+        tableIntent.putExtra("schedule_no", otherSchNo);
+
 
         mTab.addTab(mTab.newTabSpec("tab1").setIndicator("지도로 보기",getResources().getDrawable(R.drawable.lookaround)).setContent(mapIntent));
-        mTab.addTab(mTab.newTabSpec("tab2").setIndicator("계획표로 보기",getResources().getDrawable(R.drawable.lookaround)).setContent(new Intent(this,OthersPlanTableActivity.class)));
+        mTab.addTab(mTab.newTabSpec("tab2").setIndicator("계획표로 보기",getResources().getDrawable(R.drawable.lookaround)).setContent(tableIntent));
 
         btn_finish.setOnClickListener(new View.OnClickListener() {
             @Override
