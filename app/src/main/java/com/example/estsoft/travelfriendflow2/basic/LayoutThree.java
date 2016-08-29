@@ -28,7 +28,7 @@ public class LayoutThree extends Fragment {
         root = (ViewGroup) inflater.inflate(R.layout.firststartview3, null);
         ImageView imageView = (ImageView)root.findViewById(R.id.img_sample3);
         imageView.setBackgroundDrawable(new BitmapDrawable(getResources(),
-                BitmapFactory.decodeResource(getResources(),R.drawable.phone_sample)));
+                BitmapFactory.decodeResource(getResources(),R.drawable.phone_sample3)));
 
         return root;
     }

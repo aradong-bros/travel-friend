@@ -21,8 +21,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="우리 어플은 요로케 요로케 할수 있어여"
-        android:layout_marginTop="400dp"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:text="가고싶은 도시와 관광지를\n 골라 담기만 하세요!\n 경로는 저희가 알려드릴게요!"
+        android:layout_marginTop="430dp"
+        android:textStyle="bold"
         android:id="@+id/textView"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
