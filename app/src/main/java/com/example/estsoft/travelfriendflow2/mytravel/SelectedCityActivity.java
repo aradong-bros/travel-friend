@@ -122,6 +122,8 @@ public class SelectedCityActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
+        Log.d(LOG_TAG+"RE", ""+SCHEDULE_NO);
+
         cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city, true);
         lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(cityAdapter);
@@ -411,6 +413,8 @@ public class SelectedCityActivity extends Activity {
     private void showResult() {
         Intent i = new Intent(getApplicationContext(), OthersPlanActivity.class);
         i.putExtra("group", 1);
+        Log.e("스케쥴", "------------> " + SCHEDULE_NO);
+        i.putExtra("otherSchNo", SCHEDULE_NO);
         startActivity(i);
         finish();
     }

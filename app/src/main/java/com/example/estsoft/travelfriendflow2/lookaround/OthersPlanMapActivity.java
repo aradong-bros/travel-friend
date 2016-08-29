@@ -76,7 +76,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
     private RelativeLayout layout_route;
     private TextView txt_routeStart, txt_routeEnd;
     private Button btn_routeLeft,btn_routeRight,btn_routeTracking;
-
+    private boolean chkPost = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -376,7 +376,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
                 return;
             }
-
+            Log.e("ㅁㅁㅁ",result);
             String str = result.substring(2,4);     // city or post
             if( ("ci").equals(str) ){
                 List<PinItem> itemList = parsePinData(result);
@@ -740,14 +740,29 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
 //        mapView.removeAllPOIItems(); // 기존 검색 결과 삭제
 //        mapView.removeAllPolylines();
+        Log.e("chkPost",chkPost+"");
+        if ( chkPost ){   // <<< 우선은 1000이상인 경우로 했는데 내일 처리하기!!!!
+            String userObj2 = mapPOIItem.getUserObject()+"";                // 여기 다시 체크!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Log.e("userObj2", userObj2);
 
-        if ( Integer.parseInt(userObj) >= 1000 ){   // <<< 우선은 1000이상인 경우로 했는데 내일 처리하기!!!!
             Intent attrIntent = new Intent(getApplicationContext(), AttractionActivity.class);
-            attrIntent.putExtra("no",userObj);          // postList_no(pk) 넘기기
+            attrIntent.putExtra("no",userObj2);          // postList_no(pk) 넘기기
             attrIntent.putExtra("usage","result");
             startActivity(attrIntent);
+            chkPost = false;
         }else{
-            new HttpParamConnThread().execute(SCHEDULE_POST_URL, userObj+"");
+            try {
+                String str = new HttpParamConnThread().execute(SCHEDULE_POST_URL, userObj + "").get();
+                Log.e("결과", str);
+                if( TextUtils.isEmpty(str) ){
+                    chkPost = false;
+                }else {
+                    chkPost = true;
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
     }

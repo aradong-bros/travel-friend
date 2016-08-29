@@ -45,29 +45,34 @@ public class OthersPlanActivity extends TabActivity {
 
         int group = intent.getIntExtra("group", -1);    // 1:selectedA ,2: LookAroundA, 3:BookmarkListA, MyTravelListA
         int otherSchNo = intent.getIntExtra("otherSchNo", -1); // other user_sch no
+        Log.e(LOG_TAG, "group----------------->"+group);
+        Log.e(LOG_TAG, "otherSchNo------------------>"+otherSchNo);
         String otherTitle = intent.getStringExtra("title");
 
         Intent mapIntent = new Intent(getApplicationContext(),OthersPlanMapActivity.class);
+        Intent tableIntent = new Intent(this,OthersPlanTableActivity.class);
+        tableIntent.putExtra("schedule_no", otherSchNo);
 
         if( ("").equals(title) || group == 1 ){
             t.setVisibility(View.GONE);
             mapIntent.putExtra("group", 1);
+            tableIntent.putExtra("group", 1);
+            tableIntent.putExtra("schedule_no", otherSchNo);
         }else if( group == 2 ){
             t.setText(title);
             btn_finish.setVisibility(View.GONE);
             mapIntent.putExtra("group", 2);
             mapIntent.putExtra("otherSchNo",otherSchNo);
+            tableIntent.putExtra("schedule_no", otherSchNo);
         }else if( group == 3 ){
             t.setText(otherTitle);
             btn_finish.setVisibility(View.GONE);
             mapIntent.putExtra("group", 3);
             mapIntent.putExtra("otherSchNo",otherSchNo);
+            tableIntent.putExtra("schedule_no", otherSchNo);
         }else{
             Toast.makeText(getApplicationContext(), "group no error", Toast.LENGTH_SHORT).show();
         }
-
-        Intent tableIntent = new Intent(this,OthersPlanTableActivity.class);
-        tableIntent.putExtra("schedule_no", otherSchNo);
 
 
         mTab.addTab(mTab.newTabSpec("tab1").setIndicator("지도로 보기",getResources().getDrawable(R.drawable.lookaround)).setContent(mapIntent));

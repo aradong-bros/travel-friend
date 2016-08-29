@@ -287,6 +287,7 @@ public class AttractionActivity extends Activity {
     }
 
     private Object fetch(String address) throws MalformedURLException,IOException {
+        Log.e("pic address", address);
         URL url = new URL(address);
         Object content = url.getContent();
         Log.e("content",content+"");
