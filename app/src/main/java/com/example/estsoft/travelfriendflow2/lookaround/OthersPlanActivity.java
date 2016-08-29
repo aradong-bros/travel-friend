@@ -45,8 +45,6 @@ public class OthersPlanActivity extends TabActivity {
 
         int group = intent.getIntExtra("group", -1);    // 1:selectedA ,2: LookAroundA, 3:BookmarkListA, MyTravelListA
         int otherSchNo = intent.getIntExtra("otherSchNo", -1); // other user_sch no
-        Log.e(LOG_TAG, "group----------------->"+group);
-        Log.e(LOG_TAG, "otherSchNo------------------>"+otherSchNo);
         String otherTitle = intent.getStringExtra("title");
 
         Intent mapIntent = new Intent(getApplicationContext(),OthersPlanMapActivity.class);

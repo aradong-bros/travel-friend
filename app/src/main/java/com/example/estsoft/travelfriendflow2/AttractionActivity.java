@@ -214,10 +214,17 @@ public class AttractionActivity extends Activity {
                     return;
                 }
                 Log.e(LOG_TAG,result);
-                PinItem item = parsePinData(result);
+                final PinItem item = parsePinData(result);
 
                 if(item != null){
-                    showResult(item);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showResult(item);
+                            Log.e("들어옴","ㅇㅇㅇ");
+                        }
+                    }); // runOnUiThread_end
+
                 }
 
             }
@@ -310,7 +317,7 @@ public class AttractionActivity extends Activity {
             protected void onPostExecute(JSONArray s){
                 super.onPostExecute(s);
                 JSONArray jarray = s;
-                if(jarray.length()==0){
+                if(jarray.length()==0 && reply.size()==0){
                     Reply eachReply = new Reply();
                     eachReply.setContent("아직 리뷰가 없습니다.");
                     reply.add(eachReply);
@@ -414,7 +421,11 @@ public class AttractionActivity extends Activity {
 
                     Reply eachReply = new Reply(no, userNo, id, content, date, picture);
                     reply.add(eachReply);
+                    if(reply.size()==2 && reply.get(0).getUserNo() == ""){
+                        reply.remove(0);
+                    }
                     adapter.notifyDataSetChanged();
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -531,7 +542,10 @@ class MyAdapter2 extends BaseAdapter {
 
         if(!myNo.equals(t.getUserNo())){
             delete.setVisibility(View.GONE);
+        }else{
+            delete.setVisibility(View.VISIBLE);
         }
+
 
         final int pp = position;
         delete.setOnClickListener(new View.OnClickListener() {
@@ -544,6 +558,9 @@ class MyAdapter2 extends BaseAdapter {
 
         if(!t.picture.equals("")) {
             Picasso.with(context).load(t.picture).resize(100, 100).transform(new CircleTransform()).into(picture);
+            picture.setVisibility(View.VISIBLE);
+        }else{
+            picture.setVisibility(View.INVISIBLE);
         }
         id.setText(t.id);
         content.setText(t.content);
@@ -566,6 +583,12 @@ class MyAdapter2 extends BaseAdapter {
                 if(s.equals("success")) {
                     Log.e("삭제완료", replyList.get(position).toString() + "완료 ㅊㅋㅊㅋ");
                     replyList.remove(position);
+                    if(replyList.size()==0) {
+                        Reply eachReply = new Reply();
+                        eachReply.setContent("아직 리뷰가 없습니다.");
+                        eachReply.setPicture("");
+                        replyList.add(eachReply);
+                    }
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -646,6 +669,7 @@ class Reply{
         this.id = id;
         this.content = content;
     }
+    public void setPicture(String picture){this.picture = picture;}
 
     public void setContent(String content){
         this.content = content;

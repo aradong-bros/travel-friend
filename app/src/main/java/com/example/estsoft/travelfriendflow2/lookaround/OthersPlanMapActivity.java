@@ -76,7 +76,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
     private RelativeLayout layout_route;
     private TextView txt_routeStart, txt_routeEnd;
     private Button btn_routeLeft,btn_routeRight,btn_routeTracking;
-    private boolean chkPost = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -731,38 +731,29 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
         // 말풍선 클릭 시
 
-        Log.e("B_getUserObject", mapPOIItem.getTag()+"");
-        String userObj = mapPOIItem.getTag()+"";
+        Log.e("B_getTag", mapPOIItem.getTag()+"");
+        String userTag = mapPOIItem.getTag()+"";
 
-        if( ("").equals(userObj) || ("null").equals(userObj) || userObj == null ){
+        Log.e("B_getUserObject", mapPOIItem.getUserObject()+"");
+        String userObj = mapPOIItem.getUserObject()+"";
+
+
+        if( ("").equals(userTag) || ("null").equals(userTag) || userTag == null ){
             return;
         }
 
-//        mapView.removeAllPOIItems(); // 기존 검색 결과 삭제
-//        mapView.removeAllPolylines();
-        Log.e("chkPost",chkPost+"");
-        if ( chkPost ){   // <<< 우선은 1000이상인 경우로 했는데 내일 처리하기!!!!
-            String userObj2 = mapPOIItem.getUserObject()+"";                // 여기 다시 체크!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            Log.e("userObj2", userObj2);
+
+        if ( Integer.parseInt(userObj) >= 1 && Integer.parseInt(userObj) <= 12 ){   // 도시 POIITEM 선택한 경우
+            new HttpParamConnThread().execute(SCHEDULE_POST_URL, userTag + "");
+
+        }else{      // 관광지 POIITEM 선택한 경우
+//            String userObj2 = mapPOIItem.getUserObject()+"";                // 여기 다시 체크!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//            Log.e("userObj2", userObj2);
 
             Intent attrIntent = new Intent(getApplicationContext(), AttractionActivity.class);
-            attrIntent.putExtra("no",userObj2);          // postList_no(pk) 넘기기
+            attrIntent.putExtra("no",userObj);          // postList_no(pk) 넘기기
             attrIntent.putExtra("usage","result");
             startActivity(attrIntent);
-            chkPost = false;
-        }else{
-            try {
-                String str = new HttpParamConnThread().execute(SCHEDULE_POST_URL, userObj + "").get();
-                Log.e("결과", str);
-                if( TextUtils.isEmpty(str) ){
-                    chkPost = false;
-                }else {
-                    chkPost = true;
-                }
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }
         }
 
     }

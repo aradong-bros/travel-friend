@@ -345,6 +345,11 @@ class MyAdapter extends BaseAdapter{
             }
         });
 
+        if( tr.size() == 0 ){
+            Log.e("tr_size()", tr.size()+"");
+            return null;
+        }
+
         Travel t = tr.get(position);
         title.setText(t.getTitle());
         txt_creationDate.setText(t.getTxt_creationDate());
