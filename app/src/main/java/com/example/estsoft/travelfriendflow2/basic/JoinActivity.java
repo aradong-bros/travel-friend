@@ -82,10 +82,10 @@ public class JoinActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         int firstviewshow = pref.getInt("First", 0);
 
-        if (firstviewshow != 1) {
+        //if (firstviewshow != 1) {
             Intent showIntent = new Intent(JoinActivity.this, FirstStartActivity.class);
             startActivity(showIntent);
-        }
+        //}
 
 
         int infoFirst = 1;
