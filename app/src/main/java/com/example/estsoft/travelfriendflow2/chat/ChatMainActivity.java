@@ -49,7 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 public class ChatMainActivity extends Activity {
 
-    private final static String IP = "192.168.22.74";
+    private static String IP = "192.168.22.74";
     private final static int PORT = 10001;
 
     private String txtReceive;
@@ -127,7 +127,7 @@ public class ChatMainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat_main);
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-
+        IP = pref.getString("ip","");
 
         //loading page
 

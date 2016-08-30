@@ -62,6 +62,7 @@ public class SettingActivity extends AppCompatActivity {
     String no;
     String name;
     String picture;
+    String ip;
 
 //    @Override
 //    protected void onPause() {
@@ -75,12 +76,13 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
 
 
-        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        final SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         try {
             JSONObject userData = new JSONObject(pref.getString("userData", ""));
             name = userData.getString("name");
             no = userData.getString("no");
             picture = userData.getString("picture");
+            ip = pref.getString("ip","");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,6 +136,38 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
+
+        Button setIPButton = (Button)findViewById(R.id.setIPButton);
+        setIPButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(SettingActivity.this);
+                alert.setTitle("IP 변경");
+
+                final EditText input = new EditText(SettingActivity.this);
+                input.setText(ip);
+                alert.setView(input);
+
+                alert.setPositiveButton("확인",new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        ip = input.getText().toString();
+                        if(name.equals("")){
+                            Toast.makeText(getApplicationContext(),"1글자 이상으로 만들어 주세요",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("ip", ip);
+                        editor.commit();
+                    }
+                });
+                alert.setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        return;
+                    }
+                });
+                alert.show();
+            }
+        });
 
         Button logoutButton = (Button)findViewById(R.id.logoutButton);
         assert logoutButton != null;
