@@ -155,31 +155,8 @@ public class AttractionActivity extends Activity {
                 edt_reply.setText("");
             }
         });
-
-//        setListViewHeightBasedOnChildren(lv);
     }
 
-//    public static void setListViewHeightBasedOnChildren(ListView listView) {
-//        ListAdapter listAdapter = listView.getAdapter();
-//        if (listAdapter == null) {
-//            // pre-condition
-//            return;
-//        }
-//
-//        int totalHeight = 0;
-//        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
-//
-//        for (int i = 0; i < listAdapter.getCount(); i++) {
-//            View listItem = listAdapter.getView(i, null, listView);
-//            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-//            totalHeight += listItem.getMeasuredHeight();
-//        }
-//
-//        ViewGroup.LayoutParams params = listView.getLayoutParams();
-//        params.height = totalHeight;
-//        listView.setLayoutParams(params);
-//        listView.requestLayout();
-//    }
 
     public void fetchData(String url){
         class GetDataJSON extends AsyncTask<String, Void, String> {
@@ -220,7 +197,6 @@ public class AttractionActivity extends Activity {
                         @Override
                         public void run() {
                             showResult(item);
-                            Log.e("들어옴","ㅇㅇㅇ");
                         }
                     }); // runOnUiThread_end
 
@@ -575,9 +551,7 @@ class MyAdapter2 extends BaseAdapter {
             @Override
             protected void onPostExecute(String s){
                 super.onPostExecute(s);
-                Toast.makeText(context,"결과:"+s,Toast.LENGTH_SHORT).show();
                 if(s.equals("success")) {
-                    Log.e("삭제완료", replyList.get(position).toString() + "완료 ㅊㅋㅊㅋ");
                     replyList.remove(position);
                     if(replyList.size()==0) {
                         Reply eachReply = new Reply();
@@ -625,7 +599,6 @@ class MyAdapter2 extends BaseAdapter {
                         sb.append(line);
                         break;
                     }
-                    Log.e("deletRes is -->" , sb.toString()+"없음말고");
                     return sb.toString();
 
                 } catch (Exception e) {
