@@ -67,7 +67,7 @@ public class MySettingActivity extends AppCompatActivity {
             }
         });
 
-
+/*
         final ToggleButton tg_isFinished = (ToggleButton)findViewById(R.id.tg_isFinished);
         tg_isFinished.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +78,7 @@ public class MySettingActivity extends AppCompatActivity {
                     new HttpMySetConnThread().execute(finishURL, schNo+"&isfinished=ongoing");
                 }
             }
-        });
+        });*/
 
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override

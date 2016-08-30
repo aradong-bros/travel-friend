@@ -14,9 +14,7 @@
         android:id="@+id/txt_isPublic"
         android:textSize="20sp"
         android:layout_marginTop="200dp"
-        android:layout_below="@+id/tg_isPublic"
-        android:layout_alignRight="@+id/txt_isFinished"
-        android:layout_alignEnd="@+id/txt_isFinished" />
+        android:layout_below="@+id/tg_isPublic" />
 
     <ToggleButton
         android:layout_width="wrap_content"
@@ -30,28 +28,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:checked="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="완성 여부"
-        android:id="@+id/txt_isFinished"
-        android:textSize="20sp"
-        android:layout_marginTop="30dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/txt_isPublic"    />
-
-    <ToggleButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textOn="완성"
-        android:textOff="미완성"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/rounded_edittext"
-        android:id="@+id/tg_isFinished"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/txt_isFinished" />
 
     <Button
         android:layout_width="wrap_content"
