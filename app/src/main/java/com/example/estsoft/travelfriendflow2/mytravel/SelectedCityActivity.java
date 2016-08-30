@@ -17,7 +17,6 @@ import com.example.estsoft.travelfriendflow2.R;
 import com.example.estsoft.travelfriendflow2.lookaround.OthersPlanActivity;
 import com.example.estsoft.travelfriendflow2.map.MapViewActivity;
 import com.example.estsoft.travelfriendflow2.thread.HttpMySetConnThread;
-import com.example.estsoft.travelfriendflow2.thread.HttpSendSchNoConnThread;
 import com.example.estsoft.travelfriendflow2.thread.Preference;
 
 import org.json.JSONArray;

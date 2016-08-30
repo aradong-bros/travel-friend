@@ -2,6 +2,7 @@ package com.example.estsoft.travelfriendflow2.lookaround;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.IntegerRes;
@@ -94,11 +95,11 @@ public class OthersPlanTableActivity extends AppCompatActivity {
         }
 
         //스케쥴 받아오기
-        Toast.makeText(OthersPlanTableActivity.this, ""+mSchedule_no, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(OthersPlanTableActivity.this, ""+mSchedule_no, Toast.LENGTH_SHORT).show();
         if(mSchedule_no != -1){ //스케쥴 넘버가 제대로 받아졌을 때
             getSchedule(oneSrchURL, ""+mSchedule_no);
         }else{ //스케쥴 넘버가 제대로 받아지지 않았을 때
-            Toast.makeText(getApplicationContext(), "스케쥴 넘버가 제대로 받아지지 않았습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -905,11 +906,17 @@ class BaseExpandableAdapter extends BaseExpandableListAdapter {
             viewHolder = (ViewHolder)v.getTag();
         }
 
-//        if(isExpanded){
-//            viewHolder.iv_image.setBackgroundColor(Color.GREEN);
-//        }else{
-//            viewHolder.iv_image.setBackgroundColor(Color.WHITE);
-//        }
+
+        viewHolder.tv_groupName.setText(getGroup(groupPosition));
+        if(!isExpanded) {
+            if (groupPosition % 2 == 0) {
+                viewHolder.tv_groupName.setBackgroundColor(Color.parseColor("#eb9b00"));
+                viewHolder.tv_groupName.setTextColor(Color.WHITE);
+            }else{
+                viewHolder.tv_groupName.setBackgroundColor(Color.WHITE);
+                viewHolder.tv_groupName.setTextColor(Color.parseColor("#eb9b00"));
+            }
+        }
 
         viewHolder.tv_groupName.setText(getGroup(groupPosition));
 
