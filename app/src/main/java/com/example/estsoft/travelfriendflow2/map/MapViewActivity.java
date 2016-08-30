@@ -342,14 +342,25 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     }
 
     private void showResult(List<PinItem> itemList) {
-        int padding = 50;
-        float minZoomLevel = 7;
-        float maxZoomLevel = 10;
+//        int padding = 50;
+//        float minZoomLevel = 7;
+//        float maxZoomLevel = 10;
+        int padding = 250;
+        float minZoomLevel = 5;
+        float maxZoomLevel = 12;
 
         MapPointBounds mapPointBounds = new MapPointBounds();
         Log.e(LOG_TAG, "size:"+itemList.size());
 
+     /*   int size = itemList.size();
+
+        if ( size > 200 ){
+            size = 200;
+        }
+        Log.e(LOG_TAG, "size:"+size);
+*/
         for (int i = 0; i < itemList.size(); i++) {
+//        for(int i = 0; i< size; i++){           // 관광지 200개
             PinItem item = itemList.get(i);
 
             MapPOIItem poiItem = new MapPOIItem();
@@ -394,7 +405,6 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
             datas = jsonObj.getJSONArray(TAG_RESULTS);
             Log.e("datas_length", datas.length()+"");
 
-//            for(int i = 0; i<100; i++){     // 1위 ~ 100위
             for(int i = 0; i< datas.length(); i++){
                 JSONObject object = datas.getJSONObject(i);
 

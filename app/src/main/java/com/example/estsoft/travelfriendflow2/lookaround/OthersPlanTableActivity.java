@@ -808,11 +808,8 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                             int goMonth = Integer.parseInt(addDateStr.split("-")[1]) - 1;
                             int goDay = Integer.parseInt(addDateStr.split("-")[2]);
                             String d2 = goYear + "-" + goMonth + "-" + goDay;
-                            if(d1.equals("1899-12-31") || d2.equals("1899-12-31")){
-                                mGroupList.add("정확한 여행 기간을 알 수 없습니다.");
-                            }else {
-                                mGroupList.add(d1 + " ~ " + d2);
-                            }
+
+                            mGroupList.add("정확한 여행 기간을 알 수 없습니다.");
 
                             mChildList.add(null);
 
