@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
@@ -41,10 +44,26 @@ public class DirectPathActivity extends AppCompatActivity {
 
     JSONObject requestJson;
 
+    private ImageView mProgressBar;
+    private LinearLayout loading_layout;
+    private AnimationDrawable animationDrawable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direct_path);
+
+        LayoutInflater inflater = getLayoutInflater();
+        loading_layout = (LinearLayout)inflater.inflate(R.layout.custom_progressbar,null);
+        addContentView(loading_layout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        loading_layout.setVisibility(View.GONE);
+
+
+        mProgressBar = (ImageView)loading_layout.findViewById(R.id.imageview_custom_progress);
+        mProgressBar.setVisibility(View.GONE);
+
+        animationDrawable = (AnimationDrawable)mProgressBar.getDrawable();
+
 
         Intent intent = getIntent();
         String goDate = intent.getStringExtra("goDate");
@@ -53,6 +72,10 @@ public class DirectPathActivity extends AppCompatActivity {
         String endStation = intent.getStringExtra("endStation");
 
         Log.d("intent Extra ---->", "goDate : " + goDate + ", goTime : " + goTime + ", startStation : " + startStation + ", endStation : " + endStation);
+
+        loading_layout.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+        animationDrawable.start();
 
         getData("http://222.239.250.207:8080/TravelFriendAndroid/train/getDirectPath?" +
                 "goDate=" + goDate + "&" +
@@ -93,6 +116,10 @@ public class DirectPathActivity extends AppCompatActivity {
         TrainDirectAdapter adapter = new TrainDirectAdapter(getApplicationContext(),R.layout.train_direct,tr);
         ListView lv = (ListView)findViewById(R.id.trainlist);
         lv.setAdapter(adapter);
+
+        loading_layout.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        animationDrawable.stop();
     }
 
     public void getData(String url){

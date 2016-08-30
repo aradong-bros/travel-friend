@@ -3,6 +3,7 @@ package com.example.estsoft.travelfriendflow2.lookaround;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.IntegerRes;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,10 +78,28 @@ public class OthersPlanTableActivity extends AppCompatActivity {
 
     private int mSchedule_no;
 
+    private ImageView mProgressBar;
+    private LinearLayout loading_layout;
+    private AnimationDrawable animationDrawable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_others_plan_table);
+
+
+        LayoutInflater inflater = getLayoutInflater();
+        loading_layout = (LinearLayout)inflater.inflate(R.layout.custom_progressbar,null);
+        addContentView(loading_layout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        loading_layout.setVisibility(View.GONE);
+
+
+        mProgressBar = (ImageView)loading_layout.findViewById(R.id.imageview_custom_progress);
+        mProgressBar.setVisibility(View.GONE);
+
+        animationDrawable = (AnimationDrawable)mProgressBar.getDrawable();
+
+
 
         setLayout();
 
@@ -96,6 +116,14 @@ public class OthersPlanTableActivity extends AppCompatActivity {
         }else {
             mSchedule_no = intent.getIntExtra("schedule_no", -1);
         }
+
+
+
+        loading_layout.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+        animationDrawable.start();
+
+
 
         //스케쥴 받아오기
 //        Toast.makeText(OthersPlanTableActivity.this, ""+mSchedule_no, Toast.LENGTH_SHORT).show();
@@ -184,6 +212,9 @@ public class OthersPlanTableActivity extends AppCompatActivity {
             protected void onPostExecute(String result) {
                 if (("").equals(result) || TextUtils.isEmpty(result)) {
                     Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                    loading_layout.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    animationDrawable.stop();
                     return;
                 }
 
@@ -194,6 +225,9 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                     getCity(cityURL, ""+mSchedule_no);
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(), "response string이 json 형식에 맞지 않습니다.", Toast.LENGTH_SHORT).show();
+                    loading_layout.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    animationDrawable.stop();
                     return;
                 }
             }
@@ -265,6 +299,9 @@ public class OthersPlanTableActivity extends AppCompatActivity {
             protected void onPostExecute(String result) {
                 if (("").equals(result) || TextUtils.isEmpty(result)) {
                     Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                    loading_layout.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    animationDrawable.stop();
                     return;
                 }
 
@@ -275,6 +312,9 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                     getPost(postURL, ""+mSchedule_no);
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(), "response string이 json 형식에 맞지 않습니다.", Toast.LENGTH_SHORT).show();
+                    loading_layout.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    animationDrawable.stop();
                     return;
                 }
             }
@@ -346,6 +386,9 @@ public class OthersPlanTableActivity extends AppCompatActivity {
             protected void onPostExecute(String result) {
                 if (("").equals(result) || TextUtils.isEmpty(result)) {
                     Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                    loading_layout.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    animationDrawable.stop();
                     return;
                 }
 
@@ -356,6 +399,9 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                     getTrainSchedule(trainScheduleURL, ""+mSchedule_no);
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(), "response string이 json 형식에 맞지 않습니다.", Toast.LENGTH_SHORT).show();
+                    loading_layout.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    animationDrawable.stop();
                     return;
                 }
             }
@@ -427,6 +473,9 @@ public class OthersPlanTableActivity extends AppCompatActivity {
             protected void onPostExecute(String result) {
                 if (("").equals(result) || TextUtils.isEmpty(result)) {
                     Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                    loading_layout.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    animationDrawable.stop();
                     return;
                 }
 
@@ -437,6 +486,9 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                     showTable();
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(), "response string이 json 형식에 맞지 않습니다.", Toast.LENGTH_SHORT).show();
+                    loading_layout.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
+                    animationDrawable.stop();
                     return;
                 }
             }
@@ -643,10 +695,16 @@ public class OthersPlanTableActivity extends AppCompatActivity {
 
         if(mScheduleJsonObject.isNull("no") || mCityJsonArray.length()==0 || mPostJsonArray.length()==0 || mTrainScheduleJsonArray.length()==0){ //정보가 제대로 안 들어왔을 떄
             Toast.makeText(getApplicationContext(), "경로를 짜기에 입력값이 부족합니다.", Toast.LENGTH_SHORT).show();
+            loading_layout.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
+            animationDrawable.stop();
             return;
         }else{ //정보가 제대로 들어왔을 떄
             if(mCityJsonArray.length() != mTrainScheduleJsonArray.length()){
                 Toast.makeText(getApplicationContext(), "정보가 제대로 들어오지 않았습니다.("+mCityJsonArray.length()+","+mTrainScheduleJsonArray.length()+")", Toast.LENGTH_SHORT).show();
+                loading_layout.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                animationDrawable.stop();
                 return;
             }
 
@@ -785,6 +843,9 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                             resultStr = new GetLastTrainSchedule().execute(lastTrainScheduleURL, startLoc, "" + cityList_no, endStation, startDate).get();
                         } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), "네트워크 상태를 확인하고 다시 해주세요.", Toast.LENGTH_SHORT).show();
+                            loading_layout.setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
+                            animationDrawable.stop();
                             return;
                         }
 
@@ -962,16 +1023,26 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                 je.printStackTrace();
                 Log.e(LOG_TAG,"json Error");
                 Toast.makeText(getApplicationContext(), "json Error로 경로를 짤 수 없습니다.", Toast.LENGTH_SHORT);
+                loading_layout.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                animationDrawable.stop();
                 return;
             } catch (Exception e){
                 e.printStackTrace();
                 Log.e(LOG_TAG, "String startStation2 = new GetNearStation().execute(nearTrainStationURL, startLoc, \"\"+cityList_no).get();");
                 Toast.makeText(getApplicationContext(), "String startStation2", Toast.LENGTH_SHORT).show();
+                loading_layout.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
+                animationDrawable.stop();
                 return;
             }
         }
 
         adapter.notifyDataSetChanged();
+
+        loading_layout.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        animationDrawable.stop();
     }
 
     public boolean compareTime(String t1, String t2){

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
@@ -37,10 +40,27 @@ public class TransferPathActivity extends AppCompatActivity {
 
     JSONObject requestJson;
 
+    private ImageView mProgressBar;
+    private LinearLayout loading_layout;
+    private AnimationDrawable animationDrawable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer_path);
+
+
+        LayoutInflater inflater = getLayoutInflater();
+        loading_layout = (LinearLayout)inflater.inflate(R.layout.custom_progressbar,null);
+        addContentView(loading_layout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        loading_layout.setVisibility(View.GONE);
+
+
+        mProgressBar = (ImageView)loading_layout.findViewById(R.id.imageview_custom_progress);
+        mProgressBar.setVisibility(View.GONE);
+
+        animationDrawable = (AnimationDrawable)mProgressBar.getDrawable();
+
 
         Intent intent = getIntent();
         String goDate = intent.getStringExtra("goDate");
@@ -52,6 +72,10 @@ public class TransferPathActivity extends AppCompatActivity {
         TrainTransferAdapter adapter = new TrainTransferAdapter(getApplicationContext(),R.layout.train_transfer,tr);
         ListView lv = (ListView)findViewById(R.id.trainlist);
         lv.setAdapter(adapter);
+
+        loading_layout.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+        animationDrawable.start();
 
         getData("http://222.239.250.207:8080/TravelFriendAndroid/train/getTransferPath?" +
                 "goDate=" + goDate + "&" +
@@ -104,17 +128,14 @@ public class TransferPathActivity extends AppCompatActivity {
         TrainTransferAdapter adapter = new TrainTransferAdapter(getApplicationContext(),R.layout.train_transfer,tr);
         ListView lv = (ListView)findViewById(R.id.trainlist);
         lv.setAdapter(adapter);
+
+        loading_layout.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        animationDrawable.stop();
     }
 
     public void getData(String url){
         class GetDataJSON extends AsyncTask<String, Void, String> {
-            ProgressDialog loading;
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                loading = ProgressDialog.show(TransferPathActivity.this, "Please Wait", null, true, true);
-            }
 
             @Override
             protected String doInBackground(String... params){
@@ -142,7 +163,6 @@ public class TransferPathActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String result){
                 super.onPostExecute(result);
-                loading.dismiss();
                 setRequestJson(result);
             }
         }
