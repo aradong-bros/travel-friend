@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -50,7 +52,6 @@ public class ChatMainActivity extends Activity {
     private final static String IP = "192.168.22.74";
     private final static int PORT = 10001;
 
-    private TextView lblReceive;
     private String txtReceive;
     private Long regionReceive;
     private String userReceive;
@@ -78,6 +79,12 @@ public class ChatMainActivity extends Activity {
     private Long startFromDB = 0L;
     private Long beforeFromDB = 0L;
     boolean firstCall = true;
+
+
+
+    private ImageView mProgressBar;
+    private LinearLayout loading_layout;
+    private AnimationDrawable animationDrawable;
 
     @Override
     protected void onDestroy() {
@@ -120,6 +127,21 @@ public class ChatMainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat_main);
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+
+
+        //loading page
+
+        LayoutInflater inflater = getLayoutInflater();
+        loading_layout = (LinearLayout)inflater.inflate(R.layout.custom_progressbar,null);
+        addContentView(loading_layout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        loading_layout.setVisibility(View.GONE);
+
+
+        mProgressBar = (ImageView)loading_layout.findViewById(R.id.imageview_custom_progress);
+        mProgressBar.setVisibility(View.GONE);
+
+        animationDrawable = (AnimationDrawable)mProgressBar.getDrawable();
+
 
         Intent intent = getIntent();
         regionNum = intent.getExtras().getLong("RegionNum");
@@ -335,7 +357,6 @@ public class ChatMainActivity extends Activity {
         }
     }
 
-
     public void sendClicked(View v) {
         if (editText.getText().toString().length() != 0 && !editText.getText().toString().equals(" ")) {
             if(oos!=null) {
@@ -360,7 +381,6 @@ public class ChatMainActivity extends Activity {
 
     class GetListTask extends AsyncTask<String, Void, JSONArray> {
         JSONArray jarray;
-
         public JSONArray getJarray() {
             return jarray;
         }
@@ -368,11 +388,18 @@ public class ChatMainActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loading_layout.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
+            animationDrawable.start();
         }
 
         @Override
         protected void onPostExecute(JSONArray s) {
             super.onPostExecute(s);
+            loading_layout.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
+            animationDrawable.stop();
+
             JSONArray jarray = s;
             if (jarray == null) {
                 startFromDB = -1L;

@@ -64,7 +64,6 @@ public class AttractionActivity extends Activity {
     private static final String TAG_ADDRESS = "address";
     private static final String TAG_CATEGORY ="category";
 
-    private JSONArray datas = null;
     private static TextView txt_title, txt_info, txt_addr;
     private static EditText edt_reply;
     private static ImageView img_attraction;
@@ -327,9 +326,7 @@ public class AttractionActivity extends Activity {
                 for(int i=0; i<jarray.length(); i++){
                     JSONObject obj = null;
                     try{
-
                         obj=jarray.getJSONObject(i);
-
                         String no = obj.getString("comment_no");
                         String userNo = obj.getString("user_no");
                         String id = obj.getString("user_name");
@@ -537,10 +534,9 @@ class MyAdapter2 extends BaseAdapter {
         TextView date = (TextView)convertView.findViewById(R.id.date);
         final Button delete = (Button)convertView.findViewById(R.id.deleteButton);
 
-
         final Reply t = reply.get(position);
 
-        if(!myNo.equals(t.getUserNo())){
+        if( !myNo.equals(t.getUserNo()) ){
             delete.setVisibility(View.GONE);
         }else{
             delete.setVisibility(View.VISIBLE);
