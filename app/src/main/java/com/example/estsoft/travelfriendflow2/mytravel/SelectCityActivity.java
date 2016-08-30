@@ -84,14 +84,12 @@ public class SelectCityActivity extends Activity {
                 city.selected = !city.selected;
                 cityAdapter.notifyDataSetChanged();
 
-                if(city.selected){
+              /*  if(city.selected){
                     Toast.makeText(getApplicationContext(),city.title+"담기 성공",Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(getApplicationContext(),city.title+"빼기 성공",Toast.LENGTH_SHORT).show();
-                }
+                }*/
 
-//                ImageView cover = (ImageView)adapterView.findViewById(R.id.cover);
-//                cover.setVisibility(View.VISIBLE);
             }
         });
 

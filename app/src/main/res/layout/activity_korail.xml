@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/selected_sdate_textview"
-                android:text="0000/00/00"
+                android:hint="0000/00/00"
                 android:textSize="25sp"
                 android:textColor="#000"
                 android:textStyle="bold"
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/selected_stime_textview"
-                android:text="00-00"
+                android:hint="00:00"
                 android:textColor="#000"
                 android:textStyle="bold"
                 android:clickable="true"
@@ -111,57 +111,94 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="5dp"
-            android:gravity="center">
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
 
+            <AutoCompleteTextView
+                android:id="@+id/startStationEditText"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="기차"
+                android:completionThreshold="1"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_toLeftOf="@+id/st"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:lines="1"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="출발역"
+                android:id="@+id/txt_trainStart"
+                android:layout_alignBaseline="@id/startStationEditText"
                 android:textSize="15sp"
-                android:textAlignment="center"
-                android:layout_marginTop="5dp"
                 android:textColor="#555"
+                android:layout_marginTop="5dp"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_alignParentTop="true" />
-            ​
-            <EditText
-                android:layout_width="100dp"
+                android:paddingRight="5dp"   />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:text="역"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:id="@+id/st"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/startStationEditText" />
+                android:layout_alignBaseline="@id/startStationEditText"
+                android:gravity="center"/>
+
+
+
         </RelativeLayout>
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="5dp"
-            android:gravity="center">
+            android:orientation="horizontal">
+
+
+            <AutoCompleteTextView
+                android:id="@+id/endStationEditText"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="기차"
+                android:completionThreshold="1"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_toLeftOf="@+id/ed"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:lines="1"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#555"
+                android:text="도착역"
+                android:id="@+id/txt_trainEnd"
+                android:layout_alignBaseline="@id/endStationEditText"
                 android:textSize="15sp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:textAlignment="center"
+                android:textColor="#555"
                 android:layout_marginTop="5dp"
-                android:text="도착역"/>
-            <EditText
-                android:layout_width="100dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"   />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:text="역"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:id="@+id/ed"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/endStationEditText" />
+                android:layout_alignBaseline="@id/endStationEditText"
+                android:gravity="center"/>
+
         </RelativeLayout>
 
         <RelativeLayout

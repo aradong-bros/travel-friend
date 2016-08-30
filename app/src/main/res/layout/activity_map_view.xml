@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/btn_routeLeft"
             android:text="◀"
+            android:background="@drawable/spinner_design"
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
             android:layout_marginBottom="10dp"
@@ -95,6 +96,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/btn_routeRight"
             android:text="▶"
+            android:background="@drawable/spinner_design"
             android:layout_alignBottom="@id/btn_routeLeft"
             android:layout_toRightOf="@id/btn_routeLeft"
             android:layout_marginLeft="10dp"
@@ -105,10 +107,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/btn_routeTracking"
             android:text="길찾기"
+            android:background="@drawable/rounded_edittext"
             android:layout_alignBottom="@id/btn_routeLeft"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
+            android:layout_toRightOf="@id/btn_routeRight"
+            android:layout_marginLeft="10dp"
             android:visibility="gone"/>
+
 
     </RelativeLayout>
 
