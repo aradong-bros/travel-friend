@@ -208,7 +208,7 @@ public class AttractionActivity extends Activity {
             @Override
             protected void onPostExecute(String result){
 
-                if(result == null){
+                if( ("").equals(result)){
                     return;
                 }
                 Log.e(LOG_TAG,result);
@@ -287,7 +287,9 @@ public class AttractionActivity extends Activity {
     private Object fetch(String address) throws MalformedURLException,IOException {
         URL url = new URL(address);
         Object content = url.getContent();
+        Log.e("content",content+"");
         return content;
+
     }
 
     private void hideSoftKeyboard() {

@@ -75,7 +75,7 @@ public class MyTravelListActivity extends Activity {
         Preference pf = new Preference(this);
         new HttpParamConnThread().execute(schAllSrchURL, pf.getUserNo());
 
-        adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr);
+        adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr, true);
         ListView lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(adapter);
 
@@ -222,6 +222,14 @@ public class MyTravelListActivity extends Activity {
                 settingBackground(t, no);
 
                 t.setSetting(true);
+
+                String isFinished = object.getString("isfinished");
+                if ( ("ongoing").equals(isFinished) ){
+                    t.setTag(false);
+                }else{
+                    t.setTag(true);
+                }
+
                 tr.add(t);
             }
 
@@ -285,12 +293,14 @@ class MyAdapter extends BaseAdapter {
     int layout;
     ArrayList<Travel> tr;
     LayoutInflater inf;
+    boolean TAG_VISIBILITY = false;
 
-    public MyAdapter(Context context, int layout, ArrayList<Travel> tr){
+    public MyAdapter(Context context, int layout, ArrayList<Travel> tr,  boolean tag_visibility){
         this.context = context;
         this.layout = layout;
         this.tr = tr;
         this.inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.TAG_VISIBILITY = tag_visibility;
     }
 
     @Override
@@ -320,6 +330,7 @@ class MyAdapter extends BaseAdapter {
 
         ImageView heart = (ImageView)convertView.findViewById(R.id.heart);
         ImageView btn_setting = (ImageView)convertView.findViewById(R.id.btn_setting);
+        ImageView tag = (ImageView)convertView.findViewById(R.id.tag);
 
         heart.setVisibility(View.INVISIBLE);
         btn_setting.setOnClickListener(new View.OnClickListener() {
@@ -344,6 +355,17 @@ class MyAdapter extends BaseAdapter {
             btn_setting.setVisibility(View.VISIBLE);
         else
             btn_setting.setVisibility(View.INVISIBLE);
+
+
+        if( TAG_VISIBILITY ){
+            if( t.tag ){
+                tag.setBackgroundResource(R.drawable.tag_finished);
+            }else{
+                tag.setBackgroundResource(R.drawable.tag_ongoing);
+            }
+        }else{
+            tag.setVisibility(View.INVISIBLE);
+        }
 
         return convertView;
     }

@@ -72,7 +72,7 @@ public class SelectCityActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        final CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city);
+        final CityAdapter cityAdapter = new CityAdapter(getApplicationContext(),R.layout.city,city,false);
         lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(cityAdapter);
 
@@ -150,16 +150,19 @@ class CityAdapter extends BaseAdapter {
     int layout;
     ArrayList<City> city;
     LayoutInflater inf;
+    boolean TAG_VISIBILITY = false;
 
     private ViewHolder viewHolder = null;
     private boolean[] isCheckedConfirm;
 
-    public CityAdapter(Context context, int layout, ArrayList<City> city){
+    public CityAdapter(Context context, int layout, ArrayList<City> city, boolean tag_visibility){
         this.context = context;
         this.layout = layout;
         this.city = city;
         this.inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.isCheckedConfirm = new boolean[city.size()];
+        this.TAG_VISIBILITY = tag_visibility;
+
     }
 
     public void setChecked(int position){
@@ -210,6 +213,17 @@ class CityAdapter extends BaseAdapter {
         viewHolder.title.setText(c.title);
         viewHolder.cover.setVisibility(c.selected? View.VISIBLE : View.INVISIBLE);
 
+        if( TAG_VISIBILITY ){
+            if( c.tag ){
+                viewHolder.tag.setBackgroundResource(R.drawable.tag_finished);
+            }else{
+                viewHolder.tag.setBackgroundResource(R.drawable.tag_ongoing);
+            }
+        }else{
+            viewHolder.tag.setVisibility(View.INVISIBLE);
+        }
+
+
         return convertView;
     }
 
@@ -217,11 +231,13 @@ class CityAdapter extends BaseAdapter {
         ImageView icon;
         TextView title;
         ImageView cover;
+        ImageView tag;
 
         public ViewHolder(View view) {
             icon = (ImageView)view.findViewById(R.id.cityicon);
             title = (TextView)view.findViewById(R.id.citytitle);
             cover = (ImageView)view.findViewById(R.id.cover);
+            tag = (ImageView)view.findViewById(R.id.tag);
         }
     }
 }
@@ -230,6 +246,7 @@ class City{
     String title = "";
     int icon;
     boolean selected = false;
+    boolean tag = false;
 
     public City(int icon,String title){
         this.icon = icon;

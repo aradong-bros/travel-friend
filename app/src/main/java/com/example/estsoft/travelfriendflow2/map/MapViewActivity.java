@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by yeonji on 2016-07-29.
@@ -77,7 +78,7 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
     private HashMap<String, String> likeMap = new HashMap<String, String>();        //<postList_no, location>
     public static final int REQUEST_CODE = 1001;
     private static Intent attrIntent;
-
+    private static Intent selectedIntent;
     ArrayList<Attraction> attractions = new ArrayList<Attraction>();
     ListView lv;
 
@@ -95,9 +96,9 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
         mapView.setPOIItemEventListener(this);
 
 
-        Intent intent = getIntent();
-        final int cityList_no = intent.getIntExtra("cityList_no", -1);
-        final int city_no = intent.getIntExtra("city_no", -1);
+        selectedIntent = getIntent();
+        final int cityList_no = selectedIntent.getIntExtra("cityList_no", -1);
+        final int city_no = selectedIntent.getIntExtra("city_no", -1);
 
         if( cityList_no == -1 || city_no == -1 ){
             Log.e(LOG_TAG, "intent value error");
@@ -124,10 +125,23 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                         jArray.put(sObject);
                     }
                     Log.e(LOG_TAG, jArray.toString());
-                    new HttpConnectionThread(getApplicationContext()).execute(POSTINSERTURL, jArray.toString());     // Thread for Http connection   // POST TABLE_INSERT
+//                    new HttpConnectionThread(getApplicationContext()).execute(POSTINSERTURL, jArray.toString());     // Thread for Http connection   // POST TABLE_INSERT
 
-                    finish();
-                }catch (JSONException je){
+
+                    String result = new HttpConnectionThread(getApplicationContext()).execute(POSTINSERTURL, jArray.toString()).get();     // Thread for Http connection   // POST TABLE_INSERT
+                    Log.e("result:::",result);
+
+                    if( ("failed").equals(result) ){
+                        selectedIntent.putExtra("tag", false);
+                    }else if( ("{}").equals(result) ){
+                        selectedIntent.putExtra("tag", true);
+                    }
+                    setResult(RESULT_OK, selectedIntent);
+                    finish();       // selectedcity activity로 finish
+
+
+
+                }catch (Exception je){
                     je.printStackTrace();
                 }
 

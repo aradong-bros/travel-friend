@@ -57,7 +57,7 @@ public class BookmarkListActivity extends Activity {
 
         new HttpFavorConnThread().execute(searchFavoriteURL, "/"+pf.getUserNo());
 
-        adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr);
+        adapter = new MyAdapter(getApplicationContext(),R.layout.row,tr,false);
         ListView lv = (ListView)findViewById(R.id.listview);
         lv.setAdapter(adapter);
 

@@ -2,13 +2,18 @@ package com.example.estsoft.travelfriendflow2.lookaround;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
@@ -17,6 +22,8 @@ import android.widget.RelativeLayout;
 
 import com.example.estsoft.travelfriendflow2.AttractionActivity;
 import com.example.estsoft.travelfriendflow2.R;
+import com.example.estsoft.travelfriendflow2.basic.MainActivity;
+import com.example.estsoft.travelfriendflow2.map.CustomSchemeURL;
 import com.example.estsoft.travelfriendflow2.map.MapApiConst;
 import com.example.estsoft.travelfriendflow2.map.PinItem;
 import com.example.estsoft.travelfriendflow2.map.PostItem;
@@ -41,6 +48,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class OthersPlanMapActivity extends AppCompatActivity implements MapView.POIItemEventListener{
@@ -59,6 +68,14 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
     private static final String TAG_CITYORDER="cityOrder";
 
     private MapView mapView;
+    private HashMap<Integer, PostItem> mTagItemMap = new HashMap<Integer, PostItem>();
+    private HashMap<Integer, MapPolyline> mTagPolylineMap = new HashMap<Integer, MapPolyline>();
+    private int polylineChkNum = 0;
+    private SendMassgeHandler mMainHandler = null;
+
+    private RelativeLayout layout_route;
+    private TextView txt_routeStart, txt_routeEnd;
+    private Button btn_routeLeft,btn_routeRight,btn_routeTracking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,12 +126,168 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             new HttpParamConnThread().execute(SCHEDULE_CITY_URL, SCHEDULE_NO);
         }else {
             Log.e("XXX", "진입못함");
-
-
         }
 
+        mMainHandler = new SendMassgeHandler(); // 메인 핸들러 생성
+
+        layout_route = (RelativeLayout)findViewById(R.id.layout_route);
+        txt_routeStart = (TextView)findViewById(R.id.txt_routeStart);
+        txt_routeEnd = (TextView)findViewById(R.id.txt_routeEnd);
+        btn_routeLeft = (Button)findViewById(R.id.btn_routeLeft);
+        btn_routeRight = (Button)findViewById(R.id.btn_routeRight);
+        btn_routeTracking = (Button)findViewById(R.id.btn_routeTracking);
+
+        btn_routeLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("click","left  "+polylineChkNum);
+
+                if( polylineChkNum >= 1 && polylineChkNum <= mTagPolylineMap.size() ){
+                    if ( polylineChkNum != 1) {
+                        polylineChkNum--;
+                    }
+                    setTextView();
+
+                    Message msg = new Message();
+                    msg.what = 0;
+                    msg.arg1 = 100+polylineChkNum;
+                    mMainHandler.sendMessage(msg);
+                }
+
+            }
+        });
+
+
+        btn_routeRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("click","right  "+polylineChkNum);
+
+                if( polylineChkNum <= mTagPolylineMap.size() && polylineChkNum >= 0){
+                    if ( polylineChkNum != mTagPolylineMap.size()){
+                        polylineChkNum++;
+                    }
+                    setTextView();
+
+                    Message msg = new Message();
+                    msg.what = 0;
+                    msg.arg1 = 100+polylineChkNum;
+                    mMainHandler.sendMessage(msg);
+                }
+
+
+            }
+        });
+
+
+        btn_routeTracking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message msg = new Message();
+                msg.what = 1;
+                msg.arg1 = 100+polylineChkNum;
+                mMainHandler.sendMessage(msg);
+            }
+        });
 
     }
+
+    private void setTextView() {
+        String strStart = "", strEnd = "";    // 출발지 + 도착지
+
+        strStart = mTagItemMap.get(polylineChkNum).getTitle();
+        strEnd = mTagItemMap.get(polylineChkNum+1).getTitle();
+
+        txt_routeStart.setText(strStart);
+        txt_routeEnd.setText(strEnd);
+    }
+
+    private Intent onRoute(String startPoint, String endPoint){
+        String urlShceme = "daummaps://route?";
+        String sp = "sp="+startPoint;
+        String ep = "&ep="+endPoint;
+        String by = "&by="+"CAR";              //  > by: 교통 수단 (CAR, PUBLICTRANSIT, FOOT)
+
+        String url = urlShceme+sp+ep+by;
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+
+        CustomSchemeURL daummap = new CustomSchemeURL(this, intent) {
+            @Override
+            public boolean canOpenDaummapURL() {
+                return super.canOpenDaummapURL();
+            }
+        };
+
+        if(daummap.existDaummapApp()){
+            return intent;
+        } else {
+            CustomSchemeURL.openDaummapDownloadPage(this);
+        }
+        return null;
+    }
+
+    // Handler 클래스
+    class SendMassgeHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Log.e("arg1111",msg.arg1+"");
+
+            switch (msg.what) {
+                case 1:
+                    MapPolyline p = mTagPolylineMap.get(msg.arg1);
+                    MapPoint[] pnt = p.getMapPoints();
+                    String startPoint = "";
+                    String endPoint = "";
+
+                    for(int i=0; i<pnt.length; i++){
+                        Log.e("polyline_getPoint"+i, pnt[i].getMapPointGeoCoord().latitude+","+pnt[i].getMapPointGeoCoord().longitude);
+                    }
+
+                    if ( pnt.length == 2 ){
+                        startPoint = pnt[0].getMapPointGeoCoord().latitude+","+pnt[0].getMapPointGeoCoord().longitude;
+                        endPoint = pnt[1].getMapPointGeoCoord().latitude+","+pnt[1].getMapPointGeoCoord().longitude;
+                    }
+
+                    // 길찾기로 넘어가게
+                    Intent intent = onRoute(startPoint, endPoint);
+
+                    if(intent!=null)
+                        startActivity(intent);
+
+                    break;
+
+                default:
+                    final MapPolyline polyline = mTagPolylineMap.get(msg.arg1);   // 101부터 시작
+                    polyline.setLineColor(Color.argb(255, 255, 187, 0));
+
+                    for(int i = 0; i<4; i++) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mapView.addPolyline(polyline);
+                                try {
+                                    Thread.sleep(200);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                mapView.removePolyline(polyline);
+                                try {
+                                    Thread.sleep(200);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }); // runOnUiThread_end
+                    }
+                    break;
+            }
+        }
+
+    };
 
     class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
         private final View mCalloutBalloon;
@@ -204,7 +377,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 return;
             }
 
-            String str = result.substring(2,4);     // ci or po
+            String str = result.substring(2,4);     // city or post
             if( ("ci").equals(str) ){
                 List<PinItem> itemList = parsePinData(result);
 
@@ -215,9 +388,17 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             }else if( ("at").equals(str) ){
                 List<PostItem> itemList =  parsePostPinData(result);
 
-                if( itemList != null)
+                if( itemList != null) {
+                    // layout visible
+                    layout_route.setVisibility(View.VISIBLE);
+                    txt_routeStart.setVisibility(View.VISIBLE);
+                    txt_routeEnd.setVisibility(View.VISIBLE);
+                    btn_routeLeft.setVisibility(View.VISIBLE);
+                    btn_routeRight.setVisibility(View.VISIBLE);
+                    btn_routeTracking.setVisibility(View.VISIBLE);
+
                     makePostPOIItem(itemList);
-                else
+                }else
                     Toast.makeText(getApplicationContext(), "postitemList == null", Toast.LENGTH_SHORT).show();
             }
 
@@ -311,7 +492,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             MapPOIItem poiItem = new MapPOIItem();
             poiItem.setItemName(item.title);
             poiItem.setTag(item.city_pkno);
-            poiItem.setUserObject(item.getCity_pkno());
+            poiItem.setUserObject(item.no);     // 도시 테이블 no
 
             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
             poiItem.setMapPoint(mapPoint);
@@ -373,7 +554,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 @Override
                 public void run() {
                     try{
-                        Thread.sleep(1000);
+                        Thread.sleep(700);
                     } catch (Exception e){
                         e.printStackTrace();
                     }
@@ -456,8 +637,9 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             poiItem.setCustomImageAnchor(0.5f, 1.0f);
 
             mapView.addPOIItem(poiItem);
+            mTagItemMap.put(Integer.parseInt(item.postOrder), item);        // post order 순서대로 item 저장!!!
 //            mTagItemMap.put(poiItem.getTag(), item);
-
+//            Log.e("poiItem.getTag()", poiItem.getTag()+"");
             // ------- polyline 연결하기
             if( i== 0 ){
                 continue;
@@ -472,11 +654,11 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
             // Polyline 지도에 올리기.
             mapView.addPolyline(polyline);
+            mTagPolylineMap.put(polyline.getTag(), polyline);
         }
 
         MapPolyline[] mapPolylines = mapView.getPolylines();
         showTrackingPostAll(mapPointBounds, mapPolylines);
-
 
 //        showAll(mapPointBounds);
 
@@ -488,11 +670,11 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         float maxZoomLevel = 12;
 
         mapView.removeAllPolylines();
-//        Log.e("mapPolylines_length: ",""+mapPolylines.length);
+        Log.e("mapPolylines_length: ",""+mapPolylines.length);
         for(int i = 0; i<mapPolylines.length; i++){
             mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding, minZoomLevel, maxZoomLevel));
 
-//            Log.e("mapPolylines_post[i]", mapPolylines[i].getTag()+"");
+            Log.e("mapPolylines_post[i]", mapPolylines[i].getTag()+"");
             if ( mapPolylines[i].getTag() < 100){
                 mapView.addPolyline(mapPolylines[i]);
                 continue;
@@ -502,8 +684,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                 @Override
                 public void run() {
                     try{
-                        Thread.sleep(1000);
-                        Log.e(LOG_TAG, "들어옴");
+                        Thread.sleep(700);
                     } catch (Exception e){
                         e.printStackTrace();
                     }
@@ -511,7 +692,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             }); // runOnUiThread_end
 
             mapView.addPolyline(mapPolylines[i]);
-
         }
 
     }
@@ -530,8 +710,29 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
 
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
-        Log.e("getUserObject", mapPOIItem.getUserObject()+"");
-        String userObj = mapPOIItem.getUserObject()+"";
+        Log.e("POI_getUserObject", mapPOIItem.getUserObject()+"");
+        /*
+            도시 POIITEM 선택 -> 도시 테이블 pk_no
+            관광지 POIITEM 선택 -> postList 테이블 pk_no
+         */
+        int userObj = Integer.parseInt(mapPOIItem.getUserObject()+"");
+        if( userObj >= 1 && userObj <= 12 ){    // 도시 선택 시!
+            Log.e("여기","진입");
+            polylineChkNum = 0;     // 초기화
+        }
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+        // 말풍선 클릭 시
+
+        Log.e("B_getUserObject", mapPOIItem.getTag()+"");
+        String userObj = mapPOIItem.getTag()+"";
 
         if( ("").equals(userObj) || ("null").equals(userObj) || userObj == null ){
             return;
@@ -548,16 +749,6 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         }else{
             new HttpParamConnThread().execute(SCHEDULE_POST_URL, userObj+"");
         }
-
-    }
-
-    @Override
-    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
-
-    }
-
-    @Override
-    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
 
     }
 
