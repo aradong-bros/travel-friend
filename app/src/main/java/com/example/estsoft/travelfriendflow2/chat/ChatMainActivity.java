@@ -49,7 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 public class ChatMainActivity extends Activity {
 
-    private final static String IP = "192.168.22.74";
+    private static String IP = "192.168.22.74";
     private final static int PORT = 10001;
 
     private String txtReceive;
@@ -127,7 +127,7 @@ public class ChatMainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat_main);
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-
+        IP = pref.getString("ip","192.168.0.3");
 
         //loading page
 
@@ -141,12 +141,16 @@ public class ChatMainActivity extends Activity {
         mProgressBar.setVisibility(View.GONE);
 
         animationDrawable = (AnimationDrawable)mProgressBar.getDrawable();
-
+        //animationDrawable.start();
 
         Intent intent = getIntent();
         regionNum = intent.getExtras().getLong("RegionNum");
 
         scrollView = (ScrollView) findViewById(R.id.scrollView);
+
+        loading_layout.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+        animationDrawable.start();
         GetListTask task = new GetListTask();
         task.execute(regionNum.toString(), "9999999", startFromDB.toString());
 
@@ -173,6 +177,10 @@ public class ChatMainActivity extends Activity {
             public void onClick(View v) {
                 beforeFromDB = startFromDB;
                 if(startFromDB!=-1L){
+
+                    loading_layout.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    animationDrawable.start();
                     GetListTask task = new GetListTask();
                     task.execute(regionNum.toString(), startFromDB.toString(), "0");
                 }
@@ -388,17 +396,12 @@ public class ChatMainActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loading_layout.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.VISIBLE);
-            animationDrawable.start();
         }
 
         @Override
         protected void onPostExecute(JSONArray s) {
             super.onPostExecute(s);
-            loading_layout.setVisibility(View.GONE);
-            mProgressBar.setVisibility(View.GONE);
-            animationDrawable.stop();
+
 
             JSONArray jarray = s;
             if (jarray == null) {
@@ -501,6 +504,9 @@ public class ChatMainActivity extends Activity {
                     }
                 });
             }
+            loading_layout.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
+            animationDrawable.stop();
         }
 
         @Override

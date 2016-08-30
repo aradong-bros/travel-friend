@@ -1,6 +1,7 @@
 package com.example.estsoft.travelfriendflow2.sale;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -93,7 +94,7 @@ public class SaleActivity extends Activity {
         mProgressBar.setVisibility(View.GONE);
 
         animationDrawable = (AnimationDrawable)mProgressBar.getDrawable();
-        animationDrawable.start();
+        //animationDrawable.start();
 
 
 
@@ -110,6 +111,10 @@ public class SaleActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int cityList_no = position + 1;
+
+                loading_layout.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
+                animationDrawable.start();
 
                 new HttpParamConnThread().execute(url, cityList_no + "");
             } // HttpParamConnThread 클래스의 doInBackground 로 이동
@@ -179,6 +184,7 @@ public class SaleActivity extends Activity {
 
 
     public class HttpParamConnThread extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String... path) {
             // URL 연결이 구현될 부분
@@ -236,37 +242,42 @@ public class SaleActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            loading_layout.setVisibility(View.GONE);
-            mProgressBar.setVisibility(View.GONE);
-            animationDrawable.start();
-
-            if (("").equals(result) || TextUtils.isEmpty(result)) {
-                //  로딩바 띄우기
-                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            if (parsePinData(result)) {
-
-                bitmapArrayList.clear();
-
-                for ( int i = 0; i < saleItems.size(); i++ )
-                {
-                    getBitmap(saleItems.get(i));
+        protected void onPostExecute(final String result) {
+            new Thread(new Runnable() { public void run() {
+                if (("").equals(result) || TextUtils.isEmpty(result)) {
+                    //  로딩바 띄우기
+                    Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                    return;
                 }
 
-                showResult();
-            }
+                if (parsePinData(result)) {
+
+                    bitmapArrayList.clear();
+
+                    for ( int i = 0; i < saleItems.size(); i++ )
+                    {
+                        getBitmap(saleItems.get(i));
+                    }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showResult();
+                            loading_layout.setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
+                            animationDrawable.stop();
+                        }
+                    });
+
+                }
+            }}).start();
+
 
         }
 
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-            loading_layout.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.VISIBLE);
-            animationDrawable.start();
         }
 
     }   // End_HttpParamConnThread
@@ -355,8 +366,9 @@ public class SaleActivity extends Activity {
     }// End_parsePinData
 
     //UI 처리는 이곳에서 한다.
-    private void showResult() {
+    private boolean showResult() {
         saleItemAdapter.notifyDataSetChanged();
+        return true;
     }
 
     class SaleItemAdapter extends BaseAdapter {
