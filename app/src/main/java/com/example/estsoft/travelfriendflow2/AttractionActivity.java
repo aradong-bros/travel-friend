@@ -64,7 +64,6 @@ public class AttractionActivity extends Activity {
     private static final String TAG_ADDRESS = "address";
     private static final String TAG_CATEGORY ="category";
 
-    private JSONArray datas = null;
     private static TextView txt_title, txt_info, txt_addr;
     private static EditText edt_reply;
     private static ImageView img_attraction;
@@ -156,30 +155,30 @@ public class AttractionActivity extends Activity {
             }
         });
 
-        setListViewHeightBasedOnChildren(lv);
+//        setListViewHeightBasedOnChildren(lv);
     }
 
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            // pre-condition
-            return;
-        }
-
-        int totalHeight = 0;
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
-
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight;
-        listView.setLayoutParams(params);
-        listView.requestLayout();
-    }
+//    public static void setListViewHeightBasedOnChildren(ListView listView) {
+//        ListAdapter listAdapter = listView.getAdapter();
+//        if (listAdapter == null) {
+//            // pre-condition
+//            return;
+//        }
+//
+//        int totalHeight = 0;
+//        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
+//
+//        for (int i = 0; i < listAdapter.getCount(); i++) {
+//            View listItem = listAdapter.getView(i, null, listView);
+//            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+//            totalHeight += listItem.getMeasuredHeight();
+//        }
+//
+//        ViewGroup.LayoutParams params = listView.getLayoutParams();
+//        params.height = totalHeight;
+//        listView.setLayoutParams(params);
+//        listView.requestLayout();
+//    }
 
     public void fetchData(String url){
         class GetDataJSON extends AsyncTask<String, Void, String> {
@@ -306,7 +305,7 @@ public class AttractionActivity extends Activity {
             protected void onPostExecute(JSONArray s){
                 super.onPostExecute(s);
                 JSONArray jarray = s;
-                if(jarray.length()==0){
+                if(jarray.length()==0 && reply.size()==0){
                     Reply eachReply = new Reply();
                     eachReply.setContent("아직 리뷰가 없습니다.");
                     reply.add(eachReply);
@@ -316,9 +315,7 @@ public class AttractionActivity extends Activity {
                 for(int i=0; i<jarray.length(); i++){
                     JSONObject obj = null;
                     try{
-
                         obj=jarray.getJSONObject(i);
-
                         String no = obj.getString("comment_no");
                         String userNo = obj.getString("user_no");
                         String id = obj.getString("user_name");
@@ -522,12 +519,14 @@ class MyAdapter2 extends BaseAdapter {
         TextView date = (TextView)convertView.findViewById(R.id.date);
         final Button delete = (Button)convertView.findViewById(R.id.deleteButton);
 
-
         final Reply t = reply.get(position);
 
-        if(!myNo.equals(t.getUserNo())){
+        if( !myNo.equals(t.getUserNo()) ){
             delete.setVisibility(View.GONE);
+        }else{
+            delete.setVisibility(View.VISIBLE);
         }
+
 
         final int pp = position;
         delete.setOnClickListener(new View.OnClickListener() {
