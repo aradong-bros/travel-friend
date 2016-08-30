@@ -183,6 +183,10 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
         btn_routeTracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if( polylineChkNum <= 0 || polylineChkNum > mTagPolylineMap.size()){
+                    return;
+                }
                 Message msg = new Message();
                 msg.what = 1;
                 msg.arg1 = 100+polylineChkNum;
@@ -263,7 +267,7 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
                     final MapPolyline polyline = mTagPolylineMap.get(msg.arg1);   // 101부터 시작
                     polyline.setLineColor(Color.argb(255, 255, 187, 0));
 
-                    for(int i = 0; i<4; i++) {
+                    for(int i = 0; i<3; i++) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
