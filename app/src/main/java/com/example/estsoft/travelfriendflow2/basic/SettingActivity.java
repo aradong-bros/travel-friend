@@ -82,7 +82,7 @@ public class SettingActivity extends AppCompatActivity {
             name = userData.getString("name");
             no = userData.getString("no");
             picture = userData.getString("picture");
-            ip = pref.getString("ip","");
+            ip = pref.getString("ip","192.168.0.3");
         } catch (Exception e) {
             e.printStackTrace();
         }

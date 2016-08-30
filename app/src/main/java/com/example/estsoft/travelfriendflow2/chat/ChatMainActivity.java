@@ -127,7 +127,7 @@ public class ChatMainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat_main);
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
-        IP = pref.getString("ip","");
+        IP = pref.getString("ip","192.168.0.3");
 
         //loading page
 
