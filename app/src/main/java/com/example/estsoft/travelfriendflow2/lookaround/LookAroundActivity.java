@@ -211,7 +211,7 @@ public class LookAroundActivity extends Activity {
                 cal.setTime(dateedate);
                 int eday= cal.get(Calendar.DAY_OF_YEAR);
                 int day = eday-sday;
-                t.setPlanTime("#"+(day-1)+"박"+day+"일");
+                t.setPlanTime("#"+day+"박"+(day+1)+"일");
 
                 // user_no로 배경 이미지 random하게 뿌림
                 settingBackground(t, no);

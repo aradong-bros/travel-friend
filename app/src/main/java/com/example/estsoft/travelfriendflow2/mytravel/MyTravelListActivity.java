@@ -240,7 +240,7 @@ public class MyTravelListActivity extends Activity {
                 int eday= cal.get(Calendar.DAY_OF_YEAR);
                 int day = eday-sday;
 
-                t.setPlanTime("#"+(day-1)+"박"+day+"일");
+                t.setPlanTime("#"+day+"박"+(day+1)+"일");
                 t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
 
                 // user_no로 배경 이미지 random하게 뿌림
