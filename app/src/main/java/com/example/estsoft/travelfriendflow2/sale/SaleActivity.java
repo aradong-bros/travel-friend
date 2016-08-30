@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
@@ -22,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -70,10 +72,30 @@ public class SaleActivity extends Activity {
     private SaleItemAdapter saleItemAdapter;
     Bitmap bitmap;
 
+
+    private ImageView mProgressBar;
+    private LinearLayout loading_layout;
+    private AnimationDrawable animationDrawable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sale);
+
+
+        LayoutInflater inflater = getLayoutInflater();
+        loading_layout = (LinearLayout)inflater.inflate(R.layout.custom_progressbar,null);
+        addContentView(loading_layout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        loading_layout.setVisibility(View.GONE);
+
+
+        mProgressBar = (ImageView)loading_layout.findViewById(R.id.imageview_custom_progress);
+        mProgressBar.setVisibility(View.GONE);
+
+        animationDrawable = (AnimationDrawable)mProgressBar.getDrawable();
+        animationDrawable.start();
+
+
 
         //스피너 하나
         String[] option = getResources().getStringArray(R.array.spinnerArray1);
@@ -215,6 +237,10 @@ public class SaleActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
+            loading_layout.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
+            animationDrawable.start();
+
             if (("").equals(result) || TextUtils.isEmpty(result)) {
                 //  로딩바 띄우기
                 Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
@@ -233,6 +259,14 @@ public class SaleActivity extends Activity {
                 showResult();
             }
 
+        }
+
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            loading_layout.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
+            animationDrawable.start();
         }
 
     }   // End_HttpParamConnThread

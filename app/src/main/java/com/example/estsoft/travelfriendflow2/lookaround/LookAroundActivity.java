@@ -32,7 +32,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class LookAroundActivity extends Activity {
     private static final String LOG_TAG = "LookAroundActivity";
@@ -170,9 +175,20 @@ public class LookAroundActivity extends Activity {
                 String sdate = object.getString(TAG_SDATE);
                 String edate = object.getString(TAG_EDATE);
 
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                Date datesdate = new Date();
+                Date dateedate = new Date();
+
+                try {
+                    datesdate = format.parse(sdate);
+                    dateedate = format.parse(edate);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 if( sdate.equals(null)|| edate.equals(null) ){              // <<<
                     return false;
                 }
+
 
                 String[] s = sdate.split(" ");
                 String[] e = edate.split(" ");
@@ -188,7 +204,13 @@ public class LookAroundActivity extends Activity {
                     t.setPlanSeason("#겨울");
                 }
 
-                int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
+                //int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(datesdate);
+                int sday = cal.get(Calendar.DAY_OF_YEAR);
+                cal.setTime(dateedate);
+                int eday= cal.get(Calendar.DAY_OF_YEAR);
+                int day = eday-sday;
                 t.setPlanTime("#"+(day-1)+"박"+day+"일");
 
                 // user_no로 배경 이미지 random하게 뿌림

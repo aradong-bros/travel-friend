@@ -43,7 +43,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MyTravelListActivity extends Activity {
@@ -199,6 +203,21 @@ public class MyTravelListActivity extends Activity {
                     return false;
                 }
 
+
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                Date datesdate = new Date();
+                Date dateedate = new Date();
+
+                try {
+                    datesdate = format.parse(sdate);
+                    dateedate = format.parse(edate);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                if( sdate.equals(null)|| edate.equals(null) ){              // <<<
+                    return false;
+                }
+
                 String[] s = sdate.split(" ");
                 String[] e = edate.split(" ");
                 t.setTxt_creationDate(s[0].replaceAll("-", "/"));
@@ -213,7 +232,13 @@ public class MyTravelListActivity extends Activity {
                     t.setPlanSeason("#겨울");
                 }
 
-                int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
+                //int day = Integer.parseInt(edateArr[2]) - Integer.parseInt(sdateArr[2]);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(datesdate);
+                int sday = cal.get(Calendar.DAY_OF_YEAR);
+                cal.setTime(dateedate);
+                int eday= cal.get(Calendar.DAY_OF_YEAR);
+                int day = eday-sday;
 
                 t.setPlanTime("#"+(day-1)+"박"+day+"일");
                 t.setBackground(R.drawable.hadong);    // 이미지 나중에 처리하기
