@@ -23,6 +23,7 @@ import com.example.estsoft.travelfriendflow2.thread.Preference;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -52,6 +53,8 @@ public class OthersPlanTableActivity extends AppCompatActivity {
             "train/selectLastTrainSchedule";
     private static String postListURL = "http://222.239.250.207:8080/TravelFriendAndroid" +
             "/android/getDetailData";
+    private static String nearTrainStationURL = "http://222.239.250.207:8080/TravelFriendAndroid" +
+            "/train/nearTrainStation";
 
     private static final String cities[] = {
             "서울","가평","강릉","안동","경주","부산",
@@ -575,6 +578,64 @@ public class OthersPlanTableActivity extends AppCompatActivity {
             }
         }
 
+        class GetNearStation extends AsyncTask<String, Void, String>{
+            @Override
+            protected String doInBackground(String... params) {
+                // URL 연결이 구현될 부분
+                URL url;
+                String response = "";
+                String CONNURL = params[0];
+                String location = params[1];
+                String cityList_no = params[2];
+                HttpURLConnection conn = null;
+                try {
+
+                    url = new URL(CONNURL + "?startLoc=" + location + "&cityList_no=" + cityList_no);
+                    conn = (HttpURLConnection) url.openConnection();
+
+                    conn.setConnectTimeout(2000);
+                    conn.setReadTimeout(2000);
+                    conn.setDoInput(true);
+
+                    int responseCode = conn.getResponseCode();
+                    Log.e("http response code", responseCode + "");
+
+                    if (responseCode == HttpURLConnection.HTTP_OK) { // 연결에 성공한 경우
+                        Log.e(LOG_TAG, "연결 성공");
+                        String line;
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream())); // 서버의 응답을 읽기 위한 입력 스트림
+
+                        while ((line = br.readLine()) != null) {// 서버의 응답을 읽어옴
+                            response += line;
+                        }
+
+                        br.close();
+                        conn.disconnect();
+                        Log.e("RESPONSE", "The response is: " + response);
+                        return response.trim();
+
+                    } else {
+                        Log.e(LOG_TAG, "서버 접속 실패");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "네트워크가 원활하지 않습니다.\n 다시 시도해주세요!", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                } catch (ConnectTimeoutException ue) {
+                    Log.e(LOG_TAG, "ConnectTimeoutException");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    conn.disconnect();
+                }
+
+                return null;
+            }
+        }
+
         Log.d(LOG_TAG, ""+mScheduleJsonObject);
         Log.d(LOG_TAG, ""+mCityJsonArray);
         Log.d(LOG_TAG, ""+mPostJsonArray);
@@ -590,6 +651,7 @@ public class OthersPlanTableActivity extends AppCompatActivity {
             }
 
             try {
+                boolean prevNullTS = false;
                 for (int i = 0; i < mCityJsonArray.length(); i++) {
                     if (i + 1 < mCityJsonArray.length()) { //처음도시부터 마지막-1도시까지
                         JSONObject t1 = mTrainScheduleJsonArray.getJSONObject(i);
@@ -597,7 +659,12 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                         //날짜
                         String d1 = t1.getString("arrivalDate").split(" ")[0];
                         String d2 = t2.getString("startDate").split(" ")[0];
-                        mGroupList.add(d1 + " ~ " + d2);
+
+                        if(d1.equals("1899-12-31") || d2.equals("1899-12-31")){
+                            mGroupList.add("정확한 여행 기간을 알 수 없습니다.");
+                        }else {
+                            mGroupList.add(d1 + " ~ " + d2);
+                        }
 
                         mChildList.add(null);
 
@@ -611,7 +678,23 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                         String departureDate = t1.getString("arrivalDate");
                         String startStation = t1.getString("startStation");
                         String endStation = t1.getString("endStation");
-                        String innerTrainSchedule = startStation + "(" + arrivalDate + ") -> \n" + endStation + "(" + departureDate + ")";
+                        String innerTrainSchedule = null;
+                        if(prevNullTS){
+                            innerTrainSchedule = startStation + " ->" + endStation + "\n(정확한 시간을 알 수 없습니다.)";
+                        }else if(d1.equals("1899-12-31")) {
+                            innerTrainSchedule = startStation + " ->" + endStation + "\n(한번 환승으로 갈 수 없는 경로입니다.)";
+                            prevNullTS = true;
+                        }else {
+                            String arrivalDateSplitDateAndTime[] = arrivalDate.split(" "); //출발 시간을 날짜와 시간으로 나눈것
+                            String arrivalDateSplitTime[] = arrivalDateSplitDateAndTime[1].split(":"); //시간을 : 단위로 나눈것 [0]은 시, [1]는 분, [2]는 초.밀리초
+                            String arrivalDateString = arrivalDateSplitDateAndTime[0] + " " + arrivalDateSplitTime[0] + ":" + arrivalDateSplitTime[1]; //최종적으로 뿌려질 String.
+
+                            String departureDateSplitDateAndTime[] = departureDate.split(" ");
+                            String departureDateSplitTime[] = departureDateSplitDateAndTime[1].split(":");
+                            String departureDateString = departureDateSplitDateAndTime[0] + " " + departureDateSplitTime[0] + ":" + departureDateSplitTime[1];
+
+                            innerTrainSchedule = startStation + "(" + arrivalDateString + ") -> \n" + endStation + "(" + departureDateString + ")";
+                        }
                         postList.add(innerTrainSchedule);
 
                         //관광지
@@ -628,7 +711,22 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                         String departureDate2 = t2.getString("arrivalDate");
                         String startStation2 = t2.getString("startStation");
                         String endStation2 = t2.getString("endStation");
-                        String outerTrainSchedule = startStation2 + "(" + arrivalDate2 + ") -> " + endStation2 + "(" + departureDate2 + ")";
+                        String outerTrainSchedule = null;
+                        if(d1.equals("1899-12-31")){
+                            outerTrainSchedule = startStation2 + " ->" + endStation2 + "\n(정확한 시간을 알 수 없습니다.)";
+                        }else if(d2.equals("1899-12-31")) {
+                            outerTrainSchedule = startStation2 + " ->" + endStation2 + "\n(한번 환승으로 갈 수 없는 경로 입니다.)";
+                        }else {
+                            String arrivalDateSplitDateAndTime2[] = arrivalDate2.split(" "); //출발 시간을 날짜와 시간으로 나눈것
+                            String arrivalDateSplitTime2[] = arrivalDateSplitDateAndTime2[1].split(":"); //시간을 : 단위로 나눈것 [0]은 시, [1]는 분, [2]는 초.밀리초
+                            String arrivalDateString2 = arrivalDateSplitDateAndTime2[0] + " " + arrivalDateSplitTime2[0] + ":" + arrivalDateSplitTime2[1]; //최종적으로 뿌려질 String.
+
+                            String departureDateSplitDateAndTime2[] = departureDate2.split(" ");
+                            String departureDateSplitTime2[] = departureDateSplitDateAndTime2[1].split(":");
+                            String departureDateString2 = departureDateSplitDateAndTime2[0] + " " + departureDateSplitTime2[0] + ":" + departureDateSplitTime2[1];
+
+                            outerTrainSchedule = startStation2 + "(" + arrivalDateString2 + ") ->\n" + endStation2 + "(" + departureDateString2 + ")";
+                        }
                         postList.add(outerTrainSchedule);
 
                         mChildList.add(postList);
@@ -636,23 +734,23 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                         JSONObject t1 = mTrainScheduleJsonArray.getJSONObject(i);
 
                         String resultStr = null;
+                        String startLoc = null;
                         int tourTime = 0;
+                        int city_no = mCityJsonArray.getJSONObject(i).getInt("no");
+                        int cityList_no = mCityJsonArray.getJSONObject(i).getInt("cityList_no");
                         try {
-                            int city_no = mCityJsonArray.getJSONObject(i).getInt("no");
-                            int cityList_no = mCityJsonArray.getJSONObject(i).getInt("cityList_no");
                             tourTime = 0;
-                            String startLoc = null;
-                            for(int j=0; j<mPostJsonArray.length(); j++){
+                            for (int j = 0; j < mPostJsonArray.length(); j++) {
                                 JSONObject post = mPostJsonArray.getJSONObject(j);
-                                if(city_no == post.getInt("city_no")){
+                                if (city_no == post.getInt("city_no")) {
                                     int postList_no = post.getInt("postList_no");
-                                    String postDetailStr = new GetPostDetail().execute(postListURL, ""+postList_no).get();
+                                    String postDetailStr = new GetPostDetail().execute(postListURL, "" + postList_no).get();
                                     JSONObject postDetailObject = new JSONObject(postDetailStr);
                                     JSONObject postDetail = postDetailObject.getJSONObject("allAtrVo");
 
                                     String postCategory = postDetail.getString("category");
 
-                                    switch (postCategory){
+                                    switch (postCategory) {
                                         case "tour":
                                             tourTime += 3;
                                             break;
@@ -678,20 +776,19 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                             int hour = Integer.parseInt(startDateDATETIME.substring(11, 13));
                             int minute = Integer.parseInt(startDateDATETIME.substring(14, 16));
                             Calendar c = Calendar.getInstance();
-                            c.set(year, month-1, date, hour, minute);
-                            c.add(Calendar.MINUTE, tourTime*60);
+                            c.set(year, month - 1, date, hour, minute);
+                            c.add(Calendar.MINUTE, tourTime * 60);
                             java.sql.Date addDate = new java.sql.Date(c.getTimeInMillis());
                             java.sql.Time time = new java.sql.Time(c.getTimeInMillis());
                             String startDate = addDate + " " + time;
 
-                            resultStr = new GetLastTrainSchedule().execute(lastTrainScheduleURL, startLoc, ""+cityList_no, endStation, startDate).get();
-                        }catch (Exception e){
+                            resultStr = new GetLastTrainSchedule().execute(lastTrainScheduleURL, startLoc, "" + cityList_no, endStation, startDate).get();
+                        } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), "네트워크 상태를 확인하고 다시 해주세요.", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
-                        if(resultStr == null || resultStr.isEmpty()){
-                            JSONObject t2 = new JSONObject(resultStr);
+                        if (resultStr == null || resultStr.isEmpty()) { //경로가 없을때
                             //날짜
                             String d1 = t1.getString("arrivalDate").split(" ")[0];
                             String startDateDATETIME = t1.getString("arrivalDate");
@@ -701,16 +798,21 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                             int hour = Integer.parseInt(startDateDATETIME.substring(11, 13));
                             int minute = Integer.parseInt(startDateDATETIME.substring(14, 16));
                             Calendar c = Calendar.getInstance();
-                            c.set(year, month-1, date, hour, minute);
-                            c.add(Calendar.MINUTE, tourTime*60);
+                            c.set(year, month - 1, date, hour, minute);
+                            c.add(Calendar.MINUTE, tourTime * 60);
                             java.sql.Date addDate = new java.sql.Date(c.getTimeInMillis());
                             java.sql.Time time = new java.sql.Time(c.getTimeInMillis());
                             String goDate = addDate + " " + time;
-                            int goYear = Integer.parseInt(goDate.split("-")[0]) - 1900;
-                            int goMonth = Integer.parseInt(goDate.split("-")[1]) -1;
-                            int goDay = Integer.parseInt(goDate.split("-")[2]);
+                            String addDateStr = addDate + "";
+                            int goYear = Integer.parseInt(addDateStr.split("-")[0]) - 1900;
+                            int goMonth = Integer.parseInt(addDateStr.split("-")[1]) - 1;
+                            int goDay = Integer.parseInt(addDateStr.split("-")[2]);
                             String d2 = goYear + "-" + goMonth + "-" + goDay;
-                            mGroupList.add(d1 + " ~ " + d2);
+                            if(d1.equals("1899-12-31") || d2.equals("1899-12-31")){
+                                mGroupList.add("정확한 여행 기간을 알 수 없습니다.");
+                            }else {
+                                mGroupList.add(d1 + " ~ " + d2);
+                            }
 
                             mChildList.add(null);
 
@@ -724,90 +826,150 @@ public class OthersPlanTableActivity extends AppCompatActivity {
                             String departureDate = t1.getString("arrivalDate");
                             String startStation = t1.getString("startStation");
                             String endStation = t1.getString("endStation");
-                            String innerTrainSchedule = startStation + "(" + arrivalDate + ") -> \n" + endStation + "(" + departureDate + ")";
+                            String innerTrainSchedule = null;
+                            if(prevNullTS){
+                                innerTrainSchedule = startStation + " ->" + endStation + "\n(정확한 시간을 알 수 없습니다.)";
+                            }else if(d1.equals("1899-12-31")){
+                                innerTrainSchedule = startStation + " ->" + endStation + "\n(한번 환승으로 갈 수 없는 경로입니다.)";
+                            }else {
+                                String arrivalDateSplitDateAndTime[] = arrivalDate.split(" "); //출발 시간을 날짜와 시간으로 나눈것
+                                String arrivalDateSplitTime[] = arrivalDateSplitDateAndTime[1].split(":"); //시간을 : 단위로 나눈것 [0]은 시, [1]는 분, [2]는 초.밀리초
+                                String arrivalDateString = arrivalDateSplitDateAndTime[0] + " " + arrivalDateSplitTime[0] + ":" + arrivalDateSplitTime[1]; //최종적으로 뿌려질 String.
+
+                                String departureDateSplitDateAndTime[] = departureDate.split(" ");
+                                String departureDateSplitTime[] = departureDateSplitDateAndTime[1].split(":");
+                                String departureDateString = departureDateSplitDateAndTime[0] + " " + departureDateSplitTime[0] + ":" + departureDateSplitTime[1];
+
+                                innerTrainSchedule = startStation + "(" + arrivalDateString + ") ->\n" + endStation + "(" + departureDateString + ")";
+                            }
                             postList.add(innerTrainSchedule);
 
                             //관광지
-                            int city_no = mCityJsonArray.getJSONObject(i).getInt("no");
-                            for(int j=0; j<mPostJsonArray.length(); j++){
+                            for (int j = 0; j < mPostJsonArray.length(); j++) {
                                 JSONObject post = mPostJsonArray.getJSONObject(j);
-                                if(city_no == post.getInt("city_no")){
+                                if (city_no == post.getInt("city_no")) {
                                     postList.add(post.getString("name"));
                                 }
                             }
-                        }
 
-                        JSONObject t2 = new JSONObject(resultStr);
-                        //날짜
-                        String d1 = t1.getString("arrivalDate").split(" ")[0];
-                        String goDate = t2.getString("goDate");
-                        int goYear = Integer.parseInt(goDate.split("-")[0]) - 1900;
-                        int goMonth = Integer.parseInt(goDate.split("-")[1]) -1;
-                        int goDay = Integer.parseInt(goDate.split("-")[2]);
-                        String d2;
-                        if(goMonth >= 10) {
-                            if(goDay >= 10) {
-                                d2 = goYear + "-" + goMonth + "-" + goDay;
-                            }else{
-                                d2 = goYear + "-" + goMonth + "-0" + goDay;
-                            }
-                        }else{
-                            if(goDay >= 10){
-                                d2 = goYear + "-0" + goMonth + "-" + goDay;
-                            }else{
-                                d2 = goYear + "-0" + goMonth + "-0" + goDay;
-                            }
-                        }
-                        mGroupList.add(d1 + " ~ " + d2);
-
-                        mChildList.add(null);
-
-                        //도시
-                        String cityName = mCityJsonArray.getJSONObject(i).getString("name");
-                        mGroupList.add(cityName);
-
-                        ArrayList<String> postList = new ArrayList<>();
-                        //들어오는 trainSchedule
-                        String arrivalDate = t1.getString("startDate");
-                        String departureDate = t1.getString("arrivalDate");
-                        String startStation = t1.getString("startStation");
-                        String endStation = t1.getString("endStation");
-                        String innerTrainSchedule = startStation + "(" + arrivalDate + ") -> \n" + endStation + "(" + departureDate + ")";
-                        postList.add(innerTrainSchedule);
-
-                        //관광지
-                        int city_no = mCityJsonArray.getJSONObject(i).getInt("no");
-                        for(int j=0; j<mPostJsonArray.length(); j++){
-                            JSONObject post = mPostJsonArray.getJSONObject(j);
-                            if(city_no == post.getInt("city_no")){
-                                postList.add(post.getString("name"));
-                            }
-                        }
-                        //나가는 trainSchedule
-                        boolean compareBool = compareTime(t2.getString("departureTime"), t2.getString("arrivalTime"));
-
-                        if(compareBool){
-                            String arrivalDate2 = d2 + " " + t2.getString("departureTime");
-                            String departureDate2 = d2 + " " + t2.getString("arrivalTime");
-                            String startStation2 = t2.getString("startStationName");
-                            String endStation2 = t2.getString("endStationName");
-                            String outerTrainSchedule = startStation2 + "(" + arrivalDate2 + ") -> " + endStation2 + "(" + departureDate2 + ")";
+                            //나가는 trainSchedule
+                            String startStation2 = new GetNearStation().execute(nearTrainStationURL, startLoc, ""+cityList_no).get();
+                            String endStation2 = mScheduleJsonObject.getString("lastStation");
+                            String outerTrainSchedule = startStation2 + "-> " + endStation2 + "\n(한번 환승으로 갈 수 없는 경로 입니다.)";
                             postList.add(outerTrainSchedule);
-                        }else{
-                            String arrivalDate2 = d2 + " " + t2.getString("departureTime");
-                            String departureDate2 = getNextDate(d2) + " " + t2.getString("arrivalTime");
-                            String startStation2 = t2.getString("startStationName");
-                            String endStation2 = t2.getString("endStationName");
-                            String outerTrainSchedule = startStation2 + "(" + arrivalDate2 + ") -> " + endStation2 + "(" + departureDate2 + ")";
-                            postList.add(outerTrainSchedule);
-                        }
 
-                        mChildList.add(postList);
+                            mChildList.add(postList);
+                        } else { //경로가 있을 때
+                            JSONObject t2 = new JSONObject(resultStr);
+                            //날짜
+                            String d1 = t1.getString("arrivalDate").split(" ")[0];
+                            String goDate = t2.getString("goDate");
+                            int goYear = Integer.parseInt(goDate.split("-")[0]) - 1900;
+                            int goMonth = Integer.parseInt(goDate.split("-")[1]) - 1;
+                            int goDay = Integer.parseInt(goDate.split("-")[2]);
+                            String d2;
+                            if (goMonth >= 10) {
+                                if (goDay >= 10) {
+                                    d2 = goYear + "-" + goMonth + "-" + goDay;
+                                } else {
+                                    d2 = goYear + "-" + goMonth + "-0" + goDay;
+                                }
+                            } else {
+                                if (goDay >= 10) {
+                                    d2 = goYear + "-0" + goMonth + "-" + goDay;
+                                } else {
+                                    d2 = goYear + "-0" + goMonth + "-0" + goDay;
+                                }
+                            }
+                            if(d1.equals("1899-12-31") || d2.equals("1899-12-31")){
+                                mGroupList.add("정확한 여행 기간을 알 수 없습니다.");
+                            }else {
+                                mGroupList.add(d1 + " ~ " + d2);
+                            }
+
+                            mChildList.add(null);
+
+                            //도시
+                            String cityName = mCityJsonArray.getJSONObject(i).getString("name");
+                            mGroupList.add(cityName);
+
+                            ArrayList<String> postList = new ArrayList<>();
+                            //들어오는 trainSchedule
+                            String arrivalDate = t1.getString("startDate");
+                            String departureDate = t1.getString("arrivalDate");
+                            String startStation = t1.getString("startStation");
+                            String endStation = t1.getString("endStation");
+                            String innerTrainSchedule = null;
+                            if(prevNullTS){
+                                innerTrainSchedule = startStation + " ->" + endStation + "\n(정확한 시간을 알 수 없습니다.)";
+                            }else if(d1.equals("1899-12-31")){
+                                innerTrainSchedule = startStation + " ->" + endStation + "\n(한번 환승으로 갈 수 없는 경로입니다.)";
+                            }else {
+                                String arrivalDateSplitDateAndTime[] = arrivalDate.split(" "); //출발 시간을 날짜와 시간으로 나눈것
+                                String arrivalDateSplitTime[] = arrivalDateSplitDateAndTime[1].split(":"); //시간을 : 단위로 나눈것 [0]은 시, [1]는 분, [2]는 초.밀리초
+                                String arrivalDateString = arrivalDateSplitDateAndTime[0] + " " + arrivalDateSplitTime[0] + ":" + arrivalDateSplitTime[1]; //최종적으로 뿌려질 String.
+
+                                String departureDateSplitDateAndTime[] = departureDate.split(" ");
+                                String departureDateSplitTime[] = departureDateSplitDateAndTime[1].split(":");
+                                String departureDateString = departureDateSplitDateAndTime[0] + " " + departureDateSplitTime[0] + ":" + departureDateSplitTime[1];
+
+                                innerTrainSchedule = startStation + "(" + arrivalDateString + ") ->\n" + endStation + "(" + departureDateString + ")";
+                            }
+                            postList.add(innerTrainSchedule);
+
+                            //관광지
+                            for (int j = 0; j < mPostJsonArray.length(); j++) {
+                                JSONObject post = mPostJsonArray.getJSONObject(j);
+                                if (city_no == post.getInt("city_no")) {
+                                    postList.add(post.getString("name"));
+                                }
+                            }
+                            //나가는 trainSchedule
+                            boolean compareBool = compareTime(t2.getString("departureTime"), t2.getString("arrivalTime"));
+
+                            if (compareBool) {
+                                String arrivalDate2SplitTime[] = t2.getString("departureTime").split(":");
+                                String arrivalDate2 = d2 + " " + arrivalDate2SplitTime[0] + ":" + arrivalDate2SplitTime[1];
+
+                                String departureDate2SplitTime[] = t2.getString("arrivalTime").split(":");
+                                String departureDate2 = d2 + " " + departureDate2SplitTime[0] + ":" + departureDate2SplitTime[1];
+
+                                String startStation2 = t2.getString("startStationName");
+                                String endStation2 = t2.getString("endStationName");
+                                String outerTrainSchedule = startStation2 + "(" + arrivalDate2 + ") ->\n" + endStation2 + "(" + departureDate2 + ")";
+                                if(prevNullTS || d1.equals("1899-12-31")){
+                                    outerTrainSchedule = startStation2 + " -> " + endStation2 + "\n(정확한 시간을 알 수 없습니다.)";
+                                }
+                                postList.add(outerTrainSchedule);
+                            } else {
+                                String arrivalDate2SplitTime[] = t2.getString("departureTime").split(":");
+                                String arrivalDate2 = d2 + " " + arrivalDate2SplitTime[0] + ":" + arrivalDate2SplitTime[1];
+
+                                String departureDate2SplitTime[] = t2.getString("arrivalTime").split(":");
+                                String departureDate2 = getNextDate(d2) + " " + departureDate2SplitTime[0] + ":" + departureDate2SplitTime[1];
+
+                                String startStation2 = t2.getString("startStationName");
+                                String endStation2 = t2.getString("endStationName");
+                                String outerTrainSchedule = startStation2 + "(" + arrivalDate2 + ") ->\n" + endStation2 + "(" + departureDate2 + ")";
+                                if(prevNullTS || d1.equals("1899-12-31")){
+                                    outerTrainSchedule = startStation2 + " -> " + endStation2 + "\n(정확한 시간을 알 수 없습니다.)";
+                                }
+                                postList.add(outerTrainSchedule);
+                            }
+
+                            mChildList.add(postList);
+                        }
                     }
                 }
-            }catch (Exception e){
+            }catch (JSONException je){
+                je.printStackTrace();
+                Log.e(LOG_TAG,"json Error");
+                Toast.makeText(getApplicationContext(), "json Error로 경로를 짤 수 없습니다.", Toast.LENGTH_SHORT);
+                return;
+            } catch (Exception e){
                 e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "경로를 짜는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                Log.e(LOG_TAG, "String startStation2 = new GetNearStation().execute(nearTrainStationURL, startLoc, \"\"+cityList_no).get();");
+                Toast.makeText(getApplicationContext(), "String startStation2", Toast.LENGTH_SHORT).show();
                 return;
             }
         }

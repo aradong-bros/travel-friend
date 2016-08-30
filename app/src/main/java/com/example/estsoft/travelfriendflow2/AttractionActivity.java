@@ -50,6 +50,9 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 public class AttractionActivity extends Activity {
     private static final String LOG_TAG = "AttractionActivity";
@@ -78,6 +81,7 @@ public class AttractionActivity extends Activity {
     public String myNo;
     public String userName;
     public String userPicture;
+    public String no;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +118,7 @@ public class AttractionActivity extends Activity {
             btn_like.setVisibility(View.GONE);
         }
 
-        final String no = intent.getStringExtra("no");
+        no = intent.getStringExtra("no");
         Log.e("no",no);
         if(no == null){
             Log.e(LOG_TAG,"Incorrect Input : no");
@@ -157,7 +161,6 @@ public class AttractionActivity extends Activity {
         });
     }
 
-
     public void fetchData(String url){
         class GetDataJSON extends AsyncTask<String, Void, String> {
 
@@ -189,17 +192,11 @@ public class AttractionActivity extends Activity {
                 if( ("").equals(result)){
                     return;
                 }
-                Log.e(LOG_TAG,result);
+
                 final PinItem item = parsePinData(result);
 
                 if(item != null){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showResult(item);
-                        }
-                    }); // runOnUiThread_end
-
+                    showResult(item);
                 }
 
             }
@@ -240,21 +237,33 @@ public class AttractionActivity extends Activity {
     }
 
 
-    private void showResult(PinItem item) {
-        Drawable drawable = createDrawableFromUrl(item.picture);
+    private void showResult(final PinItem item) {
+
+        GetImage g = new GetImage();
+        Drawable drawable = null;
+        try {
+            drawable = g.execute(item.picture).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         if(drawable != null){
             img_attraction.setImageDrawable(drawable);
         }else{
             img_attraction.setImageResource(R.drawable.noimage);
         }
+
         txt_title.setText(item.title);
         txt_addr.setText(item.address);
 
         item.info = item.info.replaceAll("<(/)?[bB][rR](\\s)*(/)?>","\n").replaceAll("strong","h2");// info의 <br>태그 삭제 및 <strong>태그 변환
         txt_info.setText( Html.fromHtml(item.info));
+
     }
 
-    private Drawable createDrawableFromUrl(String url) {
+/*    private Drawable createDrawableFromUrl(String url) {
         try {
             InputStream is = (InputStream) this.fetch(url);
             Drawable d = Drawable.createFromStream(is, "src");
@@ -269,13 +278,11 @@ public class AttractionActivity extends Activity {
     }
 
     private Object fetch(String address) throws MalformedURLException,IOException {
-        Log.e("pic address", address);
         URL url = new URL(address);
         Object content = url.getContent();
         Log.e("content",content+"");
         return content;
-
-    }
+    }*/
 
     private void hideSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -614,6 +621,42 @@ class MyAdapter2 extends BaseAdapter {
         task.execute(no);
     }
 }
+class GetImage extends AsyncTask<String, Void, Drawable> {
+
+    @Override
+    protected Drawable doInBackground(String... params) {
+
+        try {
+            URL url = new URL(params[0]);
+            Object content = url.getContent();
+
+            InputStream is = (InputStream)content;
+            Drawable d = Drawable.createFromStream(is, "src");
+            return d;
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    @Override
+    protected void onPostExecute(Drawable result){
+
+        if( ("").equals(result)){
+            return;
+        }
+
+
+
+
+    }
+}
+
 
 class Reply{
 

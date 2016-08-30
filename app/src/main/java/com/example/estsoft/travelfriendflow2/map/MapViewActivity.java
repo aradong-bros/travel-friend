@@ -205,10 +205,8 @@ public class MapViewActivity extends AppCompatActivity implements MapView.POIIte
                 return false;
             }
         });
+
     }
-
-
-
 
 
     @Override

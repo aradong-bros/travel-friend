@@ -162,8 +162,11 @@ public class OthersPlanMapActivity extends AppCompatActivity implements MapView.
             @Override
             public void onClick(View v) {
                 Log.e("click","right  "+polylineChkNum);
-
                 if( polylineChkNum <= mTagPolylineMap.size() && polylineChkNum >= 0){
+                    if( mTagPolylineMap.size() == 0 ){      // 핀이 1개인 경우
+                        return ;
+                    }
+
                     if ( polylineChkNum != mTagPolylineMap.size()){
                         polylineChkNum++;
                     }
